@@ -1,0 +1,20 @@
+{
+  "name": "sentinel-md",
+  "displayName": "SENTINEL.md",
+  "description": "Scans agent-config files for hidden manipulation instructions on save.",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/vscode": "^1.85.0"
+  }
+}

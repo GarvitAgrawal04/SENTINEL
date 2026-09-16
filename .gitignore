@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.env
+
+# Database
+*.db
+*.sqlite3
+
+# Node
+node_modules/
+frontend/dist/
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/launch.json
+*.log
+
+# Benchmark corpus (large, sourced from public repos)
+benchmark/corpus/clean/
+benchmark/corpus/malicious/
+
+# Demo cache (generated, not source)
+demo/cache/
+
+# Test artifacts
+benchmark/results.json
