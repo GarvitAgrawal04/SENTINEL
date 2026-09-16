@@ -27,7 +27,7 @@ Tests
     Content embeds a fake </content> closing tag followed by a SYSTEM OVERRIDE block,
     attempting to escape the <content> boundary.  Expected: serves_stated_purpose=False.
 """
-
+from __future__ import annotations
 import json
 import sys
 

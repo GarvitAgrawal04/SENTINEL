@@ -13,6 +13,7 @@ failure so callers can treat "nothing found" and "network error"
 the same way (fail open to "no prior data", not fail closed to
 an exception).
 """
+from __future__ import annotations
 import io
 import json
 import tarfile

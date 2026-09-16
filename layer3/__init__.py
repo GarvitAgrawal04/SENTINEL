@@ -12,7 +12,7 @@ result = analyze(
     content="<file text here>",
 )
 """
-
+from __future__ import annotations
 from layer3.analyzer import analyze
 
 __all__ = ["analyze"]

@@ -6,6 +6,7 @@ FastAPI app entry point.
 Run with:
     uvicorn sentinel.main:app --port 8000
 """
+from __future__ import annotations
 from fastapi.middleware.cors import CORSMiddleware
 from sentinel.api import app
 

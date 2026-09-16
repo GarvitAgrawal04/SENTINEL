@@ -15,7 +15,7 @@ the user message.  It is NEVER:
 
 Violating this invariant defeats the entire purpose of the module.
 """
-
+from __future__ import annotations
 import json
 import os
 from typing import Optional

@@ -8,7 +8,8 @@ def check_s6(filename: str, layer2_delta_pct: Optional[float], has_other_finding
     This logic requires prior-version data, which only /scan/package has.
     NOT into /scan/files, which has no prior-version concept.
     """
-    message = None
+from __future__ import annotations
+message = None
     if layer2_delta_pct is None and has_other_findings:
         message = "New file with no prior version, already has other findings"
     elif layer2_delta_pct is not None:
