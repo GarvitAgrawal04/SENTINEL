@@ -19,7 +19,6 @@ api.py never constructs or touches any prompt text -- that is handled
 exclusively inside layer3/analyzer.py.
 """
 from __future__ import annotations
-
 import asyncio
 import os
 import sys
