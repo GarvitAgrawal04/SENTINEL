@@ -47,6 +47,8 @@ function CustomCursor() {
 }
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function App() {
   const [appState, setAppState] = useState('intro');
   const [scanResult, setScanResult] = useState(null);
@@ -81,7 +83,7 @@ export default function App() {
     try {
       const [text, res] = await Promise.all([
         fetchRawText(filename),
-        fetch(`http://localhost:8000/scan/demo?file=${filename}`)
+        fetch(`${API_BASE_URL}/scan/demo?file=${filename}`)
       ]);
       setRawText(text);
       if (!res.ok) throw new Error(`Backend error: ${res.statusText}`);
@@ -104,7 +106,7 @@ export default function App() {
       const formData = new FormData();
       const blob = new Blob([content], { type: 'text/plain' });
       formData.append('file', blob, filename);
-      const res = await fetch('http://localhost:8000/scan/file', {
+      const res = await fetch(`${API_BASE_URL}/scan/file`, {
         method: 'POST',
         body: formData
       });
