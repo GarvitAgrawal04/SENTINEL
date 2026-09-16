@@ -58,7 +58,7 @@ async def run_layer3(
     filename: str,
     full_text: str,
     findings: Sequence[Finding],
-) -> dict | None:
+) -> Optional[dict]:
     """
     Call layer3.analyzer.analyze() asynchronously and return its result dict.
 

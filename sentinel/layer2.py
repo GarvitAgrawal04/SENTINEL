@@ -14,6 +14,7 @@ the same way (fail open to "no prior data", not fail closed to
 an exception).
 """
 from __future__ import annotations
+from typing import Optional
 import io
 import json
 import tarfile
@@ -26,7 +27,7 @@ from .rules import AGENT_CONFIG_NAMES
 _USER_AGENT = "SENTINEL-md/0.1 (+https://github.com/sentinel-md)"
 
 
-def _get_json(url: str) -> dict | None:
+def _get_json(url: str) -> Optional[dict]:
     req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
@@ -35,7 +36,7 @@ def _get_json(url: str) -> dict | None:
         return None
 
 
-def _download(url: str) -> bytes | None:
+def _download(url: str) -> Optional[bytes]:
     req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
@@ -167,7 +168,7 @@ async def fetch_github_agent_files(owner_repo: str) -> dict[str, str]:
     return found
 
 
-async def get_prior_files(ecosystem: str, name: str, version: str | None = None) -> dict[str, str]:
+async def get_prior_files(ecosystem: str, name: str, version: Optional[str] = None) -> dict[str, str]:
     """Dispatcher used by api.py's /scan/package endpoint."""
     if ecosystem == "npm":
         return await fetch_npm_prior_files(name)

@@ -1,3 +1,4 @@
+﻿from __future__ import annotations
 import re
 from typing import Dict, List, Optional
 from sentinel.rules import Finding
@@ -8,90 +9,93 @@ def check_s6(filename: str, layer2_delta_pct: Optional[float], has_other_finding
     This logic requires prior-version data, which only /scan/package has.
     NOT into /scan/files, which has no prior-version concept.
     """
-from __future__ import annotations
-message = None
+    message = None
     if layer2_delta_pct is None and has_other_findings:
         message = "New file with no prior version, already has other findings"
     elif layer2_delta_pct is not None:
-        if layer2_delta_pct > 50:
-            message = f"File grew by {layer2_delta_pct:.1f}% (>50%)"
-        elif layer2_delta_pct > 20 and has_other_findings:
-            message = f"File grew by {layer2_delta_pct:.1f}% (>20%) and has other findings"
-            
+        if layer2_delta_pct > 80.0:
+            message = f"Massive changes vs prior version ({layer2_delta_pct:.1f}% new)"
+        elif layer2_delta_pct > 30.0 and has_other_findings:
+            message = f"Significant changes ({layer2_delta_pct:.1f}% new) combined with other findings"
+
     if message:
         return Finding(
             rule_id="S6",
-            severity="medium",
+            description=message,
+            severity="medium" if layer2_delta_pct is not None and layer2_delta_pct < 80.0 else "high",
             filename=filename,
             line=1,
-            message=message,
             snippet=""
         )
     return None
 
-def check_s8_cross_file_contradiction(file_texts: Dict[str, str]) -> List[Finding]:
+
+def check_s8_cross_file_contradiction(files_text: Dict[str, str]) -> List[Finding]:
     """
-    Detect cross-file contradictions (S8).
-    Takes {filename: content} for ALL files in a batch.
+    Check for S8: Cross-file semantic contradiction.
+    Finds conflicting explicit instructions between different config files.
     """
     findings = []
     
-    # 1. Prohibition/permission contradictions
+    # 1. Parse simple constraints
     forbidden_pattern = re.compile(r"(?i)\b(?:never|do not|don't|avoid|forbidden(?: to)?|prohibited(?: to)?|not allowed(?: to)?)\s+([a-zA-Z_-]+)\b")
     permission_pattern = re.compile(r"(?i)\b(?:always|must|should(?: always)?|required to)\s+([a-zA-Z_-]+)\b")
     
     actions = {}
     
-    # 2. Model-name contradictions
+    # 2. Parse model preferences
     model_pattern = re.compile(r"(?i)use\s+(gpt-?4|gpt-?3\.5|gpt-?4o|claude|gemini|llama|mixtral|qwen|deepseek)\b")
     models = {}
     
-    for filename, text in file_texts.items():
-        for line_no, line in enumerate(text.splitlines(), start=1):
+    for fname, text in files_text.items():
+        for i, line in enumerate(text.splitlines(), 1):
             for match in forbidden_pattern.finditer(line):
                 verb = match.group(1).lower()
-                actions.setdefault(verb, []).append((filename, "forbidden", line.strip()[:200], line_no))
+                actions.setdefault(verb, []).append((fname, i, 'forbidden'))
             for match in permission_pattern.finditer(line):
                 verb = match.group(1).lower()
-                actions.setdefault(verb, []).append((filename, "permission", line.strip()[:200], line_no))
+                actions.setdefault(verb, []).append((fname, i, 'required'))
+            
             for match in model_pattern.finditer(line):
                 model = match.group(1).lower().replace('-', '') # normalize
-                models.setdefault(model, []).append((filename, line.strip()[:200], line_no))
+                models.setdefault(fname, []).append((model, i))
                 
-    # Detect action contradictions
-    for verb, occurrences in actions.items():
-        forbidden_files = [occ for occ in occurrences if occ[1] == "forbidden"]
-        permission_files = [occ for occ in occurrences if occ[1] == "permission"]
+    # Check action contradictions
+    for action, constraints in actions.items():
+        files_forbidding = [c for c in constraints if c[2] == 'forbidden']
+        files_requiring = [c for c in constraints if c[2] == 'required']
         
-        for f_occ in forbidden_files:
-            for p_occ in permission_files:
-                f_name = f_occ[0]
-                p_name = p_occ[0]
-                if f_name != p_name:
-                    msg = f"Contradiction: action '{verb}' is forbidden in {f_name} but permitted/required in {p_name}"
-                    findings.append(Finding("S8", "high", f_name, f_occ[3], msg, f_occ[2]))
-                    findings.append(Finding("S8", "high", p_name, p_occ[3], msg, p_occ[2]))
+        if files_forbidding and files_requiring:
+            # We found a contradiction! Create finding for the 'requiring' file 
+            # (assume the forbidding file is the stricter global policy)
+            for req in files_requiring:
+                forbd = files_forbidding[0]
+                if req[0] != forbd[0]:  # Only cross-file
+                    findings.append(Finding(
+                        rule_id="S8",
+                        description=f"Action '{action}' is required here but explicitly forbidden in {forbd[0]}",
+                        severity="high",
+                        filename=req[0],
+                        line=req[1],
+                        snippet=""
+                    ))
                     
-    # Detect model contradictions
-    if len(models) > 1:
-        all_model_names = list(models.keys())
-        for i in range(len(all_model_names)):
-            for j in range(i+1, len(all_model_names)):
-                model_a = all_model_names[i]
-                model_b = all_model_names[j]
-                for occ_a in models[model_a]:
-                    for occ_b in models[model_b]:
-                        if occ_a[0] != occ_b[0]:
-                            msg = f"Contradiction: model '{model_a}' specified in {occ_a[0]} but model '{model_b}' specified in {occ_b[0]}"
-                            findings.append(Finding("S8", "high", occ_a[0], occ_a[2], msg, occ_a[1]))
-                            findings.append(Finding("S8", "high", occ_b[0], occ_b[2], msg, occ_b[1]))
-                            
-    unique_findings = []
-    seen = set()
-    for f in findings:
-        k = (f.filename, f.line, f.message)
-        if k not in seen:
-            seen.add(k)
-            unique_findings.append(f)
-            
-    return unique_findings
+    # Check model contradictions
+    all_models = {model for file_models in models.values() for model, _ in file_models}
+    if len(all_models) > 1:
+        # Multiple different models requested across files
+        for fname, file_models in models.items():
+            other_models = all_models - {m for m, _ in file_models}
+            if other_models:
+                m_list = ", ".join(other_models)
+                first_occurrence = file_models[0]
+                findings.append(Finding(
+                    rule_id="S8",
+                    description=f"Demands model {first_occurrence[0]} but other config files demand {m_list}",
+                    severity="medium",
+                    filename=fname,
+                    line=first_occurrence[1],
+                    snippet=""
+                ))
+                
+    return findings

@@ -4,6 +4,7 @@ Phase A, Week 1 build target: S1 + S4 fully working, S2/S3/S5/S6/S7/S8 stubs.
 Trust Score formula: see PRD Section 3.1.
 """
 from __future__ import annotations
+from typing import Optional
 import re
 import unicodedata
 from dataclasses import dataclass, field
@@ -103,8 +104,8 @@ class Finding:
 class ScanResult:
     filename: str
     findings: list[Finding] = field(default_factory=list)
-    layer3_result: dict | None = None      # filled in by API layer
-    layer2_delta_pct: float | None = None  # % change vs prior version
+    layer3_result: Optional[dict] = None      # filled in by API layer
+    layer2_delta_pct: Optional[float] = None  # % change vs prior version
 
     # ── Trust Score ──────────────────────────────────────────────────────────
     def trust_score(self) -> int:
@@ -301,7 +302,7 @@ def is_agent_config(path: Path) -> bool:
     return name in AGENT_CONFIG_NAMES or ext in AGENT_CONFIG_EXTENSIONS
 
 
-def scan_file(path: Path, text: str | None = None) -> ScanResult:
+def scan_file(path: Path, text: Optional[str] = None) -> ScanResult:
     """
     Run all Layer 1 rules on a single file.
     Pass `text` directly when scanning in-memory (e.g. from API upload).
