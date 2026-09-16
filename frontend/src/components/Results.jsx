@@ -320,7 +320,7 @@ export default function Results({ result, onShowAgentEye, onReset }) {
               { name: 'Socket.dev', focus: 'npm behaviour', detects: false },
               { name: 'AgentLinter', focus: 'Doc quality', detects: false },
               { name: 'Semgrep', focus: 'Code patterns', detects: false },
-              { name: 'SENTINEL.md', focus: 'Agent instructions', detects: true },
+              { name: 'SENTINEL', focus: 'Agent instructions', detects: true },
             ].map(({ name, focus, detects }) => (
               <div key={name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.8rem 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div>

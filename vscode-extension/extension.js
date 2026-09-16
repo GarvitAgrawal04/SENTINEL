@@ -16,8 +16,8 @@ const WATCH_LIST = new Set([
 ]);
 
 function activate(context) {
-    const outputChannel = vscode.window.createOutputChannel('SENTINEL.md');
-    outputChannel.appendLine('SENTINEL.md extension active');
+    const outputChannel = vscode.window.createOutputChannel('SENTINEL');
+    outputChannel.appendLine('SENTINEL extension active');
 
     const saveDisposable = vscode.workspace.onDidSaveTextDocument(document => {
         const basename = path.basename(document.fileName).toLowerCase();

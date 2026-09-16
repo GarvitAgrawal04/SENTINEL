@@ -1,8 +1,8 @@
-# SENTINEL.md
+# SENTINEL
 
 **The Firewall for Your AI Coding Agent's Instructions**
 
-*NexHack 2.0 — Cybersecurity & Trust track*
+*Cybersecurity & Trust track*
 
 ## The Problem
 
@@ -20,9 +20,9 @@ attack class — they analyze code behavior or documentation
 quality, not whether plain-English text would reprogram an AI
 agent.
 
-## What SENTINEL.md Does
+## What SENTINEL Does
 
-SENTINEL.md scans AI-agent instruction files for hidden
+SENTINEL scans AI-agent instruction files for hidden
 instructions designed to manipulate coding agents. Every scan
 produces a Trust Score (0–100) across three detection layers:
 
@@ -94,7 +94,7 @@ findings as a PR comment. Advisory mode — never blocks a merge.
 
 ## Contributions
 
-Built for NexHack 2.0, August–September 2026.
+Built in August–September 2026.
 All code written during the competition period.
 See CONTRIBUTING_STATUS.md for verified component status.
 ---

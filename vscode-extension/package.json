@@ -1,6 +1,6 @@
 {
   "name": "sentinel-md",
-  "displayName": "SENTINEL.md",
+  "displayName": "SENTINEL",
   "description": "Scans agent-config files for hidden manipulation instructions on save.",
   "version": "0.1.0",
   "engines": {

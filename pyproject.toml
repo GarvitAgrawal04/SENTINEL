@@ -33,4 +33,4 @@ dev = [
 ]
 
 [tool.vercel]
-entrypoint = "sentinel.main:app"
+entrypoint = "sentinel.api:app"

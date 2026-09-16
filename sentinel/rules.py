@@ -1,5 +1,5 @@
 """
-SENTINEL.md — Layer 1: Structural & Encoding Rule Engine
+SENTINEL — Layer 1: Structural & Encoding Rule Engine
 Phase A, Week 1 build target: S1 + S4 fully working, S2/S3/S5/S6/S7/S8 stubs.
 Trust Score formula: see PRD Section 3.1.
 """

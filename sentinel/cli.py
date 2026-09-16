@@ -1,5 +1,5 @@
 """
-SENTINEL.md CLI — sentinel scan <target>
+SENTINEL CLI — sentinel scan <target>
 
 Usage:
     sentinel scan CLAUDE.md
@@ -139,7 +139,7 @@ def agents_eye_view(text: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="sentinel",
-        description="SENTINEL.md — The firewall for your AI coding agent's instructions",
+        description="SENTINEL — The firewall for your AI coding agent's instructions",
     )
     sub = parser.add_subparsers(dest="command")
 

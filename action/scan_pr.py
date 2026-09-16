@@ -60,7 +60,7 @@ def main():
     all_clean = all(r.get('trust_score', 0) > 60 for r in all_results)
 
     lines = []
-    lines.append("## 🛡 SENTINEL.md — Agent-Config Security Scan")
+    lines.append("## 🛡 SENTINEL — Agent-Config Security Scan")
     lines.append("")
     lines.append("| File | Trust Score | Band | Rules Fired |")
     lines.append("|------|------------|------|-------------|")
@@ -82,8 +82,8 @@ def main():
 
     lines.append("")
     lines.append("<details>")
-    lines.append("<summary>What is SENTINEL.md?</summary>")
-    lines.append("SENTINEL.md scans AI-agent instruction files for hidden instructions")
+    lines.append("<summary>What is SENTINEL?</summary>")
+    lines.append("SENTINEL scans AI-agent instruction files for hidden instructions")
     lines.append("designed to manipulate coding agents. A Trust Score ≤ 60 means the")
     lines.append("file warrants review before merging. Advisory mode — this check")
     lines.append("never blocks a merge.")

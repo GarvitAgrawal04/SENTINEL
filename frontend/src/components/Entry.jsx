@@ -414,7 +414,7 @@ export default function Entry({ onDemoSelect, onFileUpload }) {
               <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '0.65rem', color: 'var(--cyan)' }}>S</span>
             </div>
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '0.85rem', color: 'rgba(255,255,255,0.90)' }}>
-              SENTINEL.md
+              SENTINEL
             </span>
           </div>
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -422,7 +422,7 @@ export default function Entry({ onDemoSelect, onFileUpload }) {
               <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 8px var(--green)' }} />
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)' }}>Engine Live</span>
             </div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.2em' }}>NexHack 2.0</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.2em' }}>SENTINEL</span>
           </div>
         </nav>
 

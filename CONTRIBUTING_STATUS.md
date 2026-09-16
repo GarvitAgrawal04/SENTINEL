@@ -1,6 +1,6 @@
 # Contributing Status
 
-Welcome to SENTINEL.md. Please review this document before making any changes.
+Welcome to SENTINEL. Please review this document before making any changes.
 
 ## Verified and locked — do not modify without flagging first
 The following core mechanisms have been independently verified against real and realistic test cases across this project's build history. Changes here risk reintroducing bugs that were already found and fixed once:

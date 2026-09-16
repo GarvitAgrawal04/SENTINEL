@@ -1,6 +1,6 @@
-# SENTINEL.md GitHub Action
+# SENTINEL GitHub Action
 
-Runs SENTINEL.md on every pull request that touches an agent-config file, posting findings as a PR comment.
+Runs SENTINEL on every pull request that touches an agent-config file, posting findings as a PR comment.
 
 ## Installation
 Copy `.github/workflows/sentinel.yml` to your repo's `.github/workflows/` directory, and copy `action/scan_pr.py` to your repo's `action/` directory. That's it!

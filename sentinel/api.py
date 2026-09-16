@@ -1,7 +1,7 @@
 """
 sentinel/api.py
 ===============
-FastAPI backend for SENTINEL.md.
+FastAPI backend for SENTINEL.
 
 Endpoints
 ---------
@@ -128,7 +128,7 @@ def _call_analyze(
 # ---------------------------------------------------------------------------
 
 app = FastAPI(
-    title="SENTINEL.md API",
+    title="SENTINEL API",
     description="The firewall for your AI coding agent instructions",
     version="0.1.0",
 )

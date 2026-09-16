@@ -15,7 +15,7 @@ export default function Intro({ onComplete }) {
     <div style={{ position: 'relative', width: '100vw', height: '100vh', background: '#05070a' }}>
       <iframe
         src="/landing-pages/kage.html"
-        title="SENTINEL.md Kage"
+        title="SENTINEL Kage"
         style={{
           width: '100%',
           height: '100%',
