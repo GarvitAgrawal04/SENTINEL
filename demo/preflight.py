@@ -129,6 +129,9 @@ async def run_preflight():
         sys.exit(1)
     else:
         print("\nAll files PASS.")
+
+
+        
         sys.exit(0)
 
 if __name__ == "__main__":
