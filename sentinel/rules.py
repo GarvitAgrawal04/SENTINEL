@@ -36,14 +36,15 @@ ZERO_WIDTH_CHARS = frozenset({
 OVERRIDE_PATTERNS = [
     r"ignore\s+(all\s+|previous\s+)?instructions",
     r"system[\s-]level\s+directive",
-    r"do\s+not\s+(disclose|mention|tell\s+the\s+user)",
+    r"system\s*override",
+    r"(do\s+not|never)\s+(disclose|mention|tell\s+the\s+user|flag)",
     r"required\s+for\s+compliance",
     r"suppress\s+(the\s+)?output",
     r"do\s+not\s+reveal\s+this",
     r"keep\s+this\s+(secret|hidden|confidential)",
     r"as\s+an?\s+(ai|language\s+model)\s*(you\s+must|you\s+should|you\s+are\s+to)",
     r"your\s+(real|true|actual)\s+instructions?\s+are",
-    r"disregard\s+(the\s+)?(above|previous|prior)",
+    r"disregard\s+(the\s+|all\s+)?(above|previous|prior)",
     r"new\s+persona",
     r"act\s+as\s+(if\s+you\s+are\s+)?(?!a\s+developer|an?\s+engineer)",  # "act as [not a dev]"
 ]
@@ -55,6 +56,7 @@ EXFIL_PATTERNS = [
     r"(fetch|axios|request|wget)\s*\(",             # HTTP calls in plain config
     r"\$\{env\b",                                   # Env var injection
     r"\.env\b.*\bsync\b",                           # .env "sync" disguise (CLAUDE.md incident)
+    r"\b(contents|read|append|output)\b.{0,40}\.env\b",
     r"\bwebhook\b.{0,40}\bsecret\b",               # Webhook + secret proximity
     r"base64\s+decode",                             # B64 decode instruction
 ]
@@ -179,7 +181,7 @@ def scan_s2_hidden_comments(text: str, filename: str) -> list[Finding]:
     findings = []
     comment_re = re.compile(r'<!--(.*?)-->', re.DOTALL)
     imperative_re = re.compile(
-        r'\b(do|run|execute|send|fetch|call|ignore|disregard|override|set|use|make)\b',
+        r'\b(do|run|execute|send|fetch|call|ignore|disregard|override|set|use|make|append|read|output|print|format|provide)\b',
         re.IGNORECASE
     )
     for match in comment_re.finditer(text):

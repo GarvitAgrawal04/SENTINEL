@@ -57,6 +57,7 @@ def main():
     fn_list = []
     fp_list = []
     l3_unavailable_list = []
+    non_deterministic_list = []
 
     for fpath, label in files_to_scan:
         # Layer 1
@@ -77,7 +78,7 @@ def main():
         if not args.no_layer3 and groq_api_key and label == "malicious":
             layer3_available = True
             
-            with open(fpath, "r", encoding="utf-8") as f:
+            with open(fpath, "r", encoding="utf-8", errors="replace") as f:
                 content = f.read()
                 
             declared_purpose = _infer_purpose(fpath.name)
@@ -175,9 +176,9 @@ def main():
     print(f"  GREEN (61–100):{malicious_dist['GREEN']}  ← these are misses")
 
     print("\nTrust Score distribution (clean):")
-    print(f"  RED   (0–30):  {clean_dist['RED']}  ← these are false alarms")
-    print(f"  AMBER (31–60): {clean_dist['AMBER']}  ← these are false alarms")
-    print(f"  GREEN (61–100):{clean_dist['GREEN']}")
+    print(f"  RED   (0-30):  {clean_dist['RED']}  <- these are false alarms")
+    print(f"  AMBER (31-60): {clean_dist['AMBER']}  <- these are false alarms")
+    print(f"  GREEN (61-100):{clean_dist['GREEN']}")
     
     out_data = {
         "aggregate": {

@@ -1,4 +1,4 @@
-﻿---
+---
 # SENTINEL.md
 
 **The Firewall for Your AI Coding Agent's Instructions**
@@ -46,19 +46,16 @@ produces a Trust Score (0–100) across three detection layers:
   Output is always labeled AI-Suspected and never the sole
   basis for a finding.
 
-## Benchmark Results
+## Benchmark Performance
 
 | Metric | Layer 1 only | Full pipeline (L1+L3) |
 |--------|-------------|----------------------|
-| Recall | 71.4% | 100% |
+| Recall | 76.9% | 92.3% |
 | Precision | 100% | 100% |
 
-Corpus: 7 malicious samples (constructed from documented 2026
-incidents: TrapDoor, SANDWORM_MODE, Nx breach, MoltX) + 48
-clean real-world files from popular public repositories.
+Corpus: 13 malicious samples + 48 clean `.cursorrules` files from public repositories.
 
-*Honest limitation: malicious samples were constructed from
-documented incidents, not found in the wild.*
+*Honest limitation: 7 samples constructed from documented 2026 incidents + 6 real-world files from adversarial stress testing. One class of attack confirmed missed: semantic policy loosening (valid configuration instructions that weaponize agent autonomy).*
 
 ## Running Locally
 

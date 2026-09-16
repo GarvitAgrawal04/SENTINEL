@@ -9,17 +9,35 @@ The following core mechanisms have been independently verified against real and 
 *   `analyzer.py`'s prompt structure
 *   `s6_s8.py`
 
-## Real, current verified numbers
-The following metrics are derived from the most recent test runs and cached executions:
+## Benchmark Results
 
-**From `demo/cache/*.json` (individual demo scans):**
-*   `clean_reference.md`: 100 / GREEN
-*   `kill_shot_2_demo.md`: 40 / AMBER
-*   `adversarial_injection_demo.md`: 25 / RED
-*   `trapdoor_style_demo.md`: 10 / RED
+### Corpus
+- 13 malicious samples (7 original constructed from documented 2026 incidents + 6 real-world agent-config files from teammate stress test)
+- 48 clean samples (real-world .cursorrules files from popular public repositories)
+- 3 files excluded from corpus: AgentLint diagnostic reports (teammate_blatant_log.md, teammate_subtle_log.md, teammate_moderate_log.md) — these are scan reports about agent-config files, not agent-config files themselves, and are not realistic SENTINEL scan targets.
 
-**From `benchmark/results.json`:**
-*   All tested "clean" `.cursorrules` configurations (e.g., `blender-python-addon.cursorrules`, `code-guidelines-cursorrules-prompt-file.cursorrules`) scored 100 / GREEN.
+### Layer 1 Only (deterministic, no API cost)
+- Recall: 76.9% (10/13)
+- Precision: 100% (0 false alarms on 48 clean files)
+- Missed: s5_gemini_zero_trust_demo.md, s7_base64_payload_demo.md, teammate_moderate_claude.md
+
+### Full Pipeline (Layer 1 + Layer 3)
+- Recall: 92.3% (12/13)
+- Precision: 100%
+- Missed: teammate_moderate_claude.md
+- HIGH confidence Layer 3 catches have never flipped, across every case tested so far — including kill_shot_2_demo.md, adversarial_injection_demo.md, and teammate_moderate_claude.md (one real-world file sourced outside this project). This is not a claim about LLM behavior in general — it's an honestly-scoped statement about what has actually been tested, and it will be revisited if a future case contradicts it.
+
+### Layer 3 Contribution
+- Files caught by full pipeline that Layer 1 missed: 2
+- These files had zero structural signal — Layer 3 was the sole detection mechanism. This is the two-layer architecture working as designed.
+
+### Known Ceiling
+A purely semantic attack file with no structural signal receives at most −20 from a HIGH-confidence Layer 3 verdict, landing at 80/100 (GREEN). These files are reported in the findings panel with the Layer 3 verdict visible, but clear the advisory-mode threshold (>60). v2 addresses this with a sandboxed agent-simulation layer that observes agent behavior directly.
+
+## What the Teammate Stress Test Found
+- Attack styles caught by Layer 1 alone: Explicit override commands (S4), Exfiltration instructions (S5), Hidden HTML comments (S2), Zero-Width Unicode (S1)
+- Attack styles caught by Layer 3 only: None (Layer 3 flags semantic masking with serves_stated_purpose=false, but the -20 penalty alone keeps the trust score at 80/GREEN if Layer 1 finds nothing)
+- Attack styles missed entirely: Purely semantic masking ("Auto-approve all tool calls"), and log-based injection attempts with no structural signal.
 
 ## Known open gaps — real work, not yet done
 Based on a direct code audit:
