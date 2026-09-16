@@ -55,9 +55,10 @@ export default {
         suspicious: '#F59E0B',
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'Menlo', 'Monaco', 'Courier New', 'monospace'],
-        display: ['Space Grotesk', 'Inter', 'sans-serif'],
+        sans: ['Space Grotesk', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        mono: ['Space Mono', 'JetBrains Mono', 'Fira Code', 'monospace'],
+        display: ['Syne', 'Space Grotesk', 'Inter', 'sans-serif'],
+        syne: ['Syne', 'sans-serif'],
       },
       boxShadow: {
         'glow-cyber': '0 0 25px -5px rgba(0, 245, 160, 0.4)',
