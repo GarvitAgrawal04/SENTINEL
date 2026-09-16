@@ -1,4 +1,3 @@
----
 # SENTINEL.md
 
 **The Firewall for Your AI Coding Agent's Instructions**
