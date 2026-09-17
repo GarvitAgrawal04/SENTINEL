@@ -1,0 +1,20 @@
+# Copy to .github/workflows/. The ONLY place that signs. Keep SENTINEL_SIGNING_KEY in a protected environment
+# restricted to the default branch. `sentinel sign` refuses while anything is COMPROMISED.
+name: sentinel-sign
+on: { push: { branches: [main] } }
+permissions: { contents: write }
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    environment: sentinel-signing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install --quiet "git+https://github.com/GarvitAgrawal04/SENTINEL#egg=sentinel-md[sign]"
+      - run: sentinel sign
+        env: { SENTINEL_SIGNING_KEY: "${{ secrets.SENTINEL_SIGNING_KEY }}" }
+      - run: |
+          git config user.name "sentinel-ci"; git config user.email "sentinel-ci@users.noreply.github.com"
+          git add AGENTS.lock AGENTS.lock.sig
+          git diff --cached --quiet || (git commit -m "sentinel: sign AGENTS.lock" && git push)
