@@ -84,7 +84,7 @@ def cmd_run(a) -> int:
 
 def _detonate_changed(root: Path, base: str, touched: list[str], mock: bool) -> list:
     from . import detonate
-    model = detonate.MockObedientModel() if mock else detonate.OpenAICompatModel()
+    model = detonate.MockObedientModel() if mock else detonate.model_from_env()
     out = []
     for p in core.text_surfaces(root):
         relp = lockmod.rel(root, p)
@@ -224,7 +224,7 @@ def cmd_keygen(a) -> int:
 
 def cmd_detonate(a) -> int:
     from . import detonate
-    model = detonate.MockObedientModel() if a.mock else detonate.OpenAICompatModel()
+    model = detonate.MockObedientModel() if a.mock else detonate.model_from_env()
     head = Path(a.file).read_text(encoding="utf-8", errors="replace")
     base = Path(a.base_file).read_text(encoding="utf-8", errors="replace") if a.base_file else None
     res = detonate.differential(head, base, model, name=Path(a.file).name)

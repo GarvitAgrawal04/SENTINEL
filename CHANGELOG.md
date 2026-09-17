@@ -1,3 +1,8 @@
+## 0.5.4 — 2026-09-17
+- Detonation now targets hosted models (OpenAI / Groq / Together / Anthropic / any OpenAI-compatible endpoint) via provider presets; removed the Ollama-first framing.
+- Fixed a sandbox bug where a request to read `.env` returned "no such file" (a leading-dot path was stripped), which would have made every canary leak impossible to observe.
+- Added the 30 + 30 detonation eval corpus, `run_detonation_eval.py`, and HTTP-path detonation tests (fake obedient agent, no real key needed).
+
 ## 0.5.3 — 2026-09-17
 - `AGENTS.md` now carries real security guardrails; `AGENTS.lock` records them, so deleting or flipping one shows up in a PR.
 - The `sentinel` workflow runs on every pull request (it was limited to PRs targeting `main`, so a PR into `v5-engine` got no comment).
