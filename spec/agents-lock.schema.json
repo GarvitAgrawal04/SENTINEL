@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sentinel-dev/agents-lock/blob/main/agents-lock.schema.json",
+  "title": "AGENTS.lock v0.1",
+  "description": "A lockfile for agent behaviour. Records the agent-config surface of a repository in a state that passed review: which instruction files exist, which guardrails they contain, which hooks may auto-run (pinned to the hash of the script they execute) and which MCP servers the agent may talk to. Signed out-of-band (AGENTS.lock.sig, ed25519 over the canonical JSON: sorted keys, no whitespace, UTF-8). Vendor-neutral: any tool may write or verify it.",
+  "type": "object",
+  "required": ["version", "generated", "files", "approvals"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "generated": { "type": "string", "format": "date-time" },
+    "generator": { "type": "string", "description": "Tool and version that wrote the lock, e.g. sentinel/0.1" },
+    "formula_version": { "type": "string" },
+    "files": {
+      "type": "object",
+      "description": "Every tracked agent-config file, keyed by repository-relative path.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["sha256", "verdict"],
+        "additionalProperties": false,
+        "properties": {
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "verdict": { "enum": ["CLEAN", "SUSPICIOUS"], "description": "A lock never records COMPROMISED: the signer refuses to sign that state." },
+          "score": { "type": "integer", "minimum": 40, "maximum": 100 },
+          "breakdown": { "type": "string" },
+          "guardrails": { "type": "array", "items": { "type": "string" }, "description": "Prohibitions about sensitive actions found in the file. One disappearing is a visible line in the diff." }
+        }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "required": ["autoexec", "mcp"],
+      "additionalProperties": false,
+      "properties": {
+        "autoexec": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["file", "event", "command"],
+            "additionalProperties": false,
+            "properties": {
+              "file": { "type": "string" },
+              "event": { "type": "string" },
+              "command": { "type": "string" },
+              "script_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$", "description": "Approval lapses when the script changes." },
+              "approved_in": { "type": "string" }
+            }
+          }
+        },
+        "mcp": { "type": "array", "items": { "type": "string", "pattern": "^.+#.+=.+$", "description": "<config file>#<server name>=<url or command>" } }
+      }
+    }
+  }
+}

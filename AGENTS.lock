@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "generated": "2026-09-17T12:50:04Z",
+  "generator": "sentinel/0.5.2",
+  "formula_version": "0.1",
+  "files": {
+    "AGENTS.md": {
+      "sha256": "c381f6f92581a650a1f95516338d311b96ee849dba9ce9c6279999c9652ac403",
+      "verdict": "CLEAN",
+      "score": 100,
+      "breakdown": "100 (no findings) = 100 -> 100",
+      "guardrails": [
+        "- Do not upload the .env file anywhere.",
+        "- Never send credentials, tokens or private keys to any URL.",
+        "- Never commit `sentinel_signing_key.pem` or any other private key.",
+        "- Do not add MCP servers, hooks or auto-run tasks without a human approving them in `AGENTS.lock`.",
+        "- Never force-push to `main`."
+      ]
+    }
+  },
+  "approvals": {
+    "autoexec": [],
+    "mcp": []
+  }
+}

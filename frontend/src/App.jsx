@@ -87,7 +87,7 @@ export default function App() {
       ]);
       setRawText(text);
       if (!res.ok) throw new Error(`Backend error: ${res.statusText}`);
-      setLoadingPhase('Querying Layer 3 neural reasoning...');
+      setLoadingPhase('Generating report...');
       const data = await res.json();
       setScanResult(data);
       setAppState('results');
@@ -111,7 +111,7 @@ export default function App() {
         body: formData
       });
       if (!res.ok) throw new Error(`Backend error: ${res.statusText}`);
-      setLoadingPhase('Querying Layer 3 neural reasoning...');
+      setLoadingPhase('Generating report...');
       const data = await res.json();
       setScanResult(data);
       setAppState('results');

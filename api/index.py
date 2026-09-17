@@ -1,1 +1,1 @@
-﻿from sentinel.main import app
+from sentinel.api import app  # Vercel entrypoint
