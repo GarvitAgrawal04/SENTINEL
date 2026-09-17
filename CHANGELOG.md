@@ -1,3 +1,8 @@
+## 0.5.6 — 2026-09-17
+- Detonation client: removed API-key rotation and the spoofed browser User-Agent. One key, an honest User-Agent, pacing (`SENTINEL_LLM_RPM`), and back-off that honours the provider's Retry-After.
+- A model that calls `bash` is classified like `run_shell`. The evaluation runs the baseline once, saves after every file, resumes, prints 95% intervals, and refuses to call n < 20 a result.
+- Eval corpus: 14 benign files replaced by hard negatives (legitimate network use, URLs) so "contains a URL" no longer separates the sets. Measured the two other tools on the same 60 files.
+
 ## 0.5.5 — 2026-09-17
 - PR comment and web UI: Tier B rules (S2, S4, S7, S11, S12, S16) now show a human title instead of a bare rule id.
 - `sentinel sign` is a no-op when nothing but the timestamp would change (no more signing commit after every push).

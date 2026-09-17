@@ -149,50 +149,100 @@ def model_from_env():
     return OpenAICompatModel(url, model, key)
 
 
+USER_AGENT = "sentinel-detonate/0.5 (+https://github.com/GarvitAgrawal04/SENTINEL)"   # say who we are; never pose as a browser
+
+
+class RateLimited(Exception):
+    def __init__(self, wait: float, detail: str):
+        super().__init__(detail)
+        self.wait = wait
+
+
+def _retry_after(headers, body: str) -> float:
+    """Seconds the provider asked us to wait: Retry-After header, or 'try again in 7.66s' / '250ms' / '1m2.5s' in the body."""
+    try:
+        return float(headers.get("Retry-After"))
+    except (TypeError, ValueError):
+        pass
+    m = re.search(r"try again in (?:(\d+)m)?\s*([\d.]+)(ms|s)", body)
+    if not m:
+        return 0.0
+    secs = float(m.group(2)) / (1000 if m.group(3) == "ms" else 1)
+    return secs + 60 * int(m.group(1) or 0)
+
+
 def _http_json(url: str, headers: dict, payload: dict, timeout: int = 120) -> dict:
-    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", **headers})
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(),
+                                 headers={"Content-Type": "application/json", "User-Agent": USER_AGENT, **headers})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read())
-    except urllib.error.HTTPError as e:                 # surface the provider's error text instead of a bare 400
-        raise RuntimeError(f"{url} -> HTTP {e.code}: {e.read().decode('utf-8', 'replace')[:300]}") from None
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "replace")
+        if e.code in (429, 500, 502, 503, 529):
+            raise RateLimited(_retry_after(e.headers, body), f"{url} -> HTTP {e.code}: {body[:200]}") from None
+        raise RuntimeError(f"{url} -> HTTP {e.code}: {body[:300]}") from None      # surface the provider's own words
 
 
-class OpenAICompatModel:
+class _Client:
+    """One API key, used politely: optional pacing, and patience when the provider says slow down.
+    There is deliberately no key rotation here - spreading one workload over several keys to get around a rate
+    limit breaks most providers' terms, and a security tool should not ship a way to do it."""
+    def _setup(self, url: str, key: str):
+        self.tool_errors = 0
+        if "," in key:
+            print("sentinel: SENTINEL_LLM_KEY holds several keys; using the first one only.", file=sys.stderr)
+            key = key.split(",")[0].strip()
+        self.key = key
+        local = "localhost" in url or "127.0.0.1" in url
+        rpm = float(os.environ.get("SENTINEL_LLM_RPM", "0" if local else "20"))
+        self._gap, self._last = (60.0 / rpm if rpm > 0 else 0.0), 0.0
+
+    def _post(self, url: str, headers: dict, payload: dict) -> dict:
+        delay = 2.0
+        for attempt in range(9):
+            wait = self._gap - (time.time() - self._last)
+            if wait > 0:
+                time.sleep(wait)
+            self._last = time.time()
+            try:
+                return _http_json(url, headers, payload)
+            except RateLimited as e:
+                if attempt == 8:
+                    raise RuntimeError(str(e)) from None
+                pause = min(max(e.wait, delay), 120.0)
+                print(f"sentinel: provider asked us to slow down; waiting {pause:.0f}s", file=sys.stderr)
+                time.sleep(pause)
+                delay = min(delay * 2, 60.0)
+        raise RuntimeError("unreachable")
+
+
+class OpenAICompatModel(_Client):
     def __init__(self, url=None, model=None, key=None):
-        self.url = (url or os.environ["SENTINEL_LLM_URL"]).rstrip("/") + "/chat/completions"
+        base = (url or os.environ["SENTINEL_LLM_URL"]).rstrip("/")
+        self.url = base + "/chat/completions"
         self.model = model or os.environ["SENTINEL_LLM_MODEL"]
-        raw_key = key if key is not None else os.environ.get("SENTINEL_LLM_KEY", "")
-        self.keys = [k.strip() for k in raw_key.split(",") if k.strip()] if raw_key else []
-        self.key_idx = 0
+        self._setup(base, key if key is not None else os.environ.get("SENTINEL_LLM_KEY", ""))
 
     def step(self, messages: list[dict]) -> dict:
-        for attempt in range(len(self.keys) * 3 if self.keys else 10):
-            cur_key = self.keys[self.key_idx % len(self.keys)] if self.keys else ""
-            self.key_idx += 1
-            headers = {"Authorization": "Bearer " + cur_key} if cur_key else {}
-            try:
-                data = _http_json(self.url, headers, {"model": self.model, "messages": messages, "tools": TOOLS, "temperature": 0})
-                return data["choices"][0]["message"]
-            except RuntimeError as err:
-                if "HTTP 429" in str(err):
-                    if attempt >= len(self.keys) - 1:
-                        m = re.search(r"try again in ([\d\.]+)s", str(err))
-                        wait_sec = float(m.group(1)) if m else 2.0
-                        time.sleep(min(wait_sec + 0.5, 4.0))
-                    continue
-                if "HTTP 400" in str(err) and "tool_use_failed" in str(err):
-                    return {"role": "assistant", "content": "I encountered an error executing that tool call."}
-                raise
+        headers = {"Authorization": "Bearer " + self.key} if self.key else {}
+        try:
+            data = self._post(self.url, headers, {"model": self.model, "messages": messages, "tools": TOOLS, "temperature": 0})
+        except RuntimeError as err:
+            if "tool_use_failed" in str(err):            # the model emitted a malformed tool call; end this probe, and count it
+                self.tool_errors += 1
+                return {"role": "assistant", "content": "(malformed tool call - probe ended)"}
+            raise
+        return data["choices"][0]["message"]
 
 
-class AnthropicModel:
+class AnthropicModel(_Client):
     """Anthropic Messages API. Same fake tools, translated to Anthropic's tool schema and back to the OpenAI shape
     the rest of this file speaks, so classify() and differential() do not change."""
     def __init__(self, key=None, model=None):
-        self.key = key or os.environ["SENTINEL_LLM_KEY"]
         self.model = model or os.environ["SENTINEL_LLM_MODEL"]
         self.url = "https://api.anthropic.com/v1/messages"
+        self._setup(self.url, key or os.environ["SENTINEL_LLM_KEY"])
         self.tools = [{"name": t["function"]["name"], "description": t["function"]["description"],
                        "input_schema": t["function"]["parameters"]} for t in TOOLS]
 
@@ -209,7 +259,7 @@ class AnthropicModel:
                              "input": json.loads(c["function"]["arguments"] or "{}")} for c in m["tool_calls"]]})
             else:
                 conv.append({"role": m["role"], "content": m.get("content") or ""})
-        data = _http_json(self.url, {"x-api-key": self.key, "anthropic-version": "2023-06-01"},
+        data = self._post(self.url, {"x-api-key": self.key, "anthropic-version": "2023-06-01"},
                           {"model": self.model, "max_tokens": 1024, "system": system, "tools": self.tools, "messages": conv})
         calls = [{"id": b["id"], "type": "function", "function": {"name": b["name"], "arguments": json.dumps(b["input"])}}
                  for b in data.get("content", []) if b.get("type") == "tool_use"]
@@ -243,6 +293,9 @@ class MockObedientModel:
 
 # --------------------------------------------------------------------------- run, classify, diff
 
+TOOL_ALIASES = {"bash": "run_shell", "shell": "run_shell", "execute": "run_shell", "terminal": "run_shell", "cat": "read_file"}
+
+
 def detonate(instructions: str, model, name="CLAUDE.md", max_turns=8) -> list[dict]:
     log = []
     for probe in PROBES:
@@ -255,7 +308,7 @@ def detonate(instructions: str, model, name="CLAUDE.md", max_turns=8) -> list[di
             if not calls:
                 break
             for c in calls:
-                fn = c["function"]["name"]
+                fn = TOOL_ALIASES.get(c["function"]["name"], c["function"]["name"])
                 try:
                     args = json.loads(c["function"]["arguments"] or "{}")
                 except json.JSONDecodeError:
@@ -295,9 +348,13 @@ IMPACT = {
 }
 
 
-def differential(head: str, base: str | None, model, name="CLAUDE.md") -> dict:
+def differential(head: str, base: str | None, model, name="CLAUDE.md", base_behaviours: set | None = None) -> dict:
+    """base_behaviours: pass the result of classify(detonate(base, ...)) to reuse one baseline across many files."""
     head_b = classify(detonate(head, model, name))
-    base_b = classify(detonate(base, model, name)) if base is not None else set()
+    if base_behaviours is not None:
+        base_b = set(base_behaviours)
+    else:
+        base_b = classify(detonate(base, model, name)) if base is not None else set()
     new = sorted(head_b - base_b)
     leak = any(b == "CANARY_LEAK" for b, _ in new)
     return {"new_behaviours": new,
