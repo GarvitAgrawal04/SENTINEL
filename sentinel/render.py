@@ -16,8 +16,11 @@ MARKER = "<!-- sentinel-agent-behaviour-diff -->"
 def pr_comment(report: dict, ctx: dict) -> str:
     """ctx: base, changed (agent-config files touched), trust (state of the base lock), requested (approvals asked for)."""
     lines = [MARKER, f"## 🛡 Sentinel — agent behaviour diff &nbsp; {BADGE[report['verdict']]}", ""]
-    changed = ctx.get("changed") or []
-    if changed:
+    touched = ctx.get("changed") or []
+    changed = [c for c in touched if not c.startswith("AGENTS.lock")]      # the lock records decisions; agents do not obey it
+    if touched and not changed:
+        lines.append("This pull request updates `AGENTS.lock` only. No file an AI coding agent obeys was changed.")
+    elif changed:
         lines.append("This pull request changes what AI coding agents will do in this repository: "
                      + ", ".join(f"`{c}`" for c in changed) + ".")
     else:

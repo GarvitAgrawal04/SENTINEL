@@ -198,8 +198,19 @@ def cmd_verify(a) -> int:
         for label in ("changed", "new", "missing", "stale_approvals"):
             for item in res.get(label, []):
                 print(f"  {label.upper().replace('_', ' '):16} {item}")
-        print("OK - every agent-config file is covered by the signed lock." if res["ok"]
-              else "NOT COVERED - the files above changed outside the gate. Run `sentinel scan` before opening this repo in an agent.")
+        drift = any(res.get(k) for k in ("changed", "new", "missing", "stale_approvals"))
+        if res["ok"]:
+            print("OK - every agent-config file is covered by the signed lock.")
+        elif res["signature"] == "INVALID":
+            print("SIGNATURE INVALID - AGENTS.lock was edited after it was signed, or signed with a different key. Do not trust it.")
+        elif pin == "KEY_CHANGED":
+            print("KEY_CHANGED - the public key in this repository is not the one you trusted before. Check who changed it.")
+        elif res["signature"] == "no-lock":
+            print("NO LOCK - this repository has no AGENTS.lock yet. Run `sentinel init`.")
+        elif res["signature"] == "unsigned" and not drift:
+            print("UNSIGNED - the lock matches the files, but nobody has signed it. Set up CI signing (action/examples/sentinel-sign.yml).")
+        if drift:
+            print("NOT COVERED - the files above changed outside the gate. Run `sentinel scan` before opening this repo in an agent.")
     return 0 if res["ok"] else 2
 
 

@@ -1,3 +1,7 @@
+## 0.5.2 — 2026-09-17 — demo polish
+- `sentinel verify` now says exactly what is wrong: SIGNATURE INVALID / KEY_CHANGED / UNSIGNED / NO LOCK / NOT COVERED (it used to print "files changed" even when none had).
+- PR comment no longer lists `AGENTS.lock` as a file that changes agent behaviour.
+
 ## 0.5.1 — 2026-09-17 — follow-up
 - `pytest` at the repository root works again (v1 tests, benchmark and docs moved to `archive/`).
 - Windows: CLI output is UTF-8-safe; the gate waits for the agent instead of `exec`; report paths are POSIX.
