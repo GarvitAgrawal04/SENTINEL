@@ -1,0 +1,19 @@
+[
+    {"rule_id": "S1", "trigger": "zero-width, bidi, tags, unusual control chars", "penalty": 50, "forced_verdict": "COMPROMISED"},
+    {"rule_id": "S2", "trigger": "hidden HTML/Markdown comments in instructions", "penalty": 35, "forced_verdict": "NONE"},
+    {"rule_id": "S3", "trigger": "MCP Tool Description Injection", "penalty": 35, "forced_verdict": "NONE"},
+    {"rule_id": "S4", "trigger": "Override phrasing ('ignore previous', 'system prompt')", "penalty": 25, "forced_verdict": "NONE"},
+    {"rule_id": "S5", "trigger": "Network-shaped instruction (exfiltration URL, curl)", "penalty": 40, "forced_verdict": "NONE"},
+    {"rule_id": "S6", "trigger": "New file in dependency PR / postinstall origin", "penalty": 15, "forced_verdict": "NONE"},
+    {"rule_id": "S7", "trigger": "Encoded payload (base64, hex block)", "penalty": 45, "forced_verdict": "COMPROMISED"},
+    {"rule_id": "S8", "trigger": "Cross-file policy contradiction", "penalty": 20, "forced_verdict": "NONE"},
+    {"rule_id": "S9", "trigger": "MCP Tool Shadowing (duplicate name + sensitive access)", "penalty": 30, "forced_verdict": "NONE"},
+    {"rule_id": "S10", "trigger": "Hook references missing script path", "penalty": 70, "forced_verdict": "COMPROMISED"},
+    {"rule_id": "S11", "trigger": "Bridge/C2 URL in tool config", "penalty": 70, "forced_verdict": "COMPROMISED"},
+    {"rule_id": "S12", "trigger": "External Trust Delegation ('read instructions from...')", "penalty": 35, "forced_verdict": "NONE"},
+    {"rule_id": "S13", "trigger": "Persona override + self-concealment", "penalty": 50, "forced_verdict": "COMPROMISED"},
+    {"rule_id": "S14a", "trigger": "Write-intercept hook missing script", "penalty": 70, "forced_verdict": "COMPROMISED"},
+    {"rule_id": "S14b", "trigger": "Write-intercept hook existing script", "penalty": 0, "ceiling": 60, "forced_verdict": "NONE"},
+    {"rule_id": "S15", "trigger": "Deposited slash command", "penalty": 55, "forced_verdict": "NONE"},
+    {"rule_id": "S16", "trigger": "Auto-enable MCP", "penalty": 0, "ceiling": 60, "forced_verdict": "NONE", "compound_condition": "postinstall -> COMPROMISED"}
+]

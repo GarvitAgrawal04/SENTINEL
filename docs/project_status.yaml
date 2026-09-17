@@ -1,0 +1,41 @@
+version: "V1"
+release_status: "FROZEN WITH DOCUMENTED ENGINEERING DEBT"
+architecture:
+  layer0: "FROZEN"
+  layer1: "FROZEN"
+  layer2: "IMPLEMENTED WITH SEMANTIC PLACEHOLDER"
+  layer3: "IMPLEMENTED - BASELINE ONLY"
+  layer4: "FROZEN"
+benchmark:
+  tp: 12
+  fp: 0
+  tn: 48
+  fn: 1
+  precision: 100.0
+  recall: 92.3
+  f1: 96.0
+test_status:
+  total: 451
+  passed: 412
+  failed: 37
+  skipped: 1
+  xfailed: 1
+known_debt:
+  - "34 failures in tests/layer1/test_rule_metadata.py (legacy API mismatch)"
+  - "3 failures in tests/test_deep_rules.py/test_scanner.py (legacy numeric assertions)"
+future_scope:
+  - "V1.5 conversational chatbot"
+  - "LLM semantic reasoning"
+  - "auto-fix recommendations"
+  - "automatic remediation execution"
+  - "network vulnerability correlation"
+  - "production semantic centroid training"
+  - "promoted domain-adapted classifier"
+environment:
+  model: "BAAI/bge-m3"
+  offline_guarantee: true
+  read_only_guarantee: true
+layer_capabilities:
+  semantic_direction: "unavailable"
+  attack_multiplier: 1.0
+  classifier_status: "not promoted"

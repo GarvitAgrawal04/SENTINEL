@@ -1,0 +1,23 @@
+# GITHUB HANDOFF CHECKLIST
+
+- [x] repository clones cleanly
+- [x] installation documented
+- [x] model setup documented
+- [x] corpus setup documented
+- [x] no developer-machine paths
+- [x] no secrets
+- [x] offline guarantee documented
+- [x] read-only guarantee documented
+- [x] Layer 0 frozen
+- [x] Layer 1 frozen
+- [x] Layer 2 limitation documented
+- [x] Layer 3 baseline-only documented
+- [x] Layer 4 frozen
+- [x] benchmark documented
+- [x] test debt documented
+- [x] demo documented
+- [x] next tasks documented
+- [x] architecture boundaries documented
+- [x] security model documented
+- [x] Git status clean
+- [x] handoff commit prepared

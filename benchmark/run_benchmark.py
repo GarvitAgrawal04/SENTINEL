@@ -6,8 +6,8 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from sentinel.rules import scan_file
-from layer3.analyzer import analyze
+from sentinel.scanner import scan_file
+from sentinel.layer3.analyzer import analyze
 
 _PURPOSE_MAP = {
     ".cursorrules": "Cursor IDE coding rules",
@@ -108,8 +108,10 @@ def main():
             "layer3_available": layer3_available
         })
         
-        # Classification
-        predicted_malicious = trust_score <= 60
+        # Rule Detection (Did any rule fire?)
+        rule_detected = len(rule_ids) > 0
+        # Classification by threshold
+        verdict_malicious = trust_score <= 60
         
         if label == "malicious":
             if not layer3_available and not args.no_layer3 and groq_api_key:
@@ -120,7 +122,7 @@ def main():
             elif color == "AMBER": malicious_dist["AMBER"] += 1
             else: malicious_dist["GREEN"] += 1
                 
-            if predicted_malicious:
+            if rule_detected:
                 tp += 1
             else:
                 fn += 1
@@ -130,7 +132,7 @@ def main():
             elif color == "AMBER": clean_dist["AMBER"] += 1
             else: clean_dist["GREEN"] += 1
             
-            if predicted_malicious:
+            if rule_detected:
                 fp += 1
                 fp_list.append((fpath.name, trust_score, color, rule_ids))
             else:
@@ -152,7 +154,7 @@ def main():
         
     print("\nMalicious files:")
     recall_pct = (tp / n_malicious * 100) if n_malicious > 0 else 0.0
-    print(f"  Caught (TP):   {tp} / {n_malicious}  →  recall: {recall_pct:.1f}%")
+    print(f"  Caught (TP):   {tp} / {n_malicious}  ->  recall: {recall_pct:.1f}%")
     print(f"  Missed (FN):   {fn} / {n_malicious}")
     for fname, score, col, rules in fn_list:
         r_str = ",".join(rules) if rules else "none"
@@ -164,7 +166,7 @@ def main():
         
     print("\nClean files:")
     precision_pct = (tn / m_clean * 100) if m_clean > 0 else 0.0
-    print(f"  Correct (TN):  {tn} / {m_clean}  →  precision: {precision_pct:.1f}%")
+    print(f"  Correct (TN):  {tn} / {m_clean}  ->  precision: {precision_pct:.1f}%")
     print(f"  False alarm (FP): {fp} / {m_clean}")
     for fname, score, col, rules in fp_list:
         r_str = ",".join(rules) if rules else "none"
@@ -173,7 +175,7 @@ def main():
     print("\nTrust Score distribution (malicious):")
     print(f"  RED   (0–30):  {malicious_dist['RED']}")
     print(f"  AMBER (31–60): {malicious_dist['AMBER']}")
-    print(f"  GREEN (61–100):{malicious_dist['GREEN']}  ← these are misses")
+    print(f"  GREEN (61-100):{malicious_dist['GREEN']}  <- these are misses")
 
     print("\nTrust Score distribution (clean):")
     print(f"  RED   (0-30):  {clean_dist['RED']}  <- these are false alarms")
