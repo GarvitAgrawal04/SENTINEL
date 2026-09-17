@@ -1,6 +1,6 @@
 # Agent behaviour diff on every pull request. Needs no secret: only the public key on the base branch.
 name: sentinel
-on: { pull_request: { branches: [main] } }
+on: { pull_request: { branches: [v5-engine] } }
 permissions: { contents: read, pull-requests: write }
 jobs:
   behaviour-diff:
