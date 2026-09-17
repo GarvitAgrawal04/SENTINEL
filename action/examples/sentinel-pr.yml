@@ -1,4 +1,4 @@
-# Copy to .github/workflows/. Works on fork PRs: it needs no secret, only the public key on the base branch.
+# For OTHER repositories: copy to .github/workflows/. (This repository itself uses `uses: ./action`.) Works on fork PRs: it needs no secret, only the public key on the base branch.
 name: sentinel
 on: { pull_request: { branches: [main] } }
 permissions: { contents: read, pull-requests: write }

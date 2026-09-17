@@ -185,7 +185,7 @@ def discover_autoexec(root: Path) -> list[AutoExec]:
                 continue
             for cmd in re.findall(r"`([^`\n]+)`", m.group(2)):
                 if script_from_command(cmd):
-                    rel = str(p.relative_to(root))
+                    rel = p.relative_to(root).as_posix()
                     found.append(_resolve(root, AutoExec("cursor", rel, "alwaysApply", "", cmd)))
     return found
 
@@ -549,7 +549,7 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
 
     # ---- text surfaces: S1, S5, S13, S20
     for p in text_surfaces(root):
-        rel = str(p.relative_to(root))
+        rel = p.relative_to(root).as_posix()
         text = p.read_text(encoding="utf-8", errors="replace")
         bad = invisible_chars(text)
         hidden = decode_hidden(text, bad) if bad else None
@@ -769,7 +769,15 @@ def gate(root: Path, cmd: list[str], strict: bool = False) -> int:
             return 3
         if input(f"Start `{' '.join(cmd)}` anyway? [y/N] ").strip().lower() != "y":
             return 3
-    os.execvp(cmd[0], cmd)
+    import shutil
+    import subprocess
+    exe = shutil.which(cmd[0])                     # resolves claude.cmd / cursor.cmd shims on Windows
+    if not exe:
+        print(f"sentinel: `{cmd[0]}` was not found on PATH.")
+        return 1
+    if os.name == "nt":                            # exec does not replace the process on Windows; wait for the agent instead
+        return subprocess.call([exe, *cmd[1:]])
+    os.execvp(exe, [cmd[0], *cmd[1:]])
 
 
 # --------------------------------------------------------------------------- lock: ed25519 sign / verify

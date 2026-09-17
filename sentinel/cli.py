@@ -224,6 +224,11 @@ def cmd_detonate(a) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    for stream in (sys.stdout, sys.stderr):            # cp1252 consoles cannot print the PR comment; never crash on output
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     cmd_tail: list[str] = []
     if "--" in argv:                                   # everything after -- is the agent command for `run`
         i = argv.index("--")

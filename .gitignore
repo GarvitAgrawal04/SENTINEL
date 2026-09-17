@@ -43,3 +43,6 @@ sentinel_signing_key.pem
 *.pem
 !.sentinel/pubkey.pem
 .temp_scan
+frontend/.env.local
+fx/
+.pins/

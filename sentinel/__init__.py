@@ -1,7 +1,11 @@
 """Sentinel - what do the files your AI coding agent obeys make it do?
 
-v5 engine:  sentinel.core (static rules, score, gate) · sentinel.detonate (sandbox) · sentinel.lock (AGENTS.lock)
-            sentinel.gitdiff (base vs head) · sentinel.render (CLI + PR comment) · sentinel.contract (legacy JSON shape)
-v1 engine:  sentinel.scanner / rules / layer0-4 are kept importable for the old tests; nothing new should use them.
+sentinel.core      static rules, score, render, the gate, ed25519 sign/verify, redaction, fixtures, self-test
+sentinel.detonate  sandbox: fake tools, canary secrets, base-vs-head differential
+sentinel.lock      AGENTS.lock: build, approve, sign, verify, key pinning
+sentinel.gitdiff   base vs head through git; approvals and the public key are read from the BASE branch
+sentinel.render    the pull-request comment
+sentinel.contract  the v1 JSON shape the frontend and the VS Code extension consume
+sentinel.cli / sentinel.api
 """
-__version__ = "0.5.0"
+__version__ = "0.5.1"

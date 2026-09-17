@@ -50,7 +50,7 @@ Other things found while reading the code:
 
 **Renamed, still importable:** `sentinel/cli_v1.py`, `sentinel/api_v1.py`, `sentinel/main_v1.py`. `api/index.py` now serves `sentinel.api:app`.
 
-**Left in place for you to delete** once you are comfortable: `sentinel/scanner.py`, `pipeline.py`, `rules/`, `rules.py`, `layer0/`–`layer4/`, `scoring/`, `manifest/`, `output/`, `self_defense.py`, and the three `*_v1.py` files. Nothing in the v5 path imports them.
+**Deleted / archived (done):** the v1 engine (`scanner.py`, `pipeline.py`, `rules/`, `layer0`–`layer4`, `scoring/`, `manifest/`, `output/`, the `*_v1.py` files) was deleted in `e8147a6`. The follow-up moved everything that still described or tested it into `archive/`: `tests/layer1`–`layer4` and three top-level test files (they made `pytest` fail at collection with 18 errors), the old `benchmark/`, `HANDOFF.md`, `MIGRATION_PLAN.md`, `README_ACTION.md`, `CONTRIBUTING_STATUS.md`, and all of `docs/` except the sample PR comment.
 
 ## 3. Contract changes you must know about
 
@@ -62,7 +62,7 @@ Other things found while reading the code:
 
 ## 4. Test status
 
-`pytest --ignore=tests/layer2 --ignore=tests/layer3` → **433 passed, 37 failed**. The 37 are exactly the failures you had before and listed in `docs/project_status.yaml` (34 in `tests/layer1/test_rule_metadata.py`, 3 numeric assertions on the old formula). They test the old engine. Every v5 and release test passes.
+`pytest` at the repository root → **43 passed** (40 in `tests/v5`, 3 in `tests/release`). `.github/workflows/tests.yml` runs the same on every push and pull request.
 
 ## 5. Run it
 
@@ -77,11 +77,12 @@ git checkout -b demo && <edit CLAUDE.md> && git commit -am "chore: bump deps" &&
 uvicorn sentinel.api:app --port 8001                # frontend works unchanged
 ```
 
-## 6. What I could not do from here — yours, in this order
+## 6. Still open — yours, in this order
 
-1. **Detonation with a real model.** `ollama pull <a tool-calling model>`, then `SENTINEL_LLM_URL=http://localhost:11434/v1 SENTINEL_LLM_MODEL=<model> sentinel detonate samples/... --base-file ...`. Measure 30 attack + 30 benign on two models (PRD §5.5). If the hit rate is under 50%, it ships off and becomes the experiment slide.
-2. **The Action on a real pull request.** Copy `action/examples/sentinel-pr.yml` to `.github/workflows/`, open a PR that flips a guardrail, screenshot the comment.
-3. **Signing in CI.** Create environment `sentinel-signing`, add secret `SENTINEL_SIGNING_KEY`, copy `sentinel-sign.yml`. Never commit the private key (`.gitignore` it).
-4. **Redeploy the API** (Vercel picks up `api/index.py`). Then change the fake "Layer 3 neural reasoning" copy in the frontend.
-5. **Archive the generated reports** and delete the old engine.
-6. File the two upstream issues (PRD Appendix I).
+1. **Detonation with a real model.** `ollama pull <a tool-calling model>`, then `SENTINEL_LLM_URL=http://localhost:11434/v1 SENTINEL_LLM_MODEL=<model> sentinel detonate <file> --base-file <older version>`. Measure 30 attack + 30 benign on two models (PRD §5.5). Under 50% hit rate → it ships off and becomes the experiment slide.
+2. **See the Action run.** Open the pull request `v5-engine` → `main`. Two checks appear: `tests` and `sentinel`. Then open a second PR that flips a guardrail in `AGENTS.md` and screenshot the comment.
+3. **Signing in CI.** `sentinel keygen`, commit `.sentinel/pubkey.pem`, put the private key in the `SENTINEL_SIGNING_KEY` secret of a protected environment `sentinel-signing`, copy `action/examples/sentinel-sign.yml` to `.github/workflows/`. Until then `AGENTS.lock` is unsigned and `sentinel verify` says so.
+4. **Redeploy the API** (Vercel serves `api/index.py` → `sentinel.api:app`) and confirm the web demo buttons still work.
+5. **File the two upstream issues** (PRD Appendix I) and put the issue numbers on slide 10.
+
+Done since the first patch: fake "Layer 3 neural reasoning" copy removed · generated reports archived · old engine deleted · Windows fixes (UTF-8 console output, gate waits for the agent on Windows, POSIX paths in reports).

@@ -1,3 +1,9 @@
+## 0.5.1 — 2026-09-17 — follow-up
+- `pytest` at the repository root works again (v1 tests, benchmark and docs moved to `archive/`).
+- Windows: CLI output is UTF-8-safe; the gate waits for the agent instead of `exec`; report paths are POSIX.
+- PR workflow uses the local action (`./action`) so it runs before this branch is merged; added a `tests` workflow.
+- README rewritten for v5. `bench/` scripts import `sentinel.core`. `frontend/.env.local` untracked. `AGENTS.lock` added (unsigned until CI signing is set up).
+
 ## 0.5.0 — 2026-09-17 — v5 engine
 - New engine (`sentinel/core.py`), detonation harness, `AGENTS.lock` (ed25519), pre-open gate, PR behaviour diff, composite GitHub Action.
 - API and single-file CLI keep the v1 JSON shape through `sentinel/contract.py`; frontend and VS Code extension need no change.

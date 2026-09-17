@@ -11,7 +11,9 @@ point at) is downloaded. Nothing is executed."""
 import json, os, sys, time, urllib.request, urllib.parse, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-import sentinel_core as sc
+import sys as _sys, pathlib as _pl
+_sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[1]))   # run from anywhere inside the repo
+from sentinel import core as sc
 
 PRIMARY = ["CLAUDE.md", "AGENTS.md", ".cursorrules", ".claude/settings.json", ".mcp.json"]
 SECONDARY = ["GEMINI.md", ".github/copilot-instructions.md", ".gemini/settings.json", ".vscode/tasks.json",

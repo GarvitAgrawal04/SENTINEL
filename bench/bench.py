@@ -2,7 +2,7 @@
 """bench.py - Sentinel vs wormhole-guard vs AgentAuditKit on the same inputs, each tool at its defaults. No tuning.
 
   pip install wormhole-guard agent-audit-kit
-  python3 bench.py fixtures           # the inert reference fixtures from sentinel_core.py
+  python3 bench.py fixtures           # the inert reference fixtures from sentinel/core.py
   python3 bench.py benign             # seven legitimate files that ought to be quiet
   python3 bench.py wild <corpus-dir>  # alert volume on real repositories (resumable; cache in <corpus>/compare.json)
 
@@ -10,7 +10,9 @@ Read the caveats in the PRD before quoting any number from here: we wrote the fi
 benign rather than audited, and a 'HIGH finding' is not the same unit as a 'COMPROMISED verdict'."""
 import collections, json, subprocess, sys, tempfile, time
 from pathlib import Path
-import sentinel_core as sc
+import sys as _sys, pathlib as _pl
+_sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[1]))   # run from anywhere inside the repo
+from sentinel import core as sc
 
 RANK = {"CRITICAL": 4, "HIGH": 3, "MEDIUM": 2, "LOW": 1, "INFO": 0}
 NOISE = {"POSTURE-004"}          # wormhole-guard's generic "config file is writable" note; excluded everywhere, in its favour

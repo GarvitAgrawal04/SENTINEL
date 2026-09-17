@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "generated": "2026-09-17T12:14:32Z",
+  "generator": "sentinel/0.5.1",
+  "formula_version": "0.1",
+  "files": {
+    "AGENTS.md": {
+      "sha256": "0a7e46d5d1b419738e818c3072cb85b488c958ee7e2f0c6673f65034966bdcec",
+      "verdict": "CLEAN",
+      "score": 100,
+      "breakdown": "100 (no findings) = 100 -> 100"
+    }
+  },
+  "approvals": {
+    "autoexec": [],
+    "mcp": []
+  }
+}
