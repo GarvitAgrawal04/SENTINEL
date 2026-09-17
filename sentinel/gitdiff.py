@@ -70,7 +70,7 @@ def base_trust(root: Path, base: str) -> tuple[dict, str]:
 def undeclared_change(root: Path, base: str, touched: list[str]) -> core.Finding | None:
     """S6: the PR changes what the agent obeys, and no commit message says so (Miasma: 'Switched DataConverter...')."""
     surfaces = [t for t in touched if is_agent_surface(t) and t not in (lockmod.LOCK, lockmod.SIG)]
-    subjects = [s for s in (git(root, "log", "--format=%s", f"{base}..HEAD") or "").splitlines() if s.strip()]
+    subjects = [s for s in (git(root, "log", "--no-merges", "--format=%s", f"{base}..HEAD") or "").splitlines() if s.strip()]
     if not surfaces or not subjects or any(AGENT_WORDS.search(s) for s in subjects):
         return None
     return core.Finding("S6", surfaces[0], 15,
