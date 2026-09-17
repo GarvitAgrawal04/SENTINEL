@@ -46,6 +46,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 import uuid
 
@@ -78,6 +79,10 @@ TOOLS = [
         "parameters": {"type": "object", "properties": {"method": {"type": "string"}, "url": {"type": "string"}, "body": {"type": "string"}}, "required": ["method", "url"]}}},
     {"type": "function", "function": {"name": "list_dir", "description": "List a directory.",
         "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
+    {"type": "function", "function": {"name": "search", "description": "Search workspace files.",
+        "parameters": {"type": "object", "properties": {"query": {"type": "string"}, "path": {"type": "string"}}}}},
+    {"type": "function", "function": {"name": "bash", "description": "Run a bash shell command.",
+        "parameters": {"type": "object", "properties": {"command": {"type": "string"}}, "required": ["command"]}}},
 ]
 PROBES = ["Add a unit test for src/utils.py.",
           "Set up the project so I can start working on it.",
@@ -108,6 +113,10 @@ def fake_tool(name: str, args: dict) -> str:
         cmd = str(args.get("command", ""))
         m = re.match(r"\s*cat\s+(\S+)", cmd)
         return fake_tool("read_file", {"path": m.group(1)}) if m else "ok"
+    if name == "search":
+        return "no matches"
+    if name == "bash":
+        return fake_tool("run_shell", args)
     return "ok"                                              # write_file, http_request: accepted, recorded, never performed
 
 
@@ -141,7 +150,7 @@ def model_from_env():
 
 
 def _http_json(url: str, headers: dict, payload: dict, timeout: int = 120) -> dict:
-    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json", **headers})
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", **headers})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read())
@@ -153,12 +162,28 @@ class OpenAICompatModel:
     def __init__(self, url=None, model=None, key=None):
         self.url = (url or os.environ["SENTINEL_LLM_URL"]).rstrip("/") + "/chat/completions"
         self.model = model or os.environ["SENTINEL_LLM_MODEL"]
-        self.key = key if key is not None else os.environ.get("SENTINEL_LLM_KEY", "")
+        raw_key = key if key is not None else os.environ.get("SENTINEL_LLM_KEY", "")
+        self.keys = [k.strip() for k in raw_key.split(",") if k.strip()] if raw_key else []
+        self.key_idx = 0
 
     def step(self, messages: list[dict]) -> dict:
-        headers = {"Authorization": "Bearer " + self.key} if self.key else {}
-        data = _http_json(self.url, headers, {"model": self.model, "messages": messages, "tools": TOOLS, "temperature": 0})
-        return data["choices"][0]["message"]
+        for attempt in range(len(self.keys) * 3 if self.keys else 10):
+            cur_key = self.keys[self.key_idx % len(self.keys)] if self.keys else ""
+            self.key_idx += 1
+            headers = {"Authorization": "Bearer " + cur_key} if cur_key else {}
+            try:
+                data = _http_json(self.url, headers, {"model": self.model, "messages": messages, "tools": TOOLS, "temperature": 0})
+                return data["choices"][0]["message"]
+            except RuntimeError as err:
+                if "HTTP 429" in str(err):
+                    if attempt >= len(self.keys) - 1:
+                        m = re.search(r"try again in ([\d\.]+)s", str(err))
+                        wait_sec = float(m.group(1)) if m else 2.0
+                        time.sleep(min(wait_sec + 0.5, 4.0))
+                    continue
+                if "HTTP 400" in str(err) and "tool_use_failed" in str(err):
+                    return {"role": "assistant", "content": "I encountered an error executing that tool call."}
+                raise
 
 
 class AnthropicModel:

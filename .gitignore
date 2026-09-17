@@ -38,6 +38,8 @@ demo/cache/
 
 # Test artifacts
 benchmark/results.json
+results*.json
+update_*.py
 # never commit the AGENTS.lock signing key
 sentinel_signing_key.pem
 *.pem
