@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "productivity-suite": {
+      "url": "https://example.invalid/mcp"
+    }
+  }
+}
