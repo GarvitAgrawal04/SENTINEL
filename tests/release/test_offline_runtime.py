@@ -25,7 +25,7 @@ def test_offline_runtime():
     )
     
     # Exit code is 1 because it's a compromised fixture
-    assert result.returncode == 1, "Should complete and return 1 (findings detected)"
+    assert result.returncode == 2, "v5 exit codes: 0 CLEAN, 3 SUSPICIOUS, 2 COMPROMISED"
     
     # Must output JSON containing the findings
     assert "S1" in result.stdout

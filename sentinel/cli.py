@@ -1,194 +1,295 @@
-"""
-SENTINEL CLI — sentinel scan <target>
+"""sentinel - command line.
 
-Usage:
-    sentinel scan .                    # Scan current directory (full D1 discovery)
-    sentinel scan CLAUDE.md            # Scan a single file
-    sentinel scan --hooks-only .       # Scan only hook surfaces (ChainDrop detection)
-    sentinel scan --json .             # Machine-readable JSON output
-    sentinel scan --all .              # Show all files including clean ones
-    sentinel scan --eye CLAUDE.md      # Show Agent's-Eye View (invisible chars)
+  sentinel scan [PATH] [--json] [--hooks-only] [--global] [--base REF]   what would an agent do here?
+  sentinel run [--strict] -- <agent command>                            the gate: start the agent only if the repo passes
+  sentinel pr --base REF [--detonate] [--out FILE] [--fail-on ...]      agent behaviour diff for a pull request
+  sentinel init | approve [--only TEXT] | sign | verify | keygen         AGENTS.lock life-cycle
+  sentinel detonate FILE [--base-file F] [--mock]                       sandbox one instruction file
+  sentinel fixtures DIR | selftest
 
-The CLI is thin: it calls scanner.py → formula.py → formatter.py.
-No rule logic lives in the CLI.
+Exit codes: 0 CLEAN / ok · 3 SUSPICIOUS · 2 COMPROMISED or verification failure · 1 usage or environment error.
 """
 from __future__ import annotations
+
 import argparse
 import json
 import os
 import sys
 from pathlib import Path
 
-if sys.stdout.encoding and sys.stdout.encoding.lower() not in ('utf-8', 'utf-16'):
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+from . import __version__, contract, core, gitdiff, lock as lockmod, render
 
-# ── ANSI colors (auto-disable on Windows / non-TTY) ───────────────────────────
-def _color(code: str, text: str) -> str:
-    if not sys.stdout.isatty():
-        return text
-    return f"\033[{code}m{text}\033[0m"
-
-RED    = lambda t: _color("91", t)
-AMBER  = lambda t: _color("33", t)
-GREEN  = lambda t: _color("92", t)
-CYAN   = lambda t: _color("96", t)
-BOLD   = lambda t: _color("1",  t)
-DIM    = lambda t: _color("2",  t)
+EXIT = {"CLEAN": 0, "SUSPICIOUS": 3, "COMPROMISED": 2}
+HOOK_RULES = ("S10", "S11", "S14", "S16", "S17", "S18", "S19")
 
 
-def _agents_eye_view(text: str) -> str:
-    """
-    Show a side-by-side diff of what a human sees vs what the agent parser sees.
-    Highlights invisible Unicode characters by rendering them as [U+XXXX].
-    """
-    from sentinel.rules.s1_unicode import _is_invisible
-
-    lines_human = []
-    lines_agent = []
-    for line in text.splitlines()[:30]:  # cap at 30 lines for terminal output
-        lines_human.append(line)
-        visible = ""
-        for ch in line:
-            if _is_invisible(ch):
-                visible += CYAN(f"[U+{ord(ch):04X}]")
-            else:
-                visible += ch
-        lines_agent.append(visible)
-
-    out = [f"{'HUMAN VIEW':<50}  AGENT PARSER SEES"]
-    out.append("─" * 100)
-    for h, a in zip(lines_human, lines_agent):
-        marker = "  " + RED("◄ HIDDEN CHARS") if h != a else ""
-        out.append(f"{h[:50]:<50}  {a[:50]}{marker}")
-    return "\n".join(out)
+def _repo_root(start: Path) -> Path:
+    top = gitdiff.git(start if start.is_dir() else start.parent, "rev-parse", "--show-toplevel")
+    if top:
+        return Path(top.strip())
+    p = start if start.is_dir() else start.parent
+    for parent in [p, *p.parents]:                       # .claude/settings.json -> the directory that holds .claude
+        if parent.name in (".claude", ".gemini", ".vscode", ".cursor", ".github"):
+            return parent.parent
+    return p
 
 
-def _collect_paths(target: str) -> list[Path]:
-    """Collect file paths for a target (file, directory, or archive)."""
-    p = Path(target)
-    if p.is_file():
-        return [p]
-    if p.is_dir():
-        from sentinel.layer0.discovery import discover
-        return discover(p)
-    # Try as glob pattern
-    results = list(Path(".").glob(target))
-    return [r for r in results if r.is_file()]
+def _filter(report: dict, keep) -> dict:
+    files = {}
+    for name, v in report["files"].items():
+        fs = [core.Finding(**f) for f in v["findings"] if keep(name, f)]
+        if fs:
+            files[name] = {**core.score_file(fs), "findings": [f for f in v["findings"] if keep(name, f)]}
+    worst = max((v["verdict"] for v in files.values()), key=EXIT.get, default="CLEAN")
+    return {**report, "files": files, "verdict": worst}
 
 
-def _print_result(result, show_eye: bool = False) -> None:
-    """Print a formatted result using the output formatter."""
-    from sentinel.output.formatter import format_result
-    from sentinel.scoring.formula import compute_score, compute_verdict
-
-    output = format_result(result, show_reconstruction=True)
-    print(output)
-
-    if show_eye and result.findings:
-        path = Path(result.filename)
-        if path.exists():
-            text = path.read_text(encoding="utf-8", errors="replace")
-            print(CYAN("\n── Agent's-Eye View (first 30 lines) ──"))
-            print(_agents_eye_view(text))
-            print()
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        prog="sentinel",
-        description="SENTINEL — The firewall for your AI coding agent's instructions",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  sentinel scan .                      Full scan of current directory
-  sentinel scan --hooks-only .         Scan only hook surfaces (ChainDrop detection)
-  sentinel scan CLAUDE.md              Scan one file
-  sentinel scan --json .               Machine-readable JSON output
-  sentinel scan --eye CLAUDE.md        Agent's-Eye View (shows invisible chars)
-  sentinel scan --all .                Show all files including clean ones
-        """,
-    )
-    sub = parser.add_subparsers(dest="command")
-
-    scan_p = sub.add_parser("scan", help="Scan a file, directory, or archive")
-    scan_p.add_argument("target", nargs="?", default=".", help="File or directory to scan (default: current directory)")
-    scan_p.add_argument("--hooks-only", action="store_true", help="Scan only hook surfaces (.claude/settings.json, ~/.claude/settings.json)")
-    scan_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
-    scan_p.add_argument("--eye", action="store_true", help="Show Agent's-Eye View (invisible Unicode highlighted)")
-    scan_p.add_argument("--all", action="store_true", help="Show results for clean files too (not just findings)")
-
-    args = parser.parse_args()
-
-    if args.command == "scan":
-        from sentinel.scanner import scan_directory, scan_file
-        from sentinel.scoring.formula import compute_score, compute_verdict, score_breakdown
-        from sentinel.output.formatter import format_result, format_summary
-
-        target = Path(args.target)
-
-        if target.is_file():
-            # Single file scan
-            results = [scan_file(target)]
-        elif target.is_dir():
-            results = scan_directory(target, hooks_only=args.hooks_only)
+def cmd_scan(a) -> int:
+    target = Path(a.path).expanduser()
+    if a.glob:                                          # ~/.claude/settings.json and friends
+        target = Path.home()
+    if not target.exists():
+        print(f"sentinel: {target} does not exist", file=sys.stderr)
+        return 1
+    if target.is_file():                                # one file: keep the v1 JSON contract (VS Code, old Action)
+        root = _repo_root(target)
+        relp = target.resolve().relative_to(root.resolve()).as_posix() if root.resolve() in target.resolve().parents else target.name
+        if gitdiff.is_agent_surface(relp):
+            rep = _filter(core.scan_repo(root, core.load_approvals(root)), lambda name, f: name == relp or f["rule"].startswith("S18"))
+            out = contract.legacy_result(str(a.path), rep, target.read_text(encoding="utf-8", errors="replace"))
         else:
-            print(f"Target not found: '{args.target}'", file=sys.stderr)
-            sys.exit(1)
-
-        if not results:
-            if args.hooks_only:
-                print(GREEN("No hook surfaces found (.claude/settings.json or ~/.claude/settings.json)"))
-                print(DIM("This is consistent with no ChainDrop/Miasma-style hook installation."))
-            else:
-                print(f"No agent-config files found in '{args.target}'")
-            sys.exit(0)
-
-        # Layer 2, 3, 4 Integration (only if not hooks-only)
-        if not args.hooks_only:
-            from sentinel.pipeline import get_orchestrator
-            orch = get_orchestrator()
-            results = orch.run_full_pipeline(results)
-
-        from sentinel.redaction import redact_scan_result
-        for r in results:
-            redact_scan_result(r)
-
-        # JSON output
-        if args.json:
-            import dataclasses
-            out = []
-            for r in results:
-                d = r.to_dict()
-                if getattr(r, 'guide', None):
-                    d['guide'] = dataclasses.asdict(r.guide)
-                out.append(d)
+            out = contract.scan_text(target.name, target.read_text(encoding="utf-8", errors="replace"))
+            out["filename"] = str(a.path)
+        if a.json:
             print(json.dumps(out, indent=2, ensure_ascii=False))
-            any_issues = any(r.findings for r in results)
-            sys.exit(1 if any_issues else 0)
+        else:
+            print(f"sentinel  {out['verdict']}  score {out['trust_score']}  {a.path}")
+            for f in out["findings"]:
+                print(f"  {f['rule_id']}: {f['message']}\n    what happens : {f['impact']}\n    what to do   : {f['fix']}")
+        return EXIT[out["verdict"]]
+    baseline = gitdiff.baseline_texts(target, a.base) if a.base else None
+    rep = core.scan_repo(target, core.load_approvals(target), baseline)
+    if a.hooks_only or a.glob:
+        rep = _filter(rep, lambda name, f: f["rule"].startswith(HOOK_RULES))
+    print(json.dumps(rep, indent=2, ensure_ascii=False) if a.json else core.render(rep))
+    return EXIT[rep["verdict"]]
 
-        # ── Human-readable output ─────────────────────────────────────────────
-        any_issues = False
 
-        for result in results:
-            trust_score = compute_score(result)
-            verdict = compute_verdict(result, trust_score)
-            if result.findings or args.all:
-                _print_result(result, show_eye=args.eye)
-                if result.findings:
-                    any_issues = True
-            elif verdict == "CLEAN" and not args.all:
-                # Brief clean line for non-flagged files
-                print(f"  {GREEN('✓')} {result.filename} — score {GREEN(str(trust_score))}/100 CLEAN  origin:{DIM(result.origin)}")
+def cmd_run(a) -> int:
+    if not a.cmd:
+        print("usage: sentinel run [--strict] -- <agent command>", file=sys.stderr)
+        return 1
+    return core.gate(Path(a.path), a.cmd, strict=a.strict)
 
-        # ── Summary ───────────────────────────────────────────────────────────
-        if len(results) > 1:
-            print(format_summary(results))
 
-        sys.exit(1 if any_issues else 0)
+def _detonate_changed(root: Path, base: str, touched: list[str], mock: bool) -> list:
+    from . import detonate
+    model = detonate.MockObedientModel() if mock else detonate.OpenAICompatModel()
+    out = []
+    for p in core.text_surfaces(root):
+        relp = lockmod.rel(root, p)
+        if relp not in touched:
+            continue
+        head = p.read_text(encoding="utf-8", errors="replace")
+        res = detonate.differential(head, gitdiff.show(root, base, relp), model, name=relp)
+        if res["new_behaviours"]:
+            leak = any(b == "CANARY_LEAK" for b, _ in res["new_behaviours"])
+            out.append(core.Finding("D1" if leak else "D2", relp, 40 if leak else 25, ceiling=True,
+                evidence="sandboxed agent, new behaviour vs base: " + "; ".join(f"{b} {d}" for b, d in res["new_behaviours"]),
+                impact=" ".join(res["impact"]),
+                fix="Read the changed lines with this in mind. If the behaviour is intended, a security owner approves the PR."))
+    return out
 
+
+def cmd_pr(a) -> int:
+    root = Path(a.path)
+    if gitdiff.git(root, "rev-parse", "--verify", a.base) is None:
+        print(f"sentinel: base ref {a.base!r} not found (in CI use fetch-depth: 0)", file=sys.stderr)
+        return 1
+    touched = gitdiff.changed_files(root, a.base)
+    approvals, trust = gitdiff.base_trust(root, a.base)
+    extra = [f for f in [gitdiff.undeclared_change(root, a.base, touched)] if f]
+    if a.detonate or a.detonate_mock:
+        try:
+            extra += _detonate_changed(root, a.base, touched, mock=a.detonate_mock)
+        except Exception as e:                         # a missing model must never break the static verdict
+            print(f"sentinel: detonation skipped ({e.__class__.__name__}: {e})", file=sys.stderr)
+    rep = core.scan_repo(root, approvals, gitdiff.baseline_texts(root, a.base), extra)
+    ctx = {"base": a.base, "changed": [t for t in touched if gitdiff.is_agent_surface(t)], "trust": trust,
+           "requested": gitdiff.requested_approvals(root, approvals)}
+    comment = render.pr_comment(rep, ctx)
+    if a.out:
+        Path(a.out).write_text(comment, encoding="utf-8")
+    print(json.dumps({"report": rep, "context": ctx}, indent=2, ensure_ascii=False) if a.json else comment)
+    limit = {"never": 99, "compromised": 2, "suspicious": 1}[a.fail_on]
+    return EXIT[rep["verdict"]] if {"CLEAN": 0, "SUSPICIOUS": 1, "COMPROMISED": 2}[rep["verdict"]] >= limit else 0
+
+
+def cmd_init(a) -> int:
+    root = Path(a.path)
+    todo = lockmod.pending(root, lockmod.approvals_of(lockmod.read_lock(root)))
+    print(f"sentinel init - inventory of {root.resolve()}\n")
+    print(f"  tracked agent-config files : {len(lockmod.tracked_files(root))}")
+    for x in todo["autoexec"]:
+        print(f"  auto-run, not approved     : [{x['event']}] {x['command']}   ({x['file']})")
+    for m in todo["mcp"]:
+        print(f"  MCP server, not approved   : {m}")
+    rep = core.scan_repo(root, core.load_approvals(root))
+    if rep["verdict"] == "COMPROMISED":
+        print("\n" + core.render(rep) + "\nNothing was written. Fix the forced findings first.")
+        return 2
+    if a.approve_all:
+        lockmod.approve(root, note=a.note)
+        print(f"\nApproved everything listed above and wrote {lockmod.LOCK} (unsigned - CI signs it after merge).")
     else:
-        parser.print_help()
+        lockmod.write_lock(root, lockmod.build_lock(root, rep, lockmod.approvals_of(lockmod.read_lock(root))))
+        print(f"\nWrote {lockmod.LOCK}. Review the list, then `sentinel approve` what you recognise.")
+    return 0
+
+
+def cmd_approve(a) -> int:
+    try:
+        _, added = lockmod.approve(Path(a.path), only=a.only, note=a.note)
+    except lockmod.LockRefused as e:
+        print(f"sentinel: {e}", file=sys.stderr)
+        return 2
+    for x in added["autoexec"]:
+        print(f"approved auto-run  [{x['event']}] {x['command']}  (pinned to script {str(x.get('script_sha256'))[:12]})")
+    for m in added["mcp"]:
+        print(f"approved MCP server {m}")
+    print(f"{len(added['autoexec']) + len(added['mcp'])} approval(s) written to {lockmod.LOCK}. The signature was removed; CI signs after merge.")
+    return 0
+
+
+def _private_key(a) -> bytes | None:
+    if a.key:
+        return Path(a.key).read_bytes()
+    env = os.environ.get("SENTINEL_SIGNING_KEY")
+    return env.replace("\\n", "\n").encode() if env else None
+
+
+def cmd_sign(a) -> int:
+    key = _private_key(a)
+    if not key:
+        print("sentinel: no signing key (use --key FILE or the SENTINEL_SIGNING_KEY secret)", file=sys.stderr)
+        return 1
+    try:
+        lock = lockmod.sign(Path(a.path), key)
+    except lockmod.LockRefused as e:
+        print(f"sentinel: {e}", file=sys.stderr)
+        return 2
+    print(f"signed {lockmod.LOCK}: {len(lock['files'])} file(s), {len(lock['approvals']['autoexec'])} hook approval(s), "
+          f"{len(lock['approvals']['mcp'])} MCP approval(s)")
+    return 0
+
+
+def cmd_verify(a) -> int:
+    root = Path(a.path)
+    pub = Path(a.pubkey).read_bytes() if a.pubkey else ((root / lockmod.PUBKEY).read_bytes() if (root / lockmod.PUBKEY).is_file() else None)
+    res = lockmod.verify(root, pub)
+    pin = lockmod.check_pin(root, pub, remember=not a.no_pin) if pub else "no-key"
+    res["key"] = pin
+    if pin == "KEY_CHANGED":
+        res["ok"] = False
+    if a.json:
+        print(json.dumps(res, indent=2))
+    else:
+        print(f"signature : {res['signature'].upper() if res['signature'] != 'valid' else 'valid'}   key: {pin}")
+        for label in ("changed", "new", "missing", "stale_approvals"):
+            for item in res.get(label, []):
+                print(f"  {label.upper().replace('_', ' '):16} {item}")
+        print("OK - every agent-config file is covered by the signed lock." if res["ok"]
+              else "NOT COVERED - the files above changed outside the gate. Run `sentinel scan` before opening this repo in an agent.")
+    return 0 if res["ok"] else 2
+
+
+def cmd_keygen(a) -> int:
+    root = Path(a.path)
+    fp = lockmod.keygen(Path(a.private), root / lockmod.PUBKEY)
+    print(f"public key  -> {root / lockmod.PUBKEY}   (commit this)   fingerprint {fp}\n"
+          f"private key -> {a.private}   (put it in the SENTINEL_SIGNING_KEY secret of a protected environment; never commit it)")
+    return 0
+
+
+def cmd_detonate(a) -> int:
+    from . import detonate
+    model = detonate.MockObedientModel() if a.mock else detonate.OpenAICompatModel()
+    head = Path(a.file).read_text(encoding="utf-8", errors="replace")
+    base = Path(a.base_file).read_text(encoding="utf-8", errors="replace") if a.base_file else None
+    res = detonate.differential(head, base, model, name=Path(a.file).name)
+    print(json.dumps(res, indent=2) if a.json else ("\n".join("- " + x for x in res["impact"]) or
+          "No new sensitive behaviour in the sandbox. That is silence, not safety."))
+    return 3 if res["new_behaviours"] else 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    cmd_tail: list[str] = []
+    if "--" in argv:                                   # everything after -- is the agent command for `run`
+        i = argv.index("--")
+        argv, cmd_tail = argv[:i], argv[i + 1:]
+    p = argparse.ArgumentParser(prog="sentinel", description="What do the files your AI coding agent obeys make it do?")
+    p.add_argument("--version", action="version", version=f"sentinel {__version__} (formula v{core.FORMULA_VERSION})")
+    sub = p.add_subparsers(dest="command")
+
+    def add(name, fn, **kw):
+        sp = sub.add_parser(name, **kw)
+        sp.set_defaults(fn=fn)
+        return sp
+
+    s = add("scan", cmd_scan, help="scan a repository, or one file")
+    s.add_argument("path", nargs="?", default=".")
+    s.add_argument("--json", action="store_true")
+    s.add_argument("--hooks-only", action="store_true", help="only things that run or connect automatically")
+    s.add_argument("--global", dest="glob", action="store_true", help="scan ~/.claude, ~/.gemini instead of a repository")
+    s.add_argument("--base", help="git ref to diff against (enables guardrail-weakening detection)")
+    s = add("run", cmd_run, help="the gate: start the agent only if this repository passes")
+    s.add_argument("--path", default=".")
+    s.add_argument("--strict", action="store_true", help="refuse on SUSPICIOUS as well")
+    s = add("pr", cmd_pr, help="agent behaviour diff for a pull request")
+    s.add_argument("--path", default=".")
+    s.add_argument("--base", required=True)
+    s.add_argument("--out", help="write the Markdown comment here")
+    s.add_argument("--json", action="store_true")
+    s.add_argument("--detonate", action="store_true", help="sandbox changed instruction files (needs SENTINEL_LLM_URL / _MODEL)")
+    s.add_argument("--detonate-mock", action="store_true", help=argparse.SUPPRESS)
+    s.add_argument("--fail-on", choices=("compromised", "suspicious", "never"), default="compromised")
+    s = add("init", cmd_init, help="inventory + first AGENTS.lock")
+    s.add_argument("--path", default=".")
+    s.add_argument("--approve-all", action="store_true")
+    s.add_argument("--note")
+    s = add("approve", cmd_approve, help="approve pending hooks / MCP servers (pinned to script hashes)")
+    s.add_argument("--path", default=".")
+    s.add_argument("--only", help="approve only entries containing this text")
+    s.add_argument("--note", help='recorded as approved_in, e.g. "PR #41"')
+    s = add("sign", cmd_sign, help="CI only: re-scan, write and sign AGENTS.lock")
+    s.add_argument("--path", default=".")
+    s.add_argument("--key")
+    s = add("verify", cmd_verify, help="is every agent-config file covered by the signed lock?")
+    s.add_argument("--path", default=".")
+    s.add_argument("--pubkey")
+    s.add_argument("--no-pin", action="store_true")
+    s.add_argument("--json", action="store_true")
+    s = add("keygen", cmd_keygen, help="create an ed25519 key pair")
+    s.add_argument("--path", default=".")
+    s.add_argument("--private", default="sentinel_signing_key.pem")
+    s = add("detonate", cmd_detonate, help="sandbox one instruction file")
+    s.add_argument("file")
+    s.add_argument("--base-file")
+    s.add_argument("--mock", action="store_true", help="scripted mock model (plumbing test only)")
+    s.add_argument("--json", action="store_true")
+    s = add("fixtures", lambda a: (print("\n".join(f"{f['id']:>3} {f['path'].name:28} {f['verdict']}" for f in core.build_fixtures(Path(a.dir)))), 0)[1],
+            help="write the inert reference fixtures")
+    s.add_argument("dir")
+    add("selftest", lambda a: core.selftest(), help="run the engine's self-test")
+
+    a = p.parse_args(argv)
+    if not a.command:
+        p.print_help()
+        return 1
+    a.cmd = cmd_tail
+    return a.fn(a)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

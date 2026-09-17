@@ -1,0 +1,13 @@
+# Copy to .github/workflows/. A direct push with [skip ci] suppresses push workflows. It cannot suppress a schedule.
+name: sentinel-nightly
+on: { schedule: [{ cron: "17 2 * * *" }], workflow_dispatch: {} }
+permissions: { contents: read }
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install --quiet "git+https://github.com/GarvitAgrawal04/SENTINEL#egg=sentinel-md[sign]"
+      - run: sentinel verify --no-pin && sentinel scan .

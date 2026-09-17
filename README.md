@@ -1,3 +1,5 @@
+> **v5 engine (branch `v5-engine`, 17 Sept 2026).** Static rules that say what the agent would have done, a detonation chamber, a pre-open gate (`sentinel run -- claude`) and a signed `AGENTS.lock`. Measured on 930 real repositories: 0 false COMPROMISED (the v1 engine: 97). Start with [`REBUILD_NOTES.md`](REBUILD_NOTES.md). Everything below this line describes v1 unless it says otherwise.
+
 # SENTINEL
 
 **V1 RELEASE FROZEN WITH DOCUMENTED ENGINEERING DEBT**

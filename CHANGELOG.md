@@ -1,3 +1,9 @@
+## 0.5.0 — 2026-09-17 — v5 engine
+- New engine (`sentinel/core.py`), detonation harness, `AGENTS.lock` (ed25519), pre-open gate, PR behaviour diff, composite GitHub Action.
+- API and single-file CLI keep the v1 JSON shape through `sentinel/contract.py`; frontend and VS Code extension need no change.
+- Exit codes are now 0 CLEAN / 3 SUSPICIOUS / 2 COMPROMISED. `sentinel.lock` (HMAC) replaced by `AGENTS.lock`.
+- False COMPROMISED on 930 real repositories: 97 → 0. See `REBUILD_NOTES.md`.
+
 # CHANGELOG
 
 ## [V1.0.0] - RELEASE FROZEN
