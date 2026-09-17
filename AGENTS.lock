@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated": "2026-09-17T13:00:59Z",
-  "generator": "sentinel/0.5.2",
+  "generated": "2026-09-17T13:17:45Z",
+  "generator": "sentinel/0.5.3",
   "formula_version": "0.1",
   "files": {
     "AGENTS.md": {
