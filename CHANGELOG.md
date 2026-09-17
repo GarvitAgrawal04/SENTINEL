@@ -1,3 +1,8 @@
+## 0.5.3 — 2026-09-17
+- `AGENTS.md` now carries real security guardrails; `AGENTS.lock` records them, so deleting or flipping one shows up in a PR.
+- The `sentinel` workflow runs on every pull request (it was limited to PRs targeting `main`, so a PR into `v5-engine` got no comment).
+- The signing workflow installs Sentinel from the checkout instead of from the default branch.
+
 ## 0.5.2 — 2026-09-17 — demo polish
 - `sentinel verify` now says exactly what is wrong: SIGNATURE INVALID / KEY_CHANGED / UNSIGNED / NO LOCK / NOT COVERED (it used to print "files changed" even when none had).
 - PR comment no longer lists `AGENTS.lock` as a file that changes agent behaviour.

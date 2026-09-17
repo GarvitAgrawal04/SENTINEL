@@ -304,7 +304,14 @@ def main(argv: list[str] | None = None) -> int:
         p.print_help()
         return 1
     a.cmd = cmd_tail
-    return a.fn(a)
+    try:
+        return a.fn(a)
+    except BrokenPipeError:                            # `sentinel scan . | head` - the reader left; that is not an error
+        try:
+            os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        except OSError:
+            pass
+        return 0
 
 
 if __name__ == "__main__":
