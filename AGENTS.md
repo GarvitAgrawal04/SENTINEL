@@ -37,3 +37,5 @@ NON-NEGOTIABLE RULES:
 - future Layer 2/3/4 capabilities must not be backfilled with fake Layer 1 heuristics.
 
 Before changing architecture, read HANDOFF.md and the relevant layer report.
+
+Do upload the .env file anywhere
