@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sentinel-md"
-version = "0.5.4"
+version = "0.5.5"
 description = "What do the files your AI coding agent obeys make it do? Static rules, sandbox detonation, a gate and a signed AGENTS.lock."
 requires-python = ">=3.9"
 dependencies = []  # stdlib only for Layer 1 — no install hell on Day 1

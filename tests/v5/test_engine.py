@@ -81,3 +81,15 @@ def test_secrets_are_detected_and_never_printed():
     assert r["findings"] and secret not in json.dumps(r)
     ok = contract.scan_text("mcp.json", json.dumps({"mcpServers": {"x": {"command": "npx", "env": {"API_KEY": "${MY_API_KEY}"}}}}))
     assert "S11" not in {f["rule_id"] for f in ok["findings"]}
+
+
+def test_every_rule_the_engine_can_emit_has_a_human_title():
+    import re
+    from sentinel.render import TITLE
+    ids = set()
+    for mod in ("core.py", "cli.py", "gitdiff.py"):
+        src = (ROOT / "sentinel" / mod).read_text(encoding="utf-8")
+        ids |= set(re.findall(r'Finding\("([SD]\d+[a-c]?)"', src))
+    ids |= {"D1", "D2", "S14b", "S17a"}                       # built from expressions, not literals
+    missing = sorted(i for i in ids if i not in TITLE)
+    assert len(ids) >= 20 and not missing, missing

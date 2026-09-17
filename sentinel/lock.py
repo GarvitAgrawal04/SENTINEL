@@ -104,9 +104,25 @@ def approve(root: Path, only: str | None = None, note: str | None = None) -> tup
     return lock, added
 
 
+def _same_content(a: dict | None, b: dict) -> bool:
+    strip = lambda d: {k: v for k, v in (d or {}).items() if k not in ("generated", "generator")}
+    return a is not None and strip(a) == strip(b)
+
+
 def sign(root: Path, private_pem: bytes) -> dict:
-    approvals = approvals_of(read_lock(root))
+    """Re-scan, rebuild and sign. If nothing but the timestamp would change and the existing signature is valid for
+    this key, leave both files untouched - otherwise every push to the default branch produces a noise commit."""
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.serialization import load_pem_private_key
+    existing = read_lock(root)
+    approvals = approvals_of(existing)
     lock = build_lock(root, core.scan_repo(root, approvals), approvals)
+    sig_path = root / SIG
+    if _same_content(existing, lock) and sig_path.is_file():
+        public_pem = load_pem_private_key(private_pem, password=None).public_key().public_bytes(
+            serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo)
+        if core.verify_lock(existing, sig_path.read_text(encoding="utf-8").strip(), public_pem):
+            return existing
     write_lock(root, lock, private_pem)
     return lock
 

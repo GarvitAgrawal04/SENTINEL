@@ -88,3 +88,14 @@ def test_pr_with_detonation_mock(repo):
     static = sentinel(repo, "pr", "--base", "main"); assert static.returncode == 0 and "CLEAN" in static.stdout
     det = sentinel(repo, "pr", "--base", "main", "--detonate-mock", "--fail-on", "suspicious")
     assert det.returncode == 3 and "PLANTED SECRET LEFT THE MACHINE" in det.stdout and "D:-40" in det.stdout
+
+
+def test_signing_twice_changes_nothing(repo):
+    _setup_signed(repo)
+    before = ((repo / "AGENTS.lock").read_bytes(), (repo / "AGENTS.lock.sig").read_bytes())
+    import time; time.sleep(1.1)                               # a new timestamp would differ
+    assert sentinel(repo, "sign", "--key", "sentinel_signing_key.pem").returncode == 0
+    assert ((repo / "AGENTS.lock").read_bytes(), (repo / "AGENTS.lock.sig").read_bytes()) == before
+    (repo / "CLAUDE.md").write_text((repo / "CLAUDE.md").read_text() + "\nPrefer small functions.\n")
+    assert sentinel(repo, "sign", "--key", "sentinel_signing_key.pem").returncode == 0
+    assert (repo / "AGENTS.lock").read_bytes() != before[0] and sentinel(repo, "verify").returncode == 0

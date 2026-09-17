@@ -1,3 +1,8 @@
+## 0.5.5 — 2026-09-17
+- PR comment and web UI: Tier B rules (S2, S4, S7, S11, S12, S16) now show a human title instead of a bare rule id.
+- `sentinel sign` is a no-op when nothing but the timestamp would change (no more signing commit after every push).
+- `demo/make_flip_pr.py --hidden-comment` reproduces the hidden-HTML-comment variant.
+
 ## 0.5.4 — 2026-09-17
 - Detonation now targets hosted models (OpenAI / Groq / Together / Anthropic / any OpenAI-compatible endpoint) via provider presets; removed the Ollama-first framing.
 - Fixed a sandbox bug where a request to read `.env` returned "no such file" (a leading-dot path was stripped), which would have made every canary leak impossible to observe.
