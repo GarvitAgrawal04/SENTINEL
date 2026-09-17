@@ -7,7 +7,7 @@ sys.path.insert(0, str(ROOT))
 
 
 def sh(cwd, *args, check=True, env=None):
-    p = subprocess.run(list(args), cwd=cwd, capture_output=True, text=True, env={**os.environ, **(env or {})})
+    p = subprocess.run(list(args), cwd=cwd, capture_output=True, text=True, env={**os.environ, "PYTHONIOENCODING": "utf-8", **(env or {})})
     if check and p.returncode != 0:
         raise AssertionError(f"{args} -> {p.returncode}\n{p.stdout}\n{p.stderr}")
     return p

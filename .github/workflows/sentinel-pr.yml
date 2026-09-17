@@ -1,0 +1,12 @@
+# Copy to .github/workflows/. Works on fork PRs: it needs no secret, only the public key on the base branch.
+name: sentinel
+on: { pull_request: { branches: [main] } }
+permissions: { contents: read, pull-requests: write }
+jobs:
+  behaviour-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }          # the base ref must be available
+      - uses: GarvitAgrawal04/SENTINEL/action@main
+        with: { fail-on: compromised }

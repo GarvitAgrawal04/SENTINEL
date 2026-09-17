@@ -14,6 +14,7 @@ def test_offline_runtime():
     env = dict(os.environ)
     env.pop("GROQ_API_KEY", None)
     env.pop("GITHUB_TOKEN", None)
+    env["PYTHONIOENCODING"] = "utf-8"
     
     import sys
     result = subprocess.run(
