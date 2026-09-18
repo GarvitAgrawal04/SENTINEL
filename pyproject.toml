@@ -9,8 +9,7 @@ description = "What do the files your AI coding agent obeys make it do? Static r
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
-dependencies = []          # the scanner, the gate and the CLI's scan/run/pr commands are standard library only
-
+dependencies = ["fastapi==0.141.1", "python-multipart==0.0.32", "pydantic==2.13.5"]
 [project.optional-dependencies]
 # Exact, tested versions live in requirements.txt / requirements-dev.txt. These are the compatible ranges.
 sign = ["cryptography>=42"]
