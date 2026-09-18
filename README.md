@@ -135,9 +135,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.2 (formula v0.1)
+sentinel --version                 # sentinel 0.6.3 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 67 passed
+pytest -q                          # 68 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -696,7 +696,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 67 passed
+bash setup.sh --test                 # or: make test  → 68 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

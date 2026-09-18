@@ -17,15 +17,30 @@ def _severity(f: dict) -> str:
     return "high" if f["force"] or f["penalty"] >= 40 else "medium" if f["ceiling"] or f["penalty"] >= 25 else "low"
 
 
+def _sentence_case(title: str) -> str:
+    out = title.capitalize()
+    for word in ("MCP", "API", "AI", "URL"):
+        out = re.sub(rf"\b{word.lower()}\b", word, out, flags=re.I)
+    return out
+
+
 def _line_of(text: str | None, evidence: str) -> int:
+    """Which line should a client underline? 1-based; 0 only when there is genuinely nothing to point at."""
     if not text:
         return 0
-    m = re.search(r'"([^"]{12,})"', evidence) or re.search(r"`([^`]{6,})`", evidence)
-    if m:
-        needle = m.group(1)[:40]
-        for i, line in enumerate(text.splitlines(), 1):
-            if needle in line:
+    lines = text.splitlines()
+    for m in list(re.finditer(r'"([^"]{12,})"', evidence)) + list(re.finditer(r"`([^`]{6,})`", evidence)):
+        needle = " ".join(m.group(1).split())[:40]
+        for i, line in enumerate(lines, 1):
+            if needle in " ".join(line.split()):
                 return i
+    at = re.search(r"offsets \[(\d+)", evidence)                       # hidden characters: the engine reports offsets
+    if at:
+        return text.count("\n", 0, int(at.group(1))) + 1
+    if "hidden text" in evidence:                                       # a finding inside decoded hidden text
+        bad = core.invisible_chars(text)
+        if bad:
+            return text.count("\n", 0, bad[0][0]) + 1
     return 0
 
 
@@ -37,7 +52,7 @@ def legacy_result(filename: str, report: dict, text: str | None = None) -> dict:
         breakdown.append(f"{name}: {v['breakdown']}")
         for f in v["findings"]:
             findings.append({
-                "rule_id": f["rule"], "rule_name": TITLE.get(f["rule"], f["rule"]).capitalize(), "severity": _severity(f),
+                "rule_id": f["rule"], "rule_name": _sentence_case(TITLE.get(f["rule"], f["rule"])), "severity": _severity(f),
                 "filename": filename if len(report["files"]) == 1 else name, "line": _line_of(text, f["evidence"]),
                 "message": f["evidence"], "snippet": f["evidence"][:240], "penalty": f["penalty"],
                 "ceiling": 79 if f["ceiling"] else None, "forces_compromised": f["force"],

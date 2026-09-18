@@ -1,3 +1,7 @@
+## 0.6.3 — 2026-09-18 — findings point at the right line
+- Every finding now carries the line a person would look at. Override phrasing, concealment and hidden-text findings used to report line 0, so editors underlined line 1. Evidence for those rules now quotes the matching line.
+- Rule titles keep acronyms ("New MCP server", not "New mcp server"). Extension: licence file, `.vscodeignore`, VSIX install steps.
+
 ## 0.6.2 — 2026-09-18 — VS Code
 - VS Code extension rewritten (0.2.0): underlines the exact line, plain-English explanation on hover and in the Problems panel, verdict in the status bar, readable report, a "Scan this file" command, more watched files (`tasks.json`, `*.mdc`, `SKILL.md`). Still no dependencies. A test runs the real extension against the real API.
 - Fixed a contract break: clean files returned `color_band: "clean"`; v1 clients test for `"green"`, so the old extension showed nothing at all for a clean file.

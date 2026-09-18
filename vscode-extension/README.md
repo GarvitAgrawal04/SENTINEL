@@ -22,11 +22,18 @@ Command Palette → **Sentinel: Scan this file**.
 
 Status bar click, or **Sentinel: Show the full report**, opens the readable report with the score arithmetic.
 
-## Install it for good (optional)
+## Install it for good
 
-Copy this folder to your VS Code extensions directory and restart VS Code:
-`~/.vscode/extensions/sentinel.sentinel-md-0.2.0` (Windows: `%USERPROFILE%\.vscode\extensions\sentinel.sentinel-md-0.2.0`).
-Or build a package with `npx @vscode/vsce package` and use **Extensions → … → Install from VSIX**.
+Build the package once (needs Node.js), then install it:
+
+```
+cd vscode-extension
+npx @vscode/vsce package --no-dependencies        # writes sentinel-md-0.2.0.vsix
+code --install-extension sentinel-md-0.2.0.vsix
+```
+
+Or in VS Code: **Extensions** panel → **…** menu → **Install from VSIX…** → pick the file → reload. After that the extension
+is active in every window; you only need the scanner running (`bash setup.sh`).
 
 **Setting:** `sentinel.apiUrl` (default `http://127.0.0.1:8000`).
 **Test:** `node vscode-extension/test/smoke.js http://127.0.0.1:8000` runs the real extension against the real API.

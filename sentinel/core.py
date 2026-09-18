@@ -333,8 +333,16 @@ def override_hits(text: str) -> list[str]:
         before = text[max(0, m.start() - 120): m.start()].split("\n")[-1]
         if warned_about(before):
             continue
-        out.append(" ".join(text[max(0, m.start() - 30): m.end() + 40].split()))
+        out.append(line_at(text, m.start()))
     return out
+
+
+def line_at(text: str, pos: int) -> str:
+    """The full line around a character offset, whitespace collapsed. Evidence quotes this so that editors and the
+    web UI can point at the exact line."""
+    start = text.rfind("\n", 0, pos) + 1
+    end = text.find("\n", pos)
+    return " ".join(text[start: end if end != -1 else len(text)].split())
 
 
 def _agent_directed(text: str) -> str | None:
@@ -574,9 +582,13 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
                            + (f"to {host.group(0)}" if host else "off the machine") + ".",
                     fix="Remove the instruction. Rotate anything it names."))
                 break
-        if CONCEAL.search(text) or (hidden and CONCEAL.search(hidden)):
+        conceal_visible = CONCEAL.search(text)
+        conceal_hidden = CONCEAL.search(hidden) if hidden else None
+        if conceal_visible or conceal_hidden:
+            where = (f"\"{redact(line_at(text, conceal_visible.start()))[:160]}\"" if conceal_visible
+                     else f"(in hidden text) \"{redact(line_at(hidden, conceal_hidden.start()))[:160]}\"")
             findings.append(Finding("S13", rel, 45,
-                evidence="instruction to hide activity from the user",
+                evidence=f"instruction to hide activity from the user: {where}",
                 impact="Your agent is told not to tell you what it is doing.",
                 fix="Remove it. No legitimate project instruction needs this."))
         visible = HTML_COMMENT.sub(" ", text)
