@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One command: create the virtual environment, install pinned dependencies, create .env, start the API.
 #
-#   bash setup.sh                  set everything up, then serve http://127.0.0.1:8000
+#   bash setup.sh                  set everything up, then serve the web UI and API on http://127.0.0.1:8000
 #   bash setup.sh --install-only   set everything up and stop
 #   bash setup.sh --test           set everything up and run the test suite
 #   PORT=8001 bash setup.sh        use another port        PYTHON=python3.12 bash setup.sh   pick an interpreter
@@ -63,5 +63,5 @@ case "${1:-}" in
 esac
 
 HOST="${HOST:-127.0.0.1}"; PORT="${PORT:-8000}"
-say "Starting the API on http://$HOST:$PORT   (interactive docs: http://$HOST:$PORT/docs, stop with Ctrl+C)"
+say "Open http://$HOST:$PORT in your browser   (API reference: http://$HOST:$PORT/docs, stop with Ctrl+C)"
 exec python -m uvicorn sentinel.api:app --host "$HOST" --port "$PORT"

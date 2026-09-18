@@ -3,7 +3,6 @@
 .env.*
 !.env.example
 *.env
-frontend/.env.local
 # never commit a private key; the public verification key is the one exception
 *.pem
 *.key
@@ -28,7 +27,6 @@ htmlcov/
 
 # ── Node (frontend, VS Code extension) ───────────────────────────────────────────
 node_modules/
-frontend/dist/
 .cache/
 *.vsix
 

@@ -1,54 +1,385 @@
-<!DOCTYPE html>
-<html lang="en" class="bg-[#050505] text-[#f5f5f0] antialiased">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SENTINEL | The API That Never Sleeps</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Condiment&family=JetBrains+Mono:wght@100..800&family=Syne:wght@400..800&display=swap" rel="stylesheet">
-    
-    <style>
-      body {
-        margin: 0;
-        background-color: #010828;
-        color: #EFF4FF;
-        overflow-x: hidden;
-      }
-      .font-anton { font-family: 'Anton', sans-serif; }
-      .font-condiment { font-family: 'Condiment', cursive; }
-      
-      .liquid-glass {
-        background: rgba(255, 255, 255, 0.01);
-        background-blend-mode: luminosity;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
-        position: relative;
-        overflow: hidden;
-      }
-      
-      ::-webkit-scrollbar {
-        width: 0px;
-        background: transparent; 
-      }
-      
-      /* Noise overlay */
-      .noise-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 50;
-        pointer-events: none;
-        opacity: 0.08;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-      }
-    </style>
-  </head>
-  <body>
-    <div class="noise-overlay"></div>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sentinel: see what a file would make your AI agent do</title>
+  <meta name="description" content="AI coding agents follow instructions written in ordinary project files. Sentinel reads those files and tells you, in plain words, what they ask for.">
+  <meta name="color-scheme" content="light dark">
+  <!-- No third-party requests of any kind: no fonts, no analytics, no CDN. Scripts and styles come from this folder only. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:* http://localhost:* https:; base-uri 'none'; form-action 'none'">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#scan">Skip to the scanner</a>
+
+  <header class="bar">
+    <div class="wrap bar-inner">
+      <a class="wordmark" href="#top" aria-label="Sentinel, back to top">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6 4.5 5.4v6.2c0 4.6 3 8.4 7.5 9.8 4.5-1.4 7.5-5.2 7.5-9.8V5.4L12 2.6Z"/><path class="mark-line" d="M8.4 12.2 11 14.8l4.8-5.2"/></svg>
+        Sentinel
+      </a>
+      <nav aria-label="Sections">
+        <a href="#scan">Scan</a>
+        <a href="#threat">The problem</a>
+        <a href="#how">How it works</a>
+        <a href="#measured">What we measured</a>
+        <a href="#use">Use it</a>
+        <a href="https://github.com/GarvitAgrawal04/SENTINEL" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ── hero ─────────────────────────────────────────────────────────── -->
+    <section class="wrap hero">
+      <div class="hero-copy">
+        <h1>See what a file would make your AI agent do.</h1>
+        <p class="lede">AI coding agents follow instructions written in ordinary project files. Sentinel reads those files and tells you, in plain words, what they ask for.</p>
+        <ul class="reads" aria-label="Files Sentinel reads">
+          <li>CLAUDE.md</li><li>AGENTS.md</li><li>.cursorrules</li><li>settings.json</li><li>.mcp.json</li>
+        </ul>
+      </div>
+
+      <svg class="hero-art" viewBox="0 0 560 340" role="img" aria-labelledby="art-t art-d">
+        <title id="art-t">Sentinel in one picture</title>
+        <desc id="art-d">A project file contains a line nobody can see. Sentinel scans the file, highlights the hidden instruction, and cuts the path that would have carried your keys away.</desc>
+
+        <!-- the file -->
+        <rect class="a-shadow" x="27" y="49" width="176" height="232" rx="18"/>
+        <rect class="a-paper" x="20" y="40" width="176" height="232" rx="18"/>
+        <rect class="a-ln a-ln-strong" x="42" y="66" width="70" height="9" rx="4.5"/>
+        <rect class="a-ln" x="42" y="94" width="132" height="7" rx="3.5"/>
+        <rect class="a-ln" x="42" y="112" width="108" height="7" rx="3.5"/>
+        <rect class="a-ln" x="42" y="130" width="124" height="7" rx="3.5"/>
+        <rect class="a-mark" x="36" y="143" width="130" height="18" rx="6"/>
+        <rect class="a-ghost" x="42" y="148.5" width="118" height="7" rx="3.5"/>
+        <rect class="a-ln" x="42" y="166" width="92" height="7" rx="3.5"/>
+        <rect class="a-ln" x="42" y="196" width="60" height="8" rx="4"/>
+        <rect class="a-ln" x="42" y="222" width="128" height="7" rx="3.5"/>
+        <rect class="a-ln" x="42" y="240" width="84" height="7" rx="3.5"/>
+        <text class="a-cap a-mono" x="108" y="300" text-anchor="middle">CLAUDE.md</text>
+
+        <!-- the scan -->
+        <g class="a-beam"><rect x="14" y="32" width="30" height="248" rx="15"/><line x1="29" y1="38" x2="29" y2="274"/></g>
+
+        <!-- what was hidden -->
+        <g class="a-callout">
+          <path d="M166 152 C 196 152, 190 92, 224 84"/>
+          <rect x="224" y="70" width="142" height="28" rx="14"/>
+          <text x="295" y="88.5" text-anchor="middle">a line you cannot see</text>
+        </g>
+
+        <!-- file -> agent -->
+        <path class="a-wire" d="M196 168 H 296"/>
+        <path class="a-wire a-head" d="m289 162 7 6-7 6"/>
+        <rect class="a-agent" x="300" y="126" width="84" height="84" rx="24"/>
+        <rect class="a-eye" x="325" y="154" width="11" height="18" rx="5.5"/>
+        <rect class="a-eye" x="348" y="154" width="11" height="18" rx="5.5"/>
+        <text class="a-cap" x="342" y="234" text-anchor="middle">your AI agent</text>
+
+        <!-- agent -> code (fine) -->
+        <path class="a-good" d="M384 150 C 424 150, 430 104, 468 104"/>
+        <rect class="a-node" x="468" y="76" width="72" height="56" rx="16"/>
+        <path class="a-icon a-icon-good" d="m497 95-8 9 8 9M511 95l8 9-8 9"/>
+        <text class="a-cap" x="504" y="150" text-anchor="middle">your code</text>
+
+        <!-- agent -> keys -> away (the part Sentinel stops) -->
+        <path class="a-bad" d="M384 186 C 424 186, 430 232, 468 232"/>
+        <path class="a-bad a-away" d="M540 232 H 560"/>
+        <rect class="a-node" x="468" y="204" width="72" height="56" rx="16"/>
+        <g class="a-icon a-icon-key"><circle cx="496" cy="232" r="6.5"/><path d="M502.5 232H518m-4 0v6m-6-6v4"/></g>
+        <text class="a-cap" x="504" y="278" text-anchor="middle">your keys</text>
+        <g class="a-shield">
+          <path d="M427 190 415 194.5v9.6c0 7.2 4.8 13.2 12 15.4 7.2-2.2 12-8.2 12-15.4v-9.6L427 190Z"/>
+          <path class="a-tick" d="m421.5 205 4 4 7-7.6"/>
+        </g>
+      </svg>
+    </section>
+
+    <!-- ── the scanner ──────────────────────────────────────────────────── -->
+    <section id="scan" class="wrap" aria-label="Scanner">
+      <div class="bench">
+        <div class="pane pane-input">
+          <div class="seg" role="tablist" aria-label="Where the file comes from">
+            <button role="tab" id="tab-sample" aria-selected="true" aria-controls="panel-sample">Try a sample</button>
+            <button role="tab" id="tab-paste" aria-selected="false" aria-controls="panel-paste" tabindex="-1">Paste text</button>
+            <button role="tab" id="tab-upload" aria-selected="false" aria-controls="panel-upload" tabindex="-1">Upload</button>
+          </div>
+
+          <div id="panel-sample" role="tabpanel" aria-labelledby="tab-sample">
+            <ul class="samples" id="samples" aria-label="Sample files"></ul>
+            <p class="hint" id="sample-desc"></p>
+          </div>
+
+          <div id="panel-paste" role="tabpanel" aria-labelledby="tab-paste" hidden>
+            <p class="hint">Paste the contents of a CLAUDE.md, AGENTS.md, .cursorrules, settings.json or MCP config.</p>
+          </div>
+
+          <div id="panel-upload" role="tabpanel" aria-labelledby="tab-upload" hidden>
+            <div class="drop" id="drop">
+              <p>Drop files here, or</p>
+              <div class="drop-actions">
+                <label class="btn quiet">Choose files<input id="pick-files" type="file" multiple hidden></label>
+                <label class="btn quiet">Choose a project folder<input id="pick-folder" type="file" webkitdirectory hidden></label>
+              </div>
+              <p class="hint">From a folder, only the files an agent obeys are sent, plus the scripts their hooks point to.</p>
+            </div>
+          </div>
+
+          <div class="file-row">
+            <label for="filename">File name</label>
+            <input id="filename" type="text" value="CLAUDE.md" spellcheck="false" autocomplete="off">
+          </div>
+
+          <div class="editor-head">
+            <div class="seg small" role="group" aria-label="How to show the file">
+              <button id="view-reviewer" aria-pressed="true">Edit</button>
+              <button id="view-agent" aria-pressed="false">Reveal hidden content</button>
+            </div>
+            <span class="hidden-count" id="hidden-count" aria-live="polite"></span>
+          </div>
+
+          <div class="editor">
+            <textarea id="text" spellcheck="false" aria-label="File contents" placeholder="Paste a file here"></textarea>
+            <pre id="agent-view" class="agent-view" tabindex="0" aria-label="The file with hidden content revealed" hidden></pre>
+            <ul id="file-list" class="file-list" hidden></ul>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="scan-btn">Scan this file</button>
+            <span class="where" id="where" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="pane pane-result" id="result" aria-live="polite">
+          <div class="empty" id="empty">
+            <p class="empty-title">Your result appears here.</p>
+            <p>Pick a sample on the left, paste a file, or upload one. Then scan it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── the problem: a field guide ───────────────────────────────────── -->
+    <section id="threat" class="night">
+      <div class="wrap">
+        <h2>How a file takes over an agent</h2>
+        <p class="sub">No virus, no software bug. The agent does exactly what the file says, with your access to code, terminal and keys.</p>
+
+        <div class="guide">
+          <article>
+            <svg viewBox="0 0 300 130" aria-hidden="true">
+              <rect class="g-ln" x="10" y="26" width="200" height="9" rx="4.5"/>
+              <rect class="g-ln" x="10" y="52" width="66" height="9" rx="4.5"/>
+              <rect class="g-mark" x="82" y="44" width="118" height="25" rx="7"/>
+              <g class="g-tick"><path d="M94 50v13M104 50v13M114 50v13M124 50v13M134 50v13M144 50v13M154 50v13M164 50v13M174 50v13M184 50v13"/></g>
+              <rect class="g-ln" x="206" y="52" width="72" height="9" rx="4.5"/>
+              <rect class="g-ln" x="10" y="78" width="160" height="9" rx="4.5"/>
+              <rect class="g-ln" x="10" y="104" width="112" height="9" rx="4.5"/>
+            </svg>
+            <h3>Invisible text</h3>
+            <p>Characters with no width spell out an instruction. A reviewer sees a clean file. The agent reads every character.</p>
+            <p class="seen">Seen in TrapDoor, May 2026, and the Rules File Backdoor, March 2025.</p>
+          </article>
+
+          <article>
+            <svg viewBox="0 0 300 130" aria-hidden="true">
+              <path class="g-line" d="M14 44h30l8 9h44v54H14z"/>
+              <path class="g-wire" d="M108 80h38"/><path class="g-wire" d="m140 74 6 6-6 6"/>
+              <circle class="g-hot" cx="176" cy="80" r="22"/><path class="g-hot-fill" d="m170 69 17 11-17 11z"/>
+              <path class="g-wire" d="M206 80h26"/><path class="g-wire" d="m226 74 6 6-6 6"/>
+              <path class="g-line" d="M244 40h30l12 12v66h-42z"/>
+              <g class="g-dense"><path d="M252 66h26M252 74h26M252 82h26M252 90h26M252 98h26M252 106h26"/></g>
+            </svg>
+            <h3>Commands that run by themselves</h3>
+            <p>A settings file tells the editor or the agent to run a script the moment the project is opened. Nothing asks first.</p>
+            <p class="seen">Seen in Miasma, June 2026: 73 Microsoft repositories switched off in 105 seconds. And in ChainDrop, August 2026.</p>
+          </article>
+
+          <article class="outside">
+            <svg viewBox="0 0 300 130" aria-hidden="true">
+              <rect class="g-line" x="14" y="46" width="84" height="62" rx="12"/>
+              <path class="g-ln-s" d="M28 66h56M28 80h40"/>
+              <circle class="g-ok" cx="98" cy="46" r="11"/><path class="g-ok-tick" d="m93 46 3.5 3.5 6-6.5"/>
+              <path class="g-wire g-dash" d="M116 78h58"/><path class="g-wire" d="m168 72 6 6-6 6"/>
+              <circle class="g-line" cx="145" cy="56" r="9"/><path class="g-wire" d="M145 51v5l3 2"/>
+              <rect class="g-line g-dash" x="192" y="46" width="84" height="62" rx="12"/>
+              <path class="g-ln-bad" d="M206 66h56M206 80h40"/>
+              <circle class="g-bad" cx="276" cy="46" r="11"/><path class="g-bad-mark" d="M276 40.5v6.5M276 51.2v.3"/>
+            </svg>
+            <h3>A tool that changes after approval</h3>
+            <p>A tool server behaves until it is trusted, then rewrites its own description into new orders.</p>
+            <p class="seen">Seen in Deadbugz, August 2026. Sentinel catches the change that adds the server. What the server does later needs a guard that watches the agent while it runs.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── how it works: a flowchart ────────────────────────────────────── -->
+    <section id="how" class="wrap block">
+      <h2>How Sentinel works</h2>
+      <p class="sub">Four steps, all on your computer. Nothing is sent anywhere and nothing from the scanned project is ever run.</p>
+
+      <div class="flow" role="img" aria-label="Flowchart. Project files go into four steps: find the files agents obey, compare before and after, check twenty rules, explain in plain words. Three things come out: a comment on the change, an agent that is not started, and a signed approval list.">
+        <ul class="flow-in" aria-hidden="true">
+          <li>instruction files<small>CLAUDE.md, AGENTS.md</small></li>
+          <li>auto-run settings<small>hooks, editor tasks</small></li>
+          <li>tool servers<small>.mcp.json</small></li>
+        </ul>
+        <svg class="fan" viewBox="0 0 64 240" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C 40 40, 24 120, 64 120"/><path d="M0 120 H 64"/><path d="M0 200 C 40 200, 24 120, 64 120"/></svg>
+
+        <ol class="stages" aria-hidden="true">
+          <li>
+            <svg class="ic" viewBox="0 0 24 24"><path d="M13 3H6v18h6"/><path d="M13 3l5 5v3"/><circle cx="16.5" cy="16.5" r="3.6"/><path d="m19.2 19.2 2.3 2.3"/></svg>
+            <h3>Find</h3><p>the files agents obey, wherever each tool keeps them</p>
+          </li>
+          <li>
+            <svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="4" width="7" height="16" rx="2"/><rect x="13.5" y="4" width="7" height="16" rx="2"/><path d="M6 9h2M6 13h2M16 9h2M16 13h2M16 17h2"/></svg>
+            <h3>Compare</h3><p>before and after a change: what vanished, what now runs by itself</p>
+          </li>
+          <li>
+            <svg class="ic" viewBox="0 0 24 24"><path d="m4 6.5 2 2 3.2-3.5M4 13.5l2 2 3.2-3.5"/><path d="M12.5 7H20M12.5 14H20M5 20.5h.01M12.5 20.5H20"/></svg>
+            <h3>Check</h3><p>20 rules with fixed, published weights. No guessing, no internet</p>
+          </li>
+          <li>
+            <svg class="ic" viewBox="0 0 24 24"><path d="M4 5.5h16v11H11l-4.5 3.5v-3.5H4z"/><path d="M8 9.5h8M8 12.8h5"/></svg>
+            <h3>Explain</h3><p>what the agent would have done, and what to do about it</p>
+          </li>
+        </ol>
+
+        <svg class="fan" viewBox="0 0 64 240" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120 C 40 120, 24 40, 64 40"/><path d="M0 120 H 64"/><path d="M0 120 C 40 120, 24 200, 64 200"/></svg>
+        <ul class="flow-out" aria-hidden="true">
+          <li class="o-comment">a comment on the change<small>and a failed check when it is compromised</small></li>
+          <li class="o-gate">the agent is not started<small>sentinel run -- claude</small></li>
+          <li class="o-lock">a signed approval list<small>AGENTS.lock, signed only by CI</small></li>
+        </ul>
+      </div>
+
+      <p class="aside"><span>Optional, off by default.</span> A sandboxed AI follows the file among decoy secrets while Sentinel watches what it reaches for. It can raise a warning. Only hard evidence can block.</p>
+    </section>
+
+    <!-- ── what we measured: every square is a project ──────────────────── -->
+    <section id="measured" class="wrap block">
+      <h2>What we measured</h2>
+      <p class="sub">We ran Sentinel and two leading open-source scanners on the same 930 popular public projects, all at their default settings. Every square below is one project. A filled square is a project whose build would be blocked over an ordinary English sentence.</p>
+
+      <div class="waffles">
+        <figure><div class="waffle" data-total="930" data-flagged="386"></div><figcaption><span class="who">Scanner A</span><span><b>386</b> of 930 blocked</span></figcaption></figure>
+        <figure><div class="waffle" data-total="930" data-flagged="120"></div><figcaption><span class="who">Scanner B</span><span><b>120</b> of 930 blocked</span></figcaption></figure>
+        <figure class="ours"><div class="waffle" data-total="930" data-flagged="3"></div><figcaption><span class="who">Sentinel</span><span><b>3</b> of 930 blocked</span></figcaption></figure>
+      </div>
+
+      <div class="honest">
+        <div>
+          <div class="dots" data-total="22" data-filled="22" data-kind="bad" data-after="now 0" aria-hidden="true"></div>
+          <h3>Where we got it wrong</h3>
+          <p>Our first version wrongly called 22 of 590 healthy projects compromised. We found the causes, fixed them, and re-tested on 340 projects it had never seen. It now calls none of the 930 compromised.</p>
+        </div>
+        <div>
+          <div class="dots" data-total="30" data-filled="11" data-kind="accent" aria-hidden="true"></div>
+          <h3>An experiment that fell short</h3>
+          <p>A sandboxed AI followed 30 disguised attack files among decoy secrets. It caught 11, with no false alarms. That is below our own bar, so the feature ships switched off.</p>
+        </div>
+      </div>
+      <p class="fine">The projects are presumed healthy, not audited one by one, and both other scanners check far more things than Sentinel does. Tool names, versions, method and raw output are in the <a href="https://github.com/GarvitAgrawal04/SENTINEL/tree/main/bench/results" rel="noopener">benchmark results</a>.</p>
+    </section>
+
+    <!-- ── use it: with the real output ─────────────────────────────────── -->
+    <section id="use" class="wrap block">
+      <h2>Use it</h2>
+      <div class="seg" role="tablist" aria-label="Ways to use Sentinel">
+        <button role="tab" id="use-tab-local" aria-selected="true" aria-controls="use-local">On your computer</button>
+        <button role="tab" id="use-tab-gate" aria-selected="false" aria-controls="use-gate" tabindex="-1">Before your agent starts</button>
+        <button role="tab" id="use-tab-pr" aria-selected="false" aria-controls="use-pr" tabindex="-1">On every pull request</button>
+      </div>
+
+      <div id="use-local" role="tabpanel" aria-labelledby="use-tab-local" class="use">
+        <div class="snippet">
+          <p>You need Python 3.10 or newer and Git. One command sets everything up and opens this page on your own machine.</p>
+          <pre><code>git clone https://github.com/GarvitAgrawal04/SENTINEL.git
+cd SENTINEL
+bash setup.sh</code></pre>
+          <button class="btn quiet copy">Copy commands</button>
+        </div>
+        <div class="shot term" aria-label="What you see in the terminal">
+          <div class="shot-bar">Terminal</div>
+<pre><span class="t-dim">$</span> bash setup.sh
+<span class="t-step">==&gt;</span> Using Python 3.12
+<span class="t-step">==&gt;</span> Creating the virtual environment in .venv
+<span class="t-step">==&gt;</span> Installing dependencies
+<span class="t-step">==&gt;</span> Self-test
+<span class="t-ok">ALL PASS</span>
+<span class="t-step">==&gt;</span> Open http://127.0.0.1:8000 in your browser</pre>
+        </div>
+      </div>
+
+      <div id="use-gate" role="tabpanel" aria-labelledby="use-tab-gate" class="use" hidden>
+        <div class="snippet">
+          <p>Start your agent through Sentinel. If the project is compromised, the agent does not start. This still works when an attacker skips your CI.</p>
+          <pre><code>sentinel scan .
+sentinel run -- claude</code></pre>
+          <button class="btn quiet copy">Copy commands</button>
+        </div>
+        <div class="shot term" aria-label="What you see in the terminal">
+          <div class="shot-bar">Terminal</div>
+<pre><span class="t-dim">$</span> sentinel run -- claude
+sentinel  verdict: <span class="t-bad">COMPROMISED</span>
+
+<span class="t-bad">[ !! ]</span> .claude/settings.json   score 5
+    S17b forced: 4 tools wired to auto-run the same payload
+      what happens : Whichever of claude, cursor, gemini, vscode a
+                     developer uses, opening this repo runs the same script.
+<span class="t-bad">[ !! ]</span> .github/setup.js   score 39
+    S18a forced: auto-exec target is opaque: 60,009 bytes on one line
+
+<span class="t-bad">sentinel: refusing to start `claude` here.</span></pre>
+        </div>
+      </div>
+
+      <div id="use-pr" role="tabpanel" aria-labelledby="use-tab-pr" class="use" hidden>
+        <div class="snippet">
+          <p>Sentinel comments on each pull request with what the change would make agents do, and fails the check when it is compromised.</p>
+          <pre><code>- uses: actions/checkout@v4
+  with: { fetch-depth: 0 }
+- uses: GarvitAgrawal04/SENTINEL/action@main
+  with: { fail-on: compromised }</code></pre>
+          <button class="btn quiet copy">Copy workflow</button>
+        </div>
+        <div class="shot pr" aria-label="The comment Sentinel leaves on a pull request">
+          <div class="shot-bar">Pull request: chore: bump deps</div>
+          <div class="pr-body">
+            <p class="pr-title">Sentinel, agent behaviour diff <span class="pill bad">Compromised</span></p>
+            <p class="pr-line">This pull request changes what AI coding agents will do in this repository: <code>.mcp.json</code>, <code>AGENTS.md</code>.</p>
+            <ol>
+              <li><b>Exfiltration-shaped instruction</b><span>S5, −40</span><em>Your agent is told to send credentials off the machine.</em></li>
+              <li><b>Instruction hidden in a comment</b><span>S2, −35</span><em>Your agent reads an instruction that never renders in a preview.</em></li>
+              <li><b>Guardrail weakened</b><span>S20, needs approval</span><em>“Do not upload the .env file anywhere.” Negation removed.</em></li>
+              <li><b>New MCP server, not approved</b><span>S19, needs approval</span><em>productivity-suite, https://example.invalid/mcp</em></li>
+            </ol>
+            <p class="pr-foot">Approvals were read from the base branch’s AGENTS.lock (signature valid).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="limits">
+        <h3>What Sentinel does not do</h3>
+        <ul>
+          <li>It checks files. An attack that begins after a tool server is approved needs a guard that watches the agent while it runs.</li>
+          <li>Its rules catch patterns. A cleverly reworded instruction can pass them, and one of our own tests documents that miss.</li>
+          <li>A clean result means checked, not safe.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <p id="privacy">Checking where the scanner is running.</p>
+    <p>Open source. Built for Geeks2Code 2026. <a href="https://github.com/GarvitAgrawal04/SENTINEL" rel="noopener">Source code</a> <a id="api-docs" href="/docs" hidden>API reference</a></p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js" type="module"></script>
+</body>
 </html>

@@ -28,8 +28,8 @@ bash setup.sh
 ```
 
 `setup.sh` creates a virtual environment in `.venv`, installs the pinned dependencies, copies `.env.example` to `.env`, runs
-the engine's self-test, and starts the API. When you see `Uvicorn running on http://127.0.0.1:8000`, open
-**http://127.0.0.1:8000/docs** and try an endpoint in the browser.
+the engine's self-test, and starts the server. When you see `Uvicorn running on http://127.0.0.1:8000`, open
+**http://127.0.0.1:8000** for the web UI (the API reference is at `/docs`).
 
 Prefer `make`? `make run` does the same. Other targets: `make test`, `make scan`, `make clean`.
 
@@ -95,6 +95,9 @@ Nothing is stored, nothing leaves your machine. Interactive documentation: `/doc
 | `POST` | `/scan/file` | Scan **one uploaded file** (multipart field `file`, max 2 MB). An unknown file name is treated as an instruction file; `settings.json`, `tasks.json`, `*.mdc` and other `*.json` are treated as the agent config they look like. |
 | `POST` | `/scan/text` | Same scan for clients that prefer JSON: `{"filename": "CLAUDE.md", "text": "..."}`. |
 | `POST` | `/scan/files` | Scan **several files together** (multipart field `files`, max 200). Each upload's file name is its path inside the repository, e.g. `.claude/settings.json`. This gives full repository context: orphaned hooks and several tools wired to one script are only detectable here. |
+| `POST` | `/scan/bundle` | The same as `/scan/files` for clients that prefer JSON: `{"files": {"path": "text"}}`. The web UI uses it when you choose a project folder. |
+| `GET` | `/samples` · `/samples/NAME` | The bundled demo files with plain-language titles, and the text of one of them. |
+| `GET` | `/` | The web UI (the `frontend/` folder). Plain files: no Node.js, no build step. |
 | `GET` | `/scan/demo?file=NAME` | Scan one of the bundled files in [`samples/`](samples). Used by the web UI's demo buttons. File names only; anything else is a 404. |
 | `POST` | `/scan/package` | Removed in v5. Always answers `410 Gone` and points to `/scan/files`. |
 
@@ -146,7 +149,7 @@ SENTINEL/
 ├── pyproject.toml           package metadata; installs the `sentinel` command
 │
 ├── sentinel/                THE BACKEND
-│   ├── api.py               FastAPI app: the six routes above
+│   ├── api.py               FastAPI app: the routes above, and it serves the web UI
 │   ├── cli.py               `sentinel` command: scan, run, pr, init, approve, sign, verify, keygen, detonate
 │   ├── core.py              the engine: file discovery, all static rules, score, the gate, sign/verify. Standard library only
 │   ├── contract.py          turns an engine report into the JSON the API returns
@@ -154,6 +157,7 @@ SENTINEL/
 │   ├── lock.py              AGENTS.lock: build, approve, sign, verify
 │   ├── gitdiff.py           base-vs-head comparison for pull requests
 │   ├── render.py            the pull-request comment
+│   ├── samples.py           the bundled demo files, with names a newcomer understands
 │   └── envfile.py           loads Sentinel's own .env (never the scanned repository's)
 │
 ├── api/index.py             entry point for serverless hosting; imports sentinel.api:app
@@ -167,7 +171,7 @@ SENTINEL/
 ├── docs/                    sample PR comment, upstream issue texts, rebuild notes
 ├── AGENTS.md                instructions for AI agents working in this repo; Sentinel protects it
 ├── AGENTS.lock · .sig       signed record of this repo's agent config    ·    .sentinel/pubkey.pem   public verification key
-├── frontend/                optional React web UI (needs Node.js; see below)
+├── frontend/                the web UI: plain HTML, CSS and JS served by the API at /. No Node.js, no build step, no npm packages
 ├── vscode-extension/        optional VS Code extension that calls the local API
 └── archive/                 the retired v1 engine, its tests and reports. Not used by anything.
 ```
@@ -178,7 +182,7 @@ SENTINEL/
 |---|---|
 | `Python 3.10 or newer was not found` | Install Python from python.org, reopen the terminal, run `bash setup.sh` again. To choose an interpreter: `PYTHON=python3.12 bash setup.sh`. |
 | `could not create a virtual environment` / `ensurepip is not available` | Debian/Ubuntu ship `venv` separately: `sudo apt install python3-venv`, then run `bash setup.sh` again. |
-| `address already in use` / `[Errno 98]` / `[Errno 48]` | Something else is on port 8000. Use another port: `PORT=8001 bash setup.sh` (or set `PORT` in `.env`). If you use the web UI, point it at the new port (see below). |
+| `address already in use` / `[Errno 98]` / `[Errno 48]` | Something else is on port 8000. Use another port: `PORT=8001 bash setup.sh` (or set `PORT` in `.env`). The web UI follows automatically, because the same server serves it. |
 | `sentinel: command not found` | The command lives in the virtual environment. Activate it: `source .venv/bin/activate` (Windows: `.venv\Scripts\Activate.ps1`). |
 | `Form data requires "python-multipart"` | Dependencies were installed by hand and one is missing. Run `bash setup.sh --install-only`. |
 | `.env` is missing, or you broke it | Delete it and run `bash setup.sh` again; it is re-created from `.env.example`. Nothing in it is required. |
@@ -191,8 +195,8 @@ Run the tests with `bash setup.sh --test` or `make test`. Before a demo: `python
 
 ## Optional extras
 
-- **Web UI** (needs Node.js 18+): `cd frontend && npm install && npm run dev`, then open the address it prints. It talks to
-  `http://localhost:8000`; to change that, create `frontend/.env.local` with `VITE_API_URL=http://localhost:8001`.
+- **Web UI**: nothing to install. It is served at `http://127.0.0.1:8000` by the same command. To host it elsewhere as a static
+  site, deploy the `frontend/` folder as-is and set your API address in `frontend/config.js`.
 - **GitHub Action**: comments on every pull request with what the change makes agents do, and fails the check when it is COMPROMISED.
   A real comment: [`docs/SAMPLE_PR_COMMENT.md`](docs/SAMPLE_PR_COMMENT.md).
   ```yaml

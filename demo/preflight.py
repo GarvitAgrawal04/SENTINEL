@@ -34,6 +34,13 @@ def main() -> int:
         return 1
     ok = health.get("engine") == "v5"
     print(f"{'ok  ' if ok else 'FAIL'}  /health -> engine {health.get('engine')} version {health.get('version')}")
+    try:
+        with urllib.request.urlopen(base + "/", timeout=10) as r:
+            ui = "See what a file would make" in r.read().decode("utf-8", "replace")
+    except (urllib.error.URLError, OSError):
+        ui = False
+    ok = ok and ui
+    print(f"{'ok  ' if ui else 'FAIL'}  /       -> web UI {'served' if ui else 'NOT served'}")
     for name, want in EXPECTED.items():
         try:
             got = get(base + "/scan/demo?" + urllib.parse.urlencode({"file": name})).get("verdict")

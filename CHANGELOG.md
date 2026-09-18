@@ -1,3 +1,10 @@
+## 0.6.0 — 2026-09-18 — new web UI
+- Replaced the React / three.js frontend (3.8 MB, 18 npm dependencies, WebGL) with plain HTML, CSS and JS: no framework, no npm packages, no build step, no third-party requests, strict Content-Security-Policy. Light and dark, keyboard accessible, works on a phone.
+- The API serves the UI at `/`, so `bash setup.sh` gives a newcomer the whole product with no Node.js.
+- Visuals that carry information: an illustrated hero that plays the story once (hidden line, scan, blocked path), a field guide to the three attack shapes, a flowchart of the pipeline, unit charts where every square is one of the 930 benchmark projects, and product shots of the real terminal and pull-request output.
+- In the scanner: "Reveal hidden content" shows and decodes invisible characters and comments a preview hides; a three-zone score scale; verdict dots on the samples; scan a whole project folder (only agent-config files and the scripts their hooks point to are sent); honest offline mode with saved results when no scanner is reachable.
+- API (additive): `GET /samples` (with each sample's verdict), `GET /samples/NAME`, `POST /scan/bundle`.
+
 ## 0.5.8 — 2026-09-18 — clone and run
 - `bash setup.sh` / `make run`: virtual environment, pinned dependencies, `.env`, self-test, server. Python 3.10+ and Git are the only prerequisites.
 - `requirements.txt` / `requirements-dev.txt` pinned and verified by the test suite; CI installs the same files.
