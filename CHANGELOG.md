@@ -4,6 +4,8 @@
 - Visuals that carry information: an illustrated hero that plays the story once (hidden line, scan, blocked path), a field guide to the three attack shapes, a flowchart of the pipeline, unit charts where every square is one of the 930 benchmark projects, and product shots of the real terminal and pull-request output.
 - In the scanner: "Reveal hidden content" shows and decodes invisible characters and comments a preview hides; a three-zone score scale; verdict dots on the samples; scan a whole project folder (only agent-config files and the scripts their hooks point to are sent); honest offline mode with saved results when no scanner is reachable.
 - API (additive): `GET /samples` (with each sample's verdict), `GET /samples/NAME`, `POST /scan/bundle`.
+- README rewritten in depth: install with commands, every way to use it, supported files, each rule and the scoring, architecture diagrams, API, configuration, the measured comparison with its caveats, limits, troubleshooting. Screenshots in `docs/img/`.
+- Fixed a finding that told users to run `sentinel clean`, a command that does not exist.
 
 ## 0.5.8 — 2026-09-18 — clone and run
 - `bash setup.sh` / `make run`: virtual environment, pinned dependencies, `.env`, self-test, server. Python 3.10+ and Git are the only prerequisites.

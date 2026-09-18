@@ -559,7 +559,7 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
                          + (f" decoded: \"{hidden[:160]}\"" if hidden else " (not decodable by known schemes)"),
                 impact="Your agent reads text that you cannot see in an editor or a diff."
                        + (f" It says: \"{hidden[:160]}\"" if hidden else ""),
-                fix="Strip the characters (`sentinel clean`), then find the commit that introduced them."))
+                fix="Delete the invisible characters, then find the commit that introduced them. The web UI's \"Reveal hidden content\" view shows exactly where they are."))
         elif bad:
             findings.append(Finding("S1b", rel, 15,
                 evidence=f"{len(bad)} stray invisible character(s) at offsets {[i for i, _ in bad]}",
