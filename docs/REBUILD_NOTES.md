@@ -1,3 +1,5 @@
+> **Historical note (17 Sept 2026).** This records the rebuild from the v1 engine. Test counts, commands and the frontend it mentions are out of date. The current state is in the [README](../README.md) and [CHANGELOG](../CHANGELOG.md).
+
 # SENTINEL — v5 engine rebuild (17 Sept 2026)
 
 Branch `v5-engine`. Read this first; it replaces HANDOFF.md as the starting point.

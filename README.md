@@ -456,7 +456,8 @@ Speed: 930 real repositories scanned in 3.6 seconds on one core. Marginal cost p
 ## API reference
 
 Base URL `http://127.0.0.1:8000`. Stateless: each request is scanned in a temporary directory that is deleted afterwards.
-Interactive documentation at `/docs`.
+Interactive documentation at `/docs` (that one auto-generated page loads Swagger UI from a CDN, so it needs internet; the
+web UI and the API themselves do not).
 
 | Method | Path | What it does |
 |---|---|---|
@@ -696,6 +697,8 @@ anything sensitive, contact a maintainer privately before opening a public issue
 **Roadmap.** Keyless signing (Sigstore) · SARIF output for GitHub's Security tab · more rules (cross-file contradictions,
 tool-name shadowing) · a runtime guard that pins tool-server descriptions per session · a multi-model sandbox matrix ·
 proposing `AGENTS.lock` as an open specification.
+
+**License.** [Apache-2.0](LICENSE).
 
 **Acknowledgements.** The benign-twin testing idea is borrowed from wormhole-guard. Incident research by Pillar Security,
 Socket, StepSecurity, OpenSourceMalware, Datadog Security Labs, Elastic Security Labs, Microsoft Threat Intelligence, Snyk,
