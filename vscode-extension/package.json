@@ -2,24 +2,57 @@
   "name": "sentinel-md",
   "displayName": "Sentinel",
   "description": "Underlines what a file would make your AI coding agent do. Needs the Sentinel API running on your machine.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "sentinel",
   "license": "Apache-2.0",
-  "repository": { "type": "git", "url": "https://github.com/GarvitAgrawal04/SENTINEL" },
-  "engines": { "vscode": "^1.85.0" },
-  "categories": ["Linters"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GarvitAgrawal04/SENTINEL"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters"
+  ],
   "main": "./extension.js",
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
-      { "command": "sentinel.scanFile", "title": "Sentinel: Scan this file" },
-      { "command": "sentinel.showReport", "title": "Sentinel: Show the full report" }
+      {
+        "command": "sentinel.scanFile",
+        "title": "Sentinel: Scan this file"
+      },
+      {
+        "command": "sentinel.showReport",
+        "title": "Sentinel: Show the full report"
+      }
     ],
     "configuration": {
       "title": "Sentinel",
       "properties": {
-        "sentinel.apiUrl": { "type": "string", "default": "http://127.0.0.1:8000", "description": "Where the Sentinel API is running. Keep it on your own machine so nothing you scan leaves it." }
+        "sentinel.apiUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000",
+          "scope": "machine",
+          "description": "Where your own Sentinel scanner is running. A project cannot change this setting, so a hostile repository cannot redirect your scans."
+        },
+        "sentinel.hostedUrl": {
+          "type": "string",
+          "default": "https://sentinel-ivory-two-76.vercel.app",
+          "scope": "machine",
+          "description": "Hosted demo scanner, used only after you choose it when your own scanner is not running. File contents are sent to it."
+        }
       }
     }
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true,
+      "description": "Sentinel only reads the open file and sends it to the scanner you configured. It never runs anything from the workspace, so it is safe, and most useful, in folders you do not trust."
+    },
+    "virtualWorkspaces": true
   }
 }

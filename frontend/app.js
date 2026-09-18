@@ -30,7 +30,7 @@ function svg(tag, attrs = {}, ...children) {
 // ───────────────────────────────────────────────────────── where is the scanner?
 const state = { api: null, offline: false, saved: null, samples: [], bundle: null, view: "edit", last: null };
 
-async function getJSON(url, options = {}, ms = 8000) {
+async function getJSON(url, options = {}, ms = 20000) {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), ms);
   try {
@@ -41,18 +41,47 @@ async function getJSON(url, options = {}, ms = 8000) {
   } finally { clearTimeout(timer); }
 }
 
-async function findScanner() {
+// Is this page on the public internet (as opposed to the copy your own computer serves)?
+const HOSTED = location.protocol.startsWith("http") && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+
+// A hosted scanner is a serverless function. Its first answer after a quiet spell can take several seconds
+// ("cold start"), more from another continent. Giving up after 2.5 s used to strand visitors in saved-results mode.
+async function findScanner(patience = 20000) {
   const candidates = [];
-  if (cfg.apiBase) candidates.push(cfg.apiBase.replace(/\/+$/, ""));
-  if (location.protocol.startsWith("http")) candidates.push("");            // the server that served this page
-  candidates.push("http://127.0.0.1:8000");
-  for (const base of [...new Set(candidates)]) {
+  if (cfg.apiBase) candidates.push([cfg.apiBase.replace(/\/+$/, ""), patience]);
+  if (location.protocol.startsWith("http")) candidates.push(["", patience]);          // the server that served this page
+  if (!HOSTED) candidates.push(["http://127.0.0.1:8000", 2500]);                       // never poke a visitor's own machine from a public site
+  const seen = new Set();
+  for (const [base, ms] of candidates) {
+    if (seen.has(base)) continue;
+    seen.add(base);
     try {
-      const health = await getJSON(base + "/health", {}, 2500);
+      const health = await getJSON(base + "/health", {}, ms);
       if (health.engine) return { base, health };
     } catch { /* try the next one */ }
   }
   return null;
+}
+
+// Called when we are showing saved results: try again, and switch to the live scanner the moment it answers.
+let reconnecting = null;
+function reconnect(patience = 15000) {
+  if (!state.offline) return Promise.resolve(true);
+  if (!reconnecting) {
+    reconnecting = findScanner(patience).then(async (found) => {
+      reconnecting = null;
+      if (!found) return false;
+      state.api = found.base; state.offline = false;
+      describeScanner();
+      try { await loadSamples(); } catch { /* keep the list we have */ }
+      return true;
+    });
+  }
+  return reconnecting;
+}
+function keepTrying(attempt = 0) {
+  if (!state.offline || attempt >= 12) return;
+  setTimeout(async () => { if (!(await reconnect(10000))) keepTrying(attempt + 1); else if (state.last) scan(); }, 6000);
 }
 
 function scannerHost() {
@@ -64,7 +93,9 @@ const isLocal = () => /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(scannerHo
 function describeScanner() {
   const privacy = $("#privacy");
   if (state.offline) {
-    privacy.textContent = "The scanner is not reachable, so this page shows saved results for the samples. To scan your own files, start it with: bash setup.sh";
+    privacy.textContent = HOSTED
+      ? "The scanner has not answered yet, so this page is showing saved results for the samples. It keeps trying and switches over by itself."
+      : "The scanner is not reachable, so this page shows saved results for the samples. To scan your own files, start it with: bash setup.sh";
   } else if (isLocal()) {
     privacy.textContent = "The scanner is running on this computer. Nothing you scan leaves it.";
     $("#api-docs").hidden = false;
@@ -278,8 +309,9 @@ async function scan() {
   const label = btn.textContent;
   try {
     let result;
+    if (state.offline) { btn.disabled = true; btn.textContent = "Waking the scanner"; await reconnect(); }
     if (state.bundle) {
-      if (state.offline) return showNotice("Scanning your own files needs the scanner running. Start it with: bash setup.sh");
+      if (state.offline) return showNotice(OFFLINE_HELP);
       btn.disabled = true; btn.textContent = "Scanning";
       result = await getJSON(state.api + "/scan/bundle", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ files: Object.fromEntries(state.bundle) }) }, 30000);
@@ -288,7 +320,7 @@ async function scan() {
       if (!text.trim()) return showNotice("There is nothing to scan yet. Paste a file, upload one, or pick a sample.");
       if (state.offline) {
         const saved = state.saved.samples.find((s) => s.file === filename && s.text === text);
-        if (!saved) return showNotice("Scanning your own text needs the scanner running. Start it with: bash setup.sh");
+        if (!saved) return showNotice(OFFLINE_HELP);
         result = saved.result;
       } else {
         btn.disabled = true; btn.textContent = "Scanning";
@@ -300,6 +332,10 @@ async function scan() {
     showResult(result);
   } catch (e) { showError(e); } finally { btn.disabled = false; btn.textContent = label; }
 }
+
+const OFFLINE_HELP = HOSTED
+  ? "The scanner is still starting up and did not answer in time. Wait a few seconds and press Scan again."
+  : "Scanning your own files needs the scanner running. Start it with: bash setup.sh";
 
 const VERDICT = {
   CLEAN: ["Clean", "Nothing here steers an agent somewhere it should not go. That means checked, not safe."],
@@ -379,7 +415,8 @@ function showNotice(message, isError = false) {
 function showError(e) {
   const aborted = e && e.name === "AbortError";
   showNotice(aborted ? "The scanner took too long to answer. Check that it is still running, then scan again."
-    : e instanceof TypeError ? "The scanner could not be reached. Start it with: bash setup.sh" : String(e.message || e), true);
+    : e instanceof TypeError ? (HOSTED ? "The scanner could not be reached. Check your connection and press Scan again." : "The scanner could not be reached. Start it with: bash setup.sh")
+    : String(e.message || e), true);
 }
 
 async function copy(text, button, label) {
@@ -458,11 +495,14 @@ function wire() {
 
 async function start() {
   wire();
+  $("#privacy").textContent = HOSTED ? "Waking the scanner. The first visit after a quiet spell can take a few seconds." : "Looking for the scanner.";
+  $("#empty .empty-title").textContent = HOSTED ? "Waking the scanner." : "Looking for the scanner.";
   const found = await findScanner();
   if (found) state.api = found.base;
   else {
     try { state.saved = window.SENTINEL_SAVED || await getJSON("saved-results.json"); state.offline = true; }
     catch { describeOff(); return; }
+    keepTrying();
   }
   describeScanner();
   try {
@@ -472,8 +512,8 @@ async function start() {
   } catch (e) { showError(e); }
 }
 function describeOff() {
-  $("#privacy").textContent = "The scanner is not reachable. Start it with: bash setup.sh";
-  showNotice("The scanner could not be reached. Start it with: bash setup.sh", true);
+  $("#privacy").textContent = HOSTED ? "The scanner did not answer. Reload the page in a few seconds." : "The scanner is not reachable. Start it with: bash setup.sh";
+  showNotice(HOSTED ? "The scanner did not answer. Reload the page in a few seconds." : "The scanner could not be reached. Start it with: bash setup.sh", true);
 }
 
 start();

@@ -28,12 +28,20 @@ Build the package once (needs Node.js), then install it:
 
 ```
 cd vscode-extension
-npx @vscode/vsce package --no-dependencies        # writes sentinel-md-0.2.0.vsix
-code --install-extension sentinel-md-0.2.0.vsix
+npx @vscode/vsce package --no-dependencies        # writes sentinel-md-0.2.1.vsix
+code --install-extension sentinel-md-0.2.1.vsix
 ```
 
 Or in VS Code: **Extensions** panel → **…** menu → **Install from VSIX…** → pick the file → reload. After that the extension
 is active in every window; you only need the scanner running (`bash setup.sh`).
 
-**Setting:** `sentinel.apiUrl` (default `http://127.0.0.1:8000`).
+**It works in folders you do not trust.** VS Code's Restricted Mode switches most extensions off; Sentinel declares that it
+is safe there, because it only reads the open file and never runs anything from the workspace. That is when you need it most.
+
+**If your scanner is not running** the status bar says *Sentinel: scanner offline* and a message offers the hosted demo
+scanner. Choose it only if you accept that the file's contents are sent to that server. Nothing is sent anywhere without
+that click.
+
+**Settings** (both can only be set in your own user settings, never by a project, so a hostile repository cannot redirect
+your scans): `sentinel.apiUrl` (default `http://127.0.0.1:8000`) and `sentinel.hostedUrl`.
 **Test:** `node vscode-extension/test/smoke.js http://127.0.0.1:8000` runs the real extension against the real API.

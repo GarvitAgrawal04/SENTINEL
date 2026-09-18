@@ -1,3 +1,8 @@
+## 0.6.4 — 2026-09-18 — hosted site and VS Code extension actually work for a first-time visitor
+- **Website:** on the hosted copy, pasting or uploading said "needs the scanner running". Cause: the health check gave up after 2.5 s, a cold serverless start (from another continent) takes longer, and the page then stayed in saved-results mode for good. Now it waits up to 20 s, says "Waking the scanner", keeps retrying in the background, wakes the scanner when you press Scan, and switches to live results by itself. A public page no longer probes `http://127.0.0.1:8000` on the visitor's machine.
+- **Uploading several loose files** (no folder) ignored `settings.json`, `tasks.json` and unknown names, because they landed at the root where no agent reads them: a hook piping curl into sh came back CLEAN. Each loose file is now placed where its tool would read it, reported under the name that was uploaded, and rules that need the rest of the repository are switched off for loose files.
+- **VS Code extension 0.2.1:** declared safe for untrusted workspaces (Restricted Mode used to switch it off, exactly where it is needed); a visible "scanner offline" state instead of silence; an explicit, opt-in hosted scanner when the local one is not running; scanner addresses are machine-scoped so a project cannot redirect them.
+
 ## 0.6.3 — 2026-09-18 — findings point at the right line
 - Every finding now carries the line a person would look at. Override phrasing, concealment and hidden-text findings used to report line 0, so editors underlined line 1. Evidence for those rules now quotes the matching line.
 - Rule titles keep acronyms ("New MCP server", not "New mcp server"). Extension: licence file, `.vscodeignore`, VSIX install steps.

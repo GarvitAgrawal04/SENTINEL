@@ -13,12 +13,12 @@ const WATCHED_NAMES = new Set(['claude.md', 'agents.md', 'gemini.md', '.cursorru
 const isWatched = (fileName) => { const b = path.basename(fileName).toLowerCase(); return WATCHED_NAMES.has(b) || b.endsWith('.mdc'); };
 const WORD = { CLEAN: 'Clean', SUSPICIOUS: 'Suspicious', COMPROMISED: 'Compromised' };
 
-function postJson(url, payload) {
+function postJson(url, payload, timeoutMs) {
     return new Promise((resolve, reject) => {
         const u = new URL(url);
         const body = Buffer.from(JSON.stringify(payload), 'utf-8');
         const req = (u.protocol === 'https:' ? https : http).request({ hostname: u.hostname, port: u.port, path: u.pathname, method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Content-Length': body.length }, timeout: 15000 }, (res) => {
+            headers: { 'Content-Type': 'application/json', 'Content-Length': body.length }, timeout: timeoutMs || 8000 }, (res) => {
             let data = '';
             res.on('data', (c) => { data += c; });
             res.on('end', () => (res.statusCode === 200 ? resolve(JSON.parse(data)) : reject(new Error(`the scanner answered ${res.statusCode}`))));
@@ -58,25 +58,59 @@ function activate(context) {
     const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     status.command = 'sentinel.showReport';
     const last = new Map();                                  // file -> last result, so the status bar follows the active editor
-    const apiUrl = () => (vscode.workspace.getConfiguration('sentinel').get('apiUrl') || 'http://127.0.0.1:8000').replace(/\/+$/, '');
+    const cfg = (key, fallback) => (vscode.workspace.getConfiguration('sentinel').get(key) || fallback).replace(/\/+$/, '');
+    let useHosted = false;                                   // only ever set by the person, for this session
+    let offline = false;
+    let warned = false;
+    const apiUrl = () => (useHosted ? cfg('hostedUrl', 'https://sentinel-ivory-two-76.vercel.app') : cfg('apiUrl', 'http://127.0.0.1:8000'));
 
     function paintStatus(document) {
-        const r = document && last.get(document.uri.toString());
-        if (!r) { status.hide(); return; }
-        status.text = `$(shield) Sentinel: ${WORD[r.verdict] || r.verdict} ${r.trust_score}/100`;
-        status.tooltip = `${(r.findings || []).length} finding(s). Click for the full report.`;
-        status.backgroundColor = r.verdict === 'COMPROMISED' ? new vscode.ThemeColor('statusBarItem.errorBackground')
-            : r.verdict === 'SUSPICIOUS' ? new vscode.ThemeColor('statusBarItem.warningBackground') : undefined;
+        const watched = document && (isWatched(document.fileName) || last.has(document.uri.toString()));
+        if (!watched) { status.hide(); return; }
+        const r = last.get(document.uri.toString());
+        if (offline && !r) {
+            status.text = '$(shield) Sentinel: scanner offline';
+            status.tooltip = `Nothing answered at ${apiUrl()}. Start it with: bash setup.sh`;
+            status.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+        } else if (!r) {
+            status.text = '$(shield) Sentinel: scanning';
+            status.tooltip = apiUrl(); status.backgroundColor = undefined;
+        } else {
+            status.text = `$(shield) Sentinel: ${WORD[r.verdict] || r.verdict} ${r.trust_score}/100`;
+            status.tooltip = `${(r.findings || []).length} finding(s)${useHosted ? ', scanned by the hosted demo scanner' : ''}. Click for the full report.`;
+            status.backgroundColor = r.verdict === 'COMPROMISED' ? new vscode.ThemeColor('statusBarItem.errorBackground')
+                : r.verdict === 'SUSPICIOUS' ? new vscode.ThemeColor('statusBarItem.warningBackground') : undefined;
+        }
         status.show();
+    }
+    const active = () => vscode.window.activeTextEditor && vscode.window.activeTextEditor.document;
+    const openWatched = () => vscode.workspace.textDocuments.filter((d) => isWatched(d.fileName));
+
+    async function scannerMissing(announce) {
+        offline = true; paintStatus(active());
+        if (warned && !announce) return;
+        warned = true;
+        const hosted = 'Use the hosted demo scanner';
+        const choice = await vscode.window.showWarningMessage(
+            `Sentinel could not reach your scanner at ${cfg('apiUrl', 'http://127.0.0.1:8000')}. Start it with "bash setup.sh", or use the hosted demo scanner (the file's contents are sent to it).`,
+            hosted, 'Show log');
+        if (choice === 'Show log') out.show(true);
+        if (choice === hosted) {
+            useHosted = true; offline = false;
+            out.appendLine(`Using the hosted demo scanner at ${apiUrl()} for this session. File contents are sent to it.`);
+            for (const d of openWatched()) scan(d, false);
+        }
     }
 
     async function scan(document, announce) {
+        paintStatus(active());
         try {
-            const result = await postJson(apiUrl() + '/scan/text', { filename: path.basename(document.fileName), text: document.getText() });
+            const result = await postJson(apiUrl() + '/scan/text', { filename: path.basename(document.fileName), text: document.getText() }, useHosted ? 25000 : 8000);
+            offline = false;
             last.set(document.uri.toString(), result);
             problems.set(document.uri, (result.findings || []).map((f) => toDiagnostic(document, f)));
             out.appendLine('\n' + report(result));
-            paintStatus(vscode.window.activeTextEditor && vscode.window.activeTextEditor.document);
+            paintStatus(active());
             if (!announce) return;
             const n = (result.findings || []).length;
             const text = `Sentinel: ${result.filename} is ${(WORD[result.verdict] || result.verdict).toLowerCase()}, ${result.trust_score}/100` + (n ? ` (${n} finding${n === 1 ? '' : 's'})` : '');
@@ -84,8 +118,8 @@ function activate(context) {
             const choice = await show(text, ...(n ? ['Show problems'] : []));
             if (choice === 'Show problems') vscode.commands.executeCommand('workbench.actions.view.problems');
         } catch (e) {
-            out.appendLine(`Scan skipped for ${path.basename(document.fileName)}: ${e.message}`);
-            if (announce) vscode.window.showWarningMessage(`Sentinel could not reach the scanner at ${apiUrl()}. Start it with: bash setup.sh`);
+            out.appendLine(`Scan failed for ${path.basename(document.fileName)} at ${apiUrl()}: ${e.message}`);
+            scannerMissing(announce);
         }
     }
 
@@ -100,8 +134,9 @@ function activate(context) {
         }),
         vscode.commands.registerCommand('sentinel.showReport', () => out.show(true)));
 
-    for (const doc of vscode.workspace.textDocuments) if (isWatched(doc.fileName)) scan(doc, false);
-    out.appendLine('Sentinel is watching agent instruction and config files. Scanner: ' + apiUrl());
+    out.appendLine('Sentinel 0.2.1 is active and watching agent instruction and config files. Scanner: ' + apiUrl());
+    for (const doc of openWatched()) scan(doc, false);
+    paintStatus(active());
 }
 
 function deactivate() {}

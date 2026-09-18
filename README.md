@@ -135,9 +135,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.3 (formula v0.1)
+sentinel --version                 # sentinel 0.6.4 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 68 passed
+pytest -q                          # 70 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -479,7 +479,7 @@ web UI and the API themselves do not).
 | `GET` | `/health` | Liveness: engine (`v5`), version, scoring-formula version. |
 | `POST` | `/scan/text` | Scan one file sent as JSON: `{"filename": "CLAUDE.md", "text": "..."}`. |
 | `POST` | `/scan/file` | Scan one uploaded file (multipart field `file`, 2 MB at most). |
-| `POST` | `/scan/bundle` | Scan several files with repository context, as JSON: `{"files": {"path": "text"}}` (200 files, 2 MB each). Orphaned hooks and several tools wired to one script are only detectable with this context. |
+| `POST` | `/scan/bundle` | Scan several files, as JSON: `{"files": {"path": "text"}}` (200 files, 2 MB each). With folders in the paths it is a repository: orphaned hooks and several tools wired to one script are only detectable with that context. Loose file names (no folders) are each placed where their tool would read them; the response says how in `treated_as`. |
 | `POST` | `/scan/files` | The same as `/scan/bundle` for multipart uploads; each upload's file name is its path in the repository. |
 | `GET` | `/samples` · `/samples/NAME` | The bundled demo files with plain-language titles and verdicts; the text of one of them. |
 | `GET` | `/scan/demo?file=NAME` | Scan one bundled sample by bare file name. Anything else is a 404. |
@@ -684,6 +684,7 @@ SENTINEL/
 | `address already in use` / `[Errno 98]` / `[Errno 48]` | Port 8000 is taken: `PORT=8001 bash setup.sh`, or set `PORT` in `.env`. The web UI follows automatically. |
 | `sentinel: command not found` | It lives in the virtual environment: `source .venv/bin/activate` (Windows: `.venv\Scripts\Activate.ps1`). |
 | `Form data requires "python-multipart"` | A dependency is missing: `bash setup.sh --install-only`. |
+| The hosted page shows \"saved results\" at first | The hosted scanner is a serverless function and its first answer after a quiet spell is slow. The page keeps trying and switches to live results by itself; pressing Scan also wakes it. |
 | The web page says the scanner is not reachable | The server is not running, or the page was opened by double-clicking `index.html` (browsers block that). Use `bash setup.sh` and open http://127.0.0.1:8000. |
 | `base ref 'main' not found` in CI | The checkout is shallow: `fetch-depth: 0` in `actions/checkout`. |
 | `signature : UNSIGNED` from `sentinel verify` | The lock exists but CI has not signed it yet: set up `action/examples/sentinel-sign.yml`. |
@@ -696,7 +697,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 68 passed
+bash setup.sh --test                 # or: make test  → 70 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

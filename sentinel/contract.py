@@ -95,17 +95,50 @@ def scan_text(filename: str, text: str) -> dict:
     return legacy_result(filename, report, text)
 
 
+def _place_loose(filename: str, taken: set[str]) -> str | None:
+    """Several loose files picked in a file dialog have no folders, so `settings.json` would sit at the root, where no
+    agent reads it, and the scan would say CLEAN about a hook that pipes curl into sh. Put each file where its tool
+    would look for it. Unknown text files are treated as instructions, each in its own slot."""
+    low = filename.lower()
+    known = low in ("settings.json", "settings.local.json", "tasks.json", ".cursorrules", "agents.md", "gemini.md", "claude.md",
+                    "copilot-instructions.md") or low.endswith((".json", ".mdc"))
+    if low == "copilot-instructions.md":
+        options = [".github/copilot-instructions.md"]
+    elif known:
+        first = _place(filename)
+        options = [first] + {".claude/settings.json": [".gemini/settings.json"], ".mcp.json": [".cursor/mcp.json", ".vscode/mcp.json"]}.get(first, [])
+    else:
+        stem = "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in filename)[:60] or "file"
+        options = [f"uploaded/{stem}/SKILL.md"]
+    return next((o for o in options if o not in taken), None)
+
+
 def scan_files(files: dict[str, str]) -> dict:
-    """Several uploaded files with their repository-relative paths: full repository context, S10/S17b included."""
+    """Several uploaded files. With folders in the names it is a repository: full context, S10 / S17b included.
+    Without any folder it is a handful of loose files: each is placed where its tool would read it, and rules that need
+    the rest of the repository (is the hook's script missing?) are switched off, exactly as for a single file."""
+    names = {k: k.replace("\\", "/").lstrip("/") for k in files}
+    loose = bool(files) and not any("/" in v for v in names.values())
+    shown: dict[str, str] = {}                     # path inside the sandbox -> the name the person uploaded
+    skipped: list[str] = []
     with tempfile.TemporaryDirectory(prefix="sentinel-") as tmp:
         root = Path(tmp).resolve()
-        for relpath, text in files.items():
-            target = (root / relpath.replace("\\", "/").lstrip("/")).resolve()
+        for original, text in files.items():
+            rel = _place_loose(names[original], set(shown)) if loose else names[original]
+            if rel is None:
+                skipped.append(original)
+                continue
+            target = (root / rel).resolve()
             if root not in target.parents:                                # no path traversal out of the sandbox dir
+                skipped.append(original)
                 continue
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(text, encoding="utf-8")
-        report = core.scan_repo(root)
-    per_file = [legacy_result(name, {**report, "files": {name: v}, "verdict": v["verdict"]}, files.get(name))
-                for name, v in report["files"].items()]
-    return {"verdict": report["verdict"], "files": per_file, "report": report}
+            shown[target.relative_to(root).as_posix()] = original
+        report = core.scan_repo(root, repo_context=not loose)
+    per_file = []
+    for placed, v in report["files"].items():
+        name = shown.get(placed, placed)
+        per_file.append(legacy_result(name, {**report, "files": {name: v}, "verdict": v["verdict"]}, files.get(name)))
+    return {"verdict": report["verdict"], "files": per_file, "report": report,
+            "treated_as": {orig: placed for placed, orig in shown.items() if orig != placed} if loose else {}, "skipped": skipped}

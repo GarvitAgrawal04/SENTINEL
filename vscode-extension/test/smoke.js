@@ -9,7 +9,7 @@ const listeners = {};
 class Range { constructor(sl, sc, el, ec) { Object.assign(this, { sl, sc, el, ec }); } }
 class Diagnostic { constructor(range, message, severity) { Object.assign(this, { range, message, severity }); } }
 class ThemeColor { constructor(id) { this.id = id; } }
-const say = (kind) => (text) => { seen.messages.push({ kind, text }); return Promise.resolve(undefined); };
+const say = (kind) => (text, ...buttons) => { seen.messages.push({ kind, text, buttons }); return Promise.resolve(buttons.includes('Use the hosted demo scanner') && !seen.acceptedHosted ? (seen.acceptedHosted = 'Use the hosted demo scanner') : undefined); };
 const fake = {
     Range, Diagnostic, ThemeColor, DiagnosticSeverity: { Error: 0, Warning: 1 }, StatusBarAlignment: { Left: 1 },
     languages: { createDiagnosticCollection: () => ({ set: (uri, d) => seen.diagnostics.set(uri.toString(), d), delete: (uri) => seen.diagnostics.delete(uri.toString()), dispose() {} }) },
@@ -17,7 +17,7 @@ const fake = {
         createStatusBarItem: () => (seen.status = { show() { this.visible = true; }, hide() { this.visible = false; }, dispose() {} }),
         showInformationMessage: say('info'), showWarningMessage: say('warning'), showErrorMessage: say('error'),
         onDidChangeActiveTextEditor: (fn) => { listeners.active = fn; return { dispose() {} }; }, activeTextEditor: null },
-    workspace: { textDocuments: [], getConfiguration: () => ({ get: () => api }),
+    workspace: { textDocuments: [], getConfiguration: () => ({ get: (key) => (key === 'hostedUrl' ? api : 'http://127.0.0.1:9') }),
         onDidSaveTextDocument: (fn) => { listeners.save = fn; return { dispose() {} }; },
         onDidOpenTextDocument: (fn) => { listeners.open = fn; return { dispose() {} }; },
         onDidCloseTextDocument: (fn) => { listeners.close = fn; return { dispose() {} }; } },
@@ -35,8 +35,17 @@ const until = async (test) => { for (let i = 0; i < 100; i++) { if (test()) retu
     assert.ok(seen.commands['sentinel.scanFile'] && seen.commands['sentinel.showReport'], 'both commands are registered');
     assert.ok(ext.isWatched('/x/.cursor/rules/setup.mdc') && ext.isWatched('/x/.vscode/tasks.json') && !ext.isWatched('/x/README.md'));
 
+    // 1) the local scanner is not running: a visible warning, an "offline" status bar, and an offer to use the hosted scanner
     const clean = doc('/demo/CLAUDE.md', '# Rules\n\nUse type hints.\n');
     fake.window.activeTextEditor = { document: clean };
+    fake.workspace.textDocuments = [clean];
+    listeners.open(clean); await until(() => seen.messages.length === 1);
+    assert.strictEqual(seen.messages[0].kind, 'warning'); assert.match(seen.messages[0].text, /could not reach your scanner at http:\/\/127\.0\.0\.1:9/);
+    assert.deepStrictEqual(seen.messages[0].buttons, ['Use the hosted demo scanner', 'Show log']);
+    // 2) the person accepted the hosted scanner: the open file is scanned again, this time for real
+    await until(() => /Clean 100\/100/.test(seen.status.text || ''));
+    assert.match(seen.status.tooltip, /hosted demo scanner/);
+    seen.messages.length = 0;
     listeners.save(clean); await until(() => seen.messages.length === 1);
     assert.strictEqual(seen.messages[0].kind, 'info'); assert.match(seen.messages[0].text, /is clean, 100\/100/);
     assert.strictEqual(seen.diagnostics.get('file:///demo/CLAUDE.md').length, 0);
