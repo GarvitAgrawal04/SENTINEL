@@ -1,3 +1,7 @@
+## 0.6.2 — 2026-09-18 — VS Code
+- VS Code extension rewritten (0.2.0): underlines the exact line, plain-English explanation on hover and in the Problems panel, verdict in the status bar, readable report, a "Scan this file" command, more watched files (`tasks.json`, `*.mdc`, `SKILL.md`). Still no dependencies. A test runs the real extension against the real API.
+- Fixed a contract break: clean files returned `color_band: "clean"`; v1 clients test for `"green"`, so the old extension showed nothing at all for a clean file.
+
 ## 0.6.1 — 2026-09-18 — hosted demo fix
 - Vercel returned `500 FUNCTION_INVOCATION_FAILED` for every request: with both `pyproject.toml` and `requirements.txt` present, Vercel's Python builder installs from `pyproject.toml`, which lists no dependencies, so FastAPI was never installed. `.vercelignore` now hides `pyproject.toml` (and everything the hosted app does not need); the builder falls back to the pinned `requirements.txt` and finds the app in `api/index.py`. A test guards it.
 

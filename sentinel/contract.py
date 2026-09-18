@@ -46,7 +46,7 @@ def legacy_result(filename: str, report: dict, text: str | None = None) -> dict:
             })
     verdict = report["verdict"]
     return {"filename": filename, "trust_score": min(scores) if scores else 100,
-            "color_band": {"CLEAN": "clean", "SUSPICIOUS": "amber", "COMPROMISED": "red"}[verdict], "verdict": verdict,
+            "color_band": {"CLEAN": "green", "SUSPICIOUS": "amber", "COMPROMISED": "red"}[verdict], "verdict": verdict,
             "findings": findings, "layer3_result": None, "origin": "unknown",
             "engine": "v5", "formula_version": report["formula_version"], "breakdown": breakdown,   # additive, v5
             "guide": {"steps": list(dict.fromkeys(f["fix"] for f in findings))}}
