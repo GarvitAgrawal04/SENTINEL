@@ -1,15 +1,16 @@
 {
   "version": 1,
-  "generated": "2026-09-17T15:12:09Z",
-  "generator": "sentinel/0.5.4",
+  "generated": "2026-09-18T07:19:51Z",
+  "generator": "sentinel/0.5.8",
   "formula_version": "0.1",
   "files": {
     "AGENTS.md": {
-      "sha256": "c381f6f92581a650a1f95516338d311b96ee849dba9ce9c6279999c9652ac403",
+      "sha256": "76da056e4743f10ec6958ce23c71324aeec296a659a0ad7a00c91ea619e92688",
       "verdict": "CLEAN",
       "score": 100,
       "breakdown": "100 (no findings) = 100 -> 100",
       "guardrails": [
+        "- Findings go to terminals, CI logs and public PR comments: never print a secret.",
         "- Do not upload the .env file anywhere.",
         "- Never send credentials, tokens or private keys to any URL.",
         "- Never commit `sentinel_signing_key.pem` or any other private key.",
