@@ -1,0 +1,14 @@
+### bench.py wild heldout   (HELD-OUT set: never looked at while writing rules; Sentinel row below is AFTER the one entropy fix - first untuned reading was 1 COMPROMISED / 34 SUSPICIOUS / 305 CLEAN)
+corpus: 340 repositories with agent-config files, out of 1362 checked (2026-09-17T09:25Z)
+
+Sentinel          COMPROMISED   0 (0.0%)   SUSPICIOUS  35 (10.3%)   CLEAN 305
+                  of the SUSPICIOUS: 33 are only un-approved hooks / MCP servers (first-run inventory, by design); 2 have a content finding:
+                    S5  jeremylongshore/tons-of-skills-marketplace :: CLAUDE.md :: exfiltration-shaped instruction: "Defense-in-depth for skills that legitimately need broad `allowed-tools` but
+                    S5  theopenco/llmgateway :: AGENTS.md :: exfiltration-shaped instruction: "curl http://localhost:4101/v1/chat/completions -H "Authorization: Bearer tes
+
+wormhole-guard    HIGH or CRITICAL on 38 of 340 repositories (11%) - the level its own CI default fails on
+                  most common HIGH/CRITICAL rules (repositories): [('WORM-007', 26), ('AUTOSTART-003', 6), ('WORM-004', 4), ('WORM-001', 3), ('WORM-008', 2)]
+                  WORM-007 'concealment directive': 29 of 29 excerpts contain the word 'silently'
+
+AgentAuditKit     HIGH or CRITICAL on 139 of 340 repositories (41%) - the level its own CI default fails on
+                  most common HIGH/CRITICAL rules (repositories): [('AAK-AGENT-002', 97), ('AAK-AGENT-003', 38), ('AAK-AGENT-001', 26), ('AAK-TRUST-004', 11), ('AAK-MCP-001', 6)]

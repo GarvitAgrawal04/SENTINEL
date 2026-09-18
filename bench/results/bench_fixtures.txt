@@ -1,0 +1,14 @@
+fixture                                                    | Sentinel                         | wormhole-guard                               | AgentAuditKit
+1 Miasma-shaped repo (live)                                | COMPROMISED: S17a,S17b,S18a      | CRITICAL: AUTOSTART-002, AUTOSTART-004       | CRITICAL: AAK-IDE-TASK-001
+2 ChainDrop-shaped repo (live)                             | COMPROMISED: S17a,S17b,S18b      | HIGH: AUTOSTART-003                          | CRITICAL: AAK-IDE-TASK-001
+3 ChainDrop residue (script gone)                          | COMPROMISED: S10                 | HIGH: AUTOSTART-003                          | silent
+4 TrapDoor-shaped CLAUDE.md                                | COMPROMISED: S1a,S5              | HIGH: WORM-005                               | MEDIUM: AAK-AGENT-005
+5 Clean file: emoji, flag, BOM, Hindi, guardrail           | CLEAN                            | CRITICAL: WORM-006                           | MEDIUM: AAK-AGENT-004, AAK-AGENT-005
+6a Formatter hook, first sight                             | SUSPICIOUS: S14b                 | silent                                       | silent
+7a Guardrail deleted in a diff                             | SUSPICIOUS: S20                  | silent                                       | silent
+7b Guardrail flipped: 'Do not upload' -> 'Do upload'       | COMPROMISED: S20,S5              | silent                                       | silent
+8 Unapproved remote MCP server                             | SUSPICIOUS: S19                  | silent                                       | CRITICAL: AAK-MCP-001
+9 Evasion: fake prohibition + concealment                  | COMPROMISED: S13,S5              | HIGH: WORM-007                               | HIGH: AAK-AGENT-002
+10 Paraphrased exfiltration (expected L1 miss)             | CLEAN                            | silent                                       | HIGH: AAK-AGENT-002
+11 Single stray zero-width space                           | CLEAN: S1b                       | HIGH: WORM-005                               | MEDIUM: AAK-AGENT-005
+12 Real-world benign shapes (inline-shell hook, 'silently') | SUSPICIOUS: S17a                 | CRITICAL: WORM-003                           | CRITICAL: AAK-AGENT-001

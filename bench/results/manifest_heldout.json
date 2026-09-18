@@ -1,0 +1,2632 @@
+{
+"repos": {
+"getopenscreen/openscreen": {
+"branch": "main",
+"stars": 2999,
+"files": [
+"AGENTS.md"
+]
+},
+"apptension/saas-boilerplate": {
+"branch": "master",
+"stars": 2998,
+"files": [
+"CLAUDE.md",
+".claude/settings.json"
+]
+},
+"wasserth/TotalSegmentator": {
+"branch": "master",
+"stars": 2998,
+"files": [
+"AGENTS.md"
+]
+},
+"minio/minio-go": {
+"branch": "master",
+"stars": 2998,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"tale/headplane": {
+"branch": "main",
+"stars": 2996,
+"files": [
+"AGENTS.md"
+]
+},
+"bensheldon/good_job": {
+"branch": "main",
+"stars": 2995,
+"files": [
+"AGENTS.md"
+]
+},
+"ingokegel/jclasslib": {
+"branch": "master",
+"stars": 2994,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"nicknisi/dotfiles": {
+"branch": "main",
+"stars": 2993,
+"files": [
+"CLAUDE.md"
+]
+},
+"zcaceres/markdownify-mcp": {
+"branch": "main",
+"stars": 2993,
+"files": [
+"CLAUDE.md"
+]
+},
+"tobychui/arozos": {
+"branch": "master",
+"stars": 2988,
+"files": [
+"CLAUDE.md",
+".claude/settings.json",
+"scripts/check-conventions.sh"
+]
+},
+"qxcnm/Codex-Manager": {
+"branch": "main",
+"stars": 2988,
+"files": [
+"AGENTS.md"
+]
+},
+"webinstall/webi-installers": {
+"branch": "main",
+"stars": 2988,
+"files": [
+"AGENTS.md"
+]
+},
+"duckdb/ducklake": {
+"branch": "main",
+"stars": 2987,
+"files": [
+"AGENTS.md"
+]
+},
+"jscottsmith/react-scroll-parallax": {
+"branch": "master",
+"stars": 2986,
+"files": [
+"AGENTS.md"
+]
+},
+"filecoin-project/lotus": {
+"branch": "master",
+"stars": 2985,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"vercel-labs/opensrc": {
+"branch": "main",
+"stars": 2984,
+"files": [
+"AGENTS.md"
+]
+},
+"phcode-dev/phoenix": {
+"branch": "main",
+"stars": 2984,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".mcp.json"
+]
+},
+"luminal-ai/luminal": {
+"branch": "main",
+"stars": 2980,
+"files": [
+"AGENTS.md"
+]
+},
+"kubernetes-sigs/kueue": {
+"branch": "main",
+"stars": 2980,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"pytorch/ao": {
+"branch": "main",
+"stars": 2979,
+"files": [
+"CLAUDE.md"
+]
+},
+"thephpleague/commonmark": {
+"branch": "2.10",
+"stars": 2976,
+"files": [
+"CLAUDE.md"
+]
+},
+"userver-framework/userver": {
+"branch": "develop",
+"stars": 2976,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"NVIDIA/NeMo-Retriever": {
+"branch": "main",
+"stars": 2976,
+"files": [
+"AGENTS.md"
+]
+},
+"Xpra-org/xpra": {
+"branch": "master",
+"stars": 2975,
+"files": [
+"CLAUDE.md"
+]
+},
+"deedy5/ddgs": {
+"branch": "main",
+"stars": 2973,
+"files": [
+"AGENTS.md"
+]
+},
+"silexlabs/Silex": {
+"branch": "main",
+"stars": 2973,
+"files": [
+"AGENTS.md"
+]
+},
+"appleboy/gin-jwt": {
+"branch": "master",
+"stars": 2972,
+"files": [
+"CLAUDE.md"
+]
+},
+"FB208/OpenBidKit_Yibiao": {
+"branch": "main",
+"stars": 2972,
+"files": [
+"AGENTS.md",
+".vscode/tasks.json"
+]
+},
+"Licoy/wordpress-theme-puock": {
+"branch": "master",
+"stars": 2971,
+"files": [
+"AGENTS.md"
+]
+},
+"LLMQuant/quant-mind": {
+"branch": "master",
+"stars": 2970,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+"scripts/hooks/pre_tool_use_no_bypass.py"
+]
+},
+"leookun/cursor-byok": {
+"branch": "main",
+"stars": 2970,
+"files": [
+"AGENTS.md"
+]
+},
+"acepanel/panel": {
+"branch": "main",
+"stars": 2970,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"angularsen/UnitsNet": {
+"branch": "master",
+"stars": 2969,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"totec448-spec/chat-on-steroids": {
+"branch": "main",
+"stars": 2969,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"codigoencasa/builderbot": {
+"branch": "builderbot",
+"stars": 2968,
+"files": [
+"AGENTS.md"
+]
+},
+"unjs/jiti": {
+"branch": "main",
+"stars": 2962,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"aljazceru/awesome-nostr": {
+"branch": "main",
+"stars": 2961,
+"files": [
+"AGENTS.md"
+]
+},
+"docsy/docsy": {
+"branch": "main",
+"stars": 2959,
+"files": [
+"AGENTS.md"
+]
+},
+"flutter/agent-plugins": {
+"branch": "main",
+"stars": 2956,
+"files": [
+".mcp.json"
+]
+},
+"projen/projen": {
+"branch": "main",
+"stars": 2955,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"ispc/ispc": {
+"branch": "main",
+"stars": 2954,
+"files": [
+"CLAUDE.md",
+".claude/settings.json"
+]
+},
+"gre/react-native-view-shot": {
+"branch": "master",
+"stars": 2948,
+"files": [
+"CLAUDE.md"
+]
+},
+"collabs-inc/collab-public": {
+"branch": "main",
+"stars": 2945,
+"files": [
+".mcp.json"
+]
+},
+"zenstackhq/zenstack": {
+"branch": "dev",
+"stars": 2944,
+"files": [
+"CLAUDE.md",
+".vscode/tasks.json"
+]
+},
+"antfu/node-modules-inspector": {
+"branch": "main",
+"stars": 2944,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".cursor/mcp.json",
+".vscode/mcp.json"
+]
+},
+"slackapi/bolt-js": {
+"branch": "main",
+"stars": 2944,
+"files": [
+"AGENTS.md",
+".claude/settings.json"
+]
+},
+"anthropics/commerce-agents": {
+"branch": "main",
+"stars": 2943,
+"files": [
+"CLAUDE.md"
+]
+},
+"ascending-llc/jarvis-registry": {
+"branch": "main",
+"stars": 2943,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"RoaringBitmap/roaring": {
+"branch": "master",
+"stars": 2940,
+"files": [
+"AGENTS.md"
+]
+},
+"publicsuffix/list": {
+"branch": "main",
+"stars": 2938,
+"files": [
+"AGENTS.md"
+]
+},
+"oceanbase/seekdb": {
+"branch": "master",
+"stars": 2937,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"onetimesecret/onetimesecret": {
+"branch": "main",
+"stars": 2937,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"softwaremill/elasticmq": {
+"branch": "master",
+"stars": 2935,
+"files": [
+"CLAUDE.md"
+]
+},
+"wolfSSL/wolfssl": {
+"branch": "master",
+"stars": 2935,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"10miaomiao/bilimiao2": {
+"branch": "master",
+"stars": 2933,
+"files": [
+"AGENTS.md"
+]
+},
+"CanineHQ/canine": {
+"branch": "main",
+"stars": 2932,
+"files": [
+"CLAUDE.md"
+]
+},
+"coddingtonbear/obsidian-local-rest-api": {
+"branch": "main",
+"stars": 2932,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json"
+]
+},
+"VibiumDev/vibium": {
+"branch": "main",
+"stars": 2932,
+"files": [
+"CLAUDE.md"
+]
+},
+"ExplosiveCoderflome/AI-Novel-Writing-Assistant": {
+"branch": "main",
+"stars": 2931,
+"files": [
+"AGENTS.md"
+]
+},
+"apache/grails-core": {
+"branch": "8.0.x",
+"stars": 2930,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".cursorrules",
+".claude/settings.json",
+"GEMINI.md"
+]
+},
+"intellectronica/ruler": {
+"branch": "main",
+"stars": 2929,
+"files": [
+"AGENTS.md"
+]
+},
+"google/osv.dev": {
+"branch": "master",
+"stars": 2927,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"ax-llm/ax": {
+"branch": "main",
+"stars": 2924,
+"files": [
+"AGENTS.md"
+]
+},
+"bghira/SimpleTuner": {
+"branch": "main",
+"stars": 2922,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+"GEMINI.md"
+]
+},
+"naver/egjs-flicking": {
+"branch": "master",
+"stars": 2922,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json"
+]
+},
+"TDesktop-x64/tdesktop": {
+"branch": "dev",
+"stars": 2920,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"radixark/miles": {
+"branch": "main",
+"stars": 2917,
+"files": [
+"AGENTS.md"
+]
+},
+"legions-developer/evilcharts": {
+"branch": "main",
+"stars": 2913,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"x360ce/x360ce": {
+"branch": "master",
+"stars": 2911,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"supabase/mcp": {
+"branch": "main",
+"stars": 2910,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"foss42/apidash": {
+"branch": "main",
+"stars": 2910,
+"files": [
+"AGENTS.md"
+]
+},
+"rnmapbox/maps": {
+"branch": "main",
+"stars": 2909,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"charmbracelet/pop": {
+"branch": "main",
+"stars": 2906,
+"files": [
+"AGENTS.md"
+]
+},
+"elixir-nx/nx": {
+"branch": "main",
+"stars": 2905,
+"files": [
+"AGENTS.md"
+]
+},
+"tinyhttp/tinyhttp": {
+"branch": "master",
+"stars": 2903,
+"files": [
+"CLAUDE.md"
+]
+},
+"spartan-ng/spartan": {
+"branch": "main",
+"stars": 2901,
+"files": [
+"CLAUDE.md"
+]
+},
+"Human-Agent-Society/reef": {
+"branch": "main",
+"stars": 2901,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"hmlongco/Factory": {
+"branch": "main",
+"stars": 2901,
+"files": [
+"CLAUDE.md",
+".claude/settings.local.json"
+]
+},
+"chdb-io/chdb": {
+"branch": "main",
+"stars": 2898,
+"files": [
+"AGENTS.md"
+]
+},
+"event-catalog/eventcatalog": {
+"branch": "main",
+"stars": 2898,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"kitlangton/Hex": {
+"branch": "main",
+"stars": 2897,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"pwndoc/pwndoc": {
+"branch": "main",
+"stars": 2895,
+"files": [
+"CLAUDE.md"
+]
+},
+"TheHPXProject/hpx": {
+"branch": "master",
+"stars": 2892,
+"files": [
+"AGENTS.md"
+]
+},
+"nunocoracao/blowfish": {
+"branch": "main",
+"stars": 2891,
+"files": [
+"CLAUDE.md"
+]
+},
+"rilldata/rill": {
+"branch": "main",
+"stars": 2891,
+"files": [
+".claude/settings.json"
+]
+},
+"samuelgursky/davinci-resolve-mcp": {
+"branch": "main",
+"stars": 2891,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".cursorrules",
+".github/copilot-instructions.md"
+]
+},
+"flightphp/core": {
+"branch": "master",
+"stars": 2886,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"imsai-sh/zhuzhiliao": {
+"branch": "main",
+"stars": 2881,
+"files": [
+"CLAUDE.md"
+]
+},
+"bitfireAT/davx5-ose": {
+"branch": "main",
+"stars": 2878,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"joye61/pic-smaller": {
+"branch": "master",
+"stars": 2876,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"NVIDIA/gpu-operator": {
+"branch": "main",
+"stars": 2876,
+"files": [
+"AGENTS.md"
+]
+},
+"aws-amplify/amplify-cli": {
+"branch": "dev",
+"stars": 2874,
+"files": [
+"AGENTS.md"
+]
+},
+"edrlab/thorium-reader": {
+"branch": "develop",
+"stars": 2872,
+"files": [
+"AGENTS.md",
+".vscode/tasks.json"
+]
+},
+"0PandaDEV/awesome-windows": {
+"branch": "main",
+"stars": 2872,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json"
+]
+},
+"cdhigh/KindleEar": {
+"branch": "master",
+"stars": 2869,
+"files": [
+"AGENTS.md"
+]
+},
+"cabinetai/cabinet": {
+"branch": "main",
+"stars": 2868,
+"files": [
+"CLAUDE.md"
+]
+},
+"aws/jsii": {
+"branch": "main",
+"stars": 2868,
+"files": [
+"AGENTS.md"
+]
+},
+"moltis-org/moltis": {
+"branch": "main",
+"stars": 2865,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".claude/hooks/save-session.sh",
+".claude/hooks/rename-plan.sh"
+]
+},
+"kubesphere/kubekey": {
+"branch": "main",
+"stars": 2865,
+"files": [
+"AGENTS.md"
+]
+},
+"pypa/setuptools": {
+"branch": "main",
+"stars": 2861,
+"files": [
+"AGENTS.md"
+]
+},
+"kylecorry31/Trail-Sense": {
+"branch": "main",
+"stars": 2861,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"goniszewski/grimoire": {
+"branch": "main",
+"stars": 2857,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"kaitranntt/ccs": {
+"branch": "main",
+"stars": 2857,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Taiko2k/Tauon": {
+"branch": "master",
+"stars": 2856,
+"files": [
+"AGENTS.md"
+]
+},
+"davidmonterocrespo24/velxio": {
+"branch": "master",
+"stars": 2855,
+"files": [
+"CLAUDE.md"
+]
+},
+"f5/unovis": {
+"branch": "main",
+"stars": 2851,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"supercorp-ai/supergateway": {
+"branch": "main",
+"stars": 2848,
+"files": [
+"AGENTS.md"
+]
+},
+"beefytech/Beef": {
+"branch": "master",
+"stars": 2848,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"assertj/assertj": {
+"branch": "main",
+"stars": 2846,
+"files": [
+"CLAUDE.md"
+]
+},
+"geode-sdk/geode": {
+"branch": "main",
+"stars": 2845,
+"files": [
+"AGENTS.md"
+]
+},
+"modelcontextprotocol/ext-apps": {
+"branch": "main",
+"stars": 2844,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"cloudflare/skills": {
+"branch": "main",
+"stars": 2844,
+"files": [
+".mcp.json"
+]
+},
+"QwenLM/Qwen-MM-Plugins": {
+"branch": "main",
+"stars": 2844,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"go-ego/gse": {
+"branch": "master",
+"stars": 2843,
+"files": [
+"AGENTS.md"
+]
+},
+"tradermonty/claude-trading-skills": {
+"branch": "main",
+"stars": 2843,
+"files": [
+"CLAUDE.md"
+]
+},
+"puikinsh/Bootstrap-Admin-Template": {
+"branch": "master",
+"stars": 2843,
+"files": [
+"CLAUDE.md"
+]
+},
+"sei-protocol/sei-chain": {
+"branch": "main",
+"stars": 2841,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"jesec/flood": {
+"branch": "master",
+"stars": 2841,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".cursorrules"
+]
+},
+"sveltia/sveltia-cms": {
+"branch": "main",
+"stars": 2841,
+"files": [
+"CLAUDE.md"
+]
+},
+"Automattic/pocket-casts-android": {
+"branch": "main",
+"stars": 2840,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"software-mansion/argent": {
+"branch": "main",
+"stars": 2839,
+"files": [
+"CLAUDE.md"
+]
+},
+"SeriaWei/ZKEACMS": {
+"branch": "master",
+"stars": 2839,
+"files": [
+"AGENTS.md",
+".vscode/tasks.json",
+".vscode/mcp.json"
+]
+},
+"vllm-project/vllm-ascend": {
+"branch": "main",
+"stars": 2838,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"lnreader/lnreader": {
+"branch": "master",
+"stars": 2838,
+"files": [
+"AGENTS.md"
+]
+},
+"dataplat/dbatools": {
+"branch": "development",
+"stars": 2834,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".github/copilot-instructions.md"
+]
+},
+"itchio/itch": {
+"branch": "master",
+"stars": 2833,
+"files": [
+".mcp.json",
+".vscode/tasks.json"
+]
+},
+"github/copilot-cli-for-beginners": {
+"branch": "main",
+"stars": 2831,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"joshmedeski/sesh": {
+"branch": "main",
+"stars": 2826,
+"files": [
+"CLAUDE.md"
+]
+},
+"quay/quay": {
+"branch": "master",
+"stars": 2824,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".mcp.json",
+"GEMINI.md"
+]
+},
+"datachain-ai/datachain": {
+"branch": "main",
+"stars": 2819,
+"files": [
+"CLAUDE.md"
+]
+},
+"srl-labs/containerlab": {
+"branch": "main",
+"stars": 2819,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"roslynpad/roslynpad": {
+"branch": "main",
+"stars": 2815,
+"files": [
+"CLAUDE.md",
+".vscode/tasks.json"
+]
+},
+"gem5/gem5": {
+"branch": "stable",
+"stars": 2814,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"Botspot/pi-apps": {
+"branch": "master",
+"stars": 2812,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Yeachan-Heo/gajae-code": {
+"branch": "main",
+"stars": 2811,
+"files": [
+"AGENTS.md"
+]
+},
+"MakieOrg/Makie.jl": {
+"branch": "master",
+"stars": 2810,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"teaql/teaql-agent-kit": {
+"branch": "main",
+"stars": 2809,
+"files": [
+"AGENTS.md"
+]
+},
+"danbooru/danbooru": {
+"branch": "master",
+"stars": 2807,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"paritytech/polkadot-sdk": {
+"branch": "master",
+"stars": 2807,
+"files": [
+"CLAUDE.md"
+]
+},
+"harry0703/MangoDisk": {
+"branch": "main",
+"stars": 2806,
+"files": [
+"AGENTS.md"
+]
+},
+"codse/animata": {
+"branch": "main",
+"stars": 2806,
+"files": [
+"CLAUDE.md"
+]
+},
+"bucket4j/bucket4j": {
+"branch": "master",
+"stars": 2803,
+"files": [
+"CLAUDE.md"
+]
+},
+"tidev/titanium-sdk": {
+"branch": "main",
+"stars": 2801,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"EvanBacon/serve-sim": {
+"branch": "main",
+"stars": 2801,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"homebridge/homebridge-config-ui-x": {
+"branch": "latest",
+"stars": 2799,
+"files": [
+"CLAUDE.md",
+".github/copilot-instructions.md"
+]
+},
+"addyosmani/web-quality-skills": {
+"branch": "main",
+"stars": 2795,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"git-ai-project/git-ai": {
+"branch": "main",
+"stars": 2794,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"ClassIsland/ClassIsland": {
+"branch": "master",
+"stars": 2793,
+"files": [
+"AGENTS.md",
+".vscode/tasks.json"
+]
+},
+"coreboot/coreboot": {
+"branch": "main",
+"stars": 2793,
+"files": [
+"AGENTS.md"
+]
+},
+"Vexa-ai/vexa": {
+"branch": "main",
+"stars": 2793,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"aaron-he-zhu/aaron-marketing-skills": {
+"branch": "main",
+"stars": 2793,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"IfcOpenShell/IfcOpenShell": {
+"branch": "v0.9.0",
+"stars": 2793,
+"files": [
+"AGENTS.md",
+".vscode/tasks.json"
+]
+},
+"com-lihaoyi/mill": {
+"branch": "main",
+"stars": 2792,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"UKGovernmentBEIS/inspect_ai": {
+"branch": "main",
+"stars": 2792,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"FinMind/FinMind": {
+"branch": "master",
+"stars": 2790,
+"files": [
+".claude/settings.json"
+]
+},
+"huggingface/tau": {
+"branch": "main",
+"stars": 2789,
+"files": [
+"AGENTS.md"
+]
+},
+"TrenchBroom/TrenchBroom": {
+"branch": "master",
+"stars": 2789,
+"files": [
+"AGENTS.md"
+]
+},
+"IoLanguage/io": {
+"branch": "master",
+"stars": 2789,
+"files": [
+"CLAUDE.md"
+]
+},
+"handsontable/hyperformula": {
+"branch": "master",
+"stars": 2788,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"authpass/authpass": {
+"branch": "main",
+"stars": 2788,
+"files": [
+"CLAUDE.md",
+".claude/settings.json"
+]
+},
+"opentiny/tiny-engine": {
+"branch": "develop",
+"stars": 2788,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"visa/visa-vulnerability-agentic-harness": {
+"branch": "main",
+"stars": 2788,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"CyberStrikeus/CyberStrike": {
+"branch": "main",
+"stars": 2787,
+"files": [
+"AGENTS.md",
+".claude/settings.json"
+]
+},
+"rusq/slackdump": {
+"branch": "master",
+"stars": 2787,
+"files": [
+"AGENTS.md"
+]
+},
+"unpoly/unpoly": {
+"branch": "master",
+"stars": 2786,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"overwirehq/claude-code-telegram": {
+"branch": "main",
+"stars": 2785,
+"files": [
+"CLAUDE.md"
+]
+},
+"cunarist/rinf": {
+"branch": "main",
+"stars": 2784,
+"files": [
+"AGENTS.md"
+]
+},
+"SRombauts/SQLiteCpp": {
+"branch": "master",
+"stars": 2784,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"pedestal/pedestal": {
+"branch": "master",
+"stars": 2783,
+"files": [
+"CLAUDE.md"
+]
+},
+"erupts/erupt": {
+"branch": "master",
+"stars": 2783,
+"files": [
+"CLAUDE.md"
+]
+},
+"viser-project/viser": {
+"branch": "main",
+"stars": 2782,
+"files": [
+"CLAUDE.md"
+]
+},
+"clasp-developers/clasp": {
+"branch": "main",
+"stars": 2782,
+"files": [
+"CLAUDE.md"
+]
+},
+"ciscoheat/sveltekit-superforms": {
+"branch": "main",
+"stars": 2781,
+"files": [
+"AGENTS.md"
+]
+},
+"bash-lsp/bash-language-server": {
+"branch": "main",
+"stars": 2781,
+"files": [
+"AGENTS.md",
+".vscode/tasks.json"
+]
+},
+"trungvose/angular-spotify": {
+"branch": "main",
+"stars": 2781,
+"files": [
+"CLAUDE.md"
+]
+},
+"wireapp/wire-server": {
+"branch": "develop",
+"stars": 2781,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"bookwyrm-social/bookwyrm": {
+"branch": "main",
+"stars": 2779,
+"files": [
+"AGENTS.md"
+]
+},
+"baojie/shiji-kb": {
+"branch": "main",
+"stars": 2777,
+"files": [
+"CLAUDE.md"
+]
+},
+"F1bonacc1/process-compose": {
+"branch": "main",
+"stars": 2776,
+"files": [
+"CLAUDE.md"
+]
+},
+"mitsuhiko/minijinja": {
+"branch": "main",
+"stars": 2775,
+"files": [
+"AGENTS.md"
+]
+},
+"anonfaded/FadCam": {
+"branch": "master",
+"stars": 2774,
+"files": [
+"AGENTS.md",
+".vscode/tasks.json"
+]
+},
+"cobbler/cobbler": {
+"branch": "main",
+"stars": 2773,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"jeremylongshore/tons-of-skills-marketplace": {
+"branch": "main",
+"stars": 2771,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+"scripts/check-mcp-plaintext-creds.mjs"
+]
+},
+"FluidInference/FluidAudio": {
+"branch": "main",
+"stars": 2770,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".github/copilot-instructions.md"
+]
+},
+"openlit/openlit": {
+"branch": "main",
+"stars": 2770,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Player-YN/PawWork_ZhuaZhua": {
+"branch": "main",
+"stars": 2768,
+"files": [
+"AGENTS.md"
+]
+},
+"doronz88/pymobiledevice3": {
+"branch": "master",
+"stars": 2768,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"1bananachicken/MaaNTE": {
+"branch": "dev",
+"stars": 2768,
+"files": [
+"AGENTS.md"
+]
+},
+"chattocorp/chatto": {
+"branch": "main",
+"stars": 2767,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".mcp.json",
+".github/copilot-instructions.md"
+]
+},
+"folke/sidekick.nvim": {
+"branch": "main",
+"stars": 2767,
+"files": [
+"AGENTS.md"
+]
+},
+"control-theory/gonzo": {
+"branch": "main",
+"stars": 2767,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"easysoft/zui": {
+"branch": "main",
+"stars": 2766,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"scratchfoundation/scratch-blocks": {
+"branch": "develop",
+"stars": 2764,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"atar-axis/xpadneo": {
+"branch": "master",
+"stars": 2764,
+"files": [
+"AGENTS.md"
+]
+},
+"supermemoryai/claude-supermemory": {
+"branch": "main",
+"stars": 2760,
+"files": [
+".claude/settings.json"
+]
+},
+"huangwb8/ChineseResearchLaTeX": {
+"branch": "main",
+"stars": 2758,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"compozy/compozy": {
+"branch": "main",
+"stars": 2757,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".vscode/tasks.json"
+]
+},
+"johnfercher/maroto": {
+"branch": "master",
+"stars": 2756,
+"files": [
+"AGENTS.md"
+]
+},
+"ethereumjs/ethereumjs-monorepo": {
+"branch": "master",
+"stars": 2755,
+"files": [
+"AGENTS.md"
+]
+},
+"makecindy/cindy": {
+"branch": "main",
+"stars": 2749,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"aws/aws-lambda-web-adapter": {
+"branch": "main",
+"stars": 2744,
+"files": [
+"AGENTS.md"
+]
+},
+"microsoft/clarity": {
+"branch": "master",
+"stars": 2742,
+"files": [
+"CLAUDE.md",
+".mcp.json",
+".github/copilot-instructions.md"
+]
+},
+"eclipsesource/jsonforms": {
+"branch": "master",
+"stars": 2741,
+"files": [
+"CLAUDE.md"
+]
+},
+"openclaw/wacli": {
+"branch": "main",
+"stars": 2740,
+"files": [
+"AGENTS.md"
+]
+},
+"opentripplanner/OpenTripPlanner": {
+"branch": "dev-2.x",
+"stars": 2740,
+"files": [
+"CLAUDE.md"
+]
+},
+"mas-bandwidth/yojimbo": {
+"branch": "main",
+"stars": 2738,
+"files": [
+"CLAUDE.md"
+]
+},
+"Zero6992/chatGPT-discord-bot": {
+"branch": "main",
+"stars": 2733,
+"files": [
+".claude/settings.json"
+]
+},
+"microsoft/Ontology-Playground": {
+"branch": "main",
+"stars": 2730,
+"files": [
+"AGENTS.md"
+]
+},
+"compose-spec/compose-spec": {
+"branch": "main",
+"stars": 2730,
+"files": [
+"AGENTS.md"
+]
+},
+"vava-nessa/free-coding-models": {
+"branch": "main",
+"stars": 2729,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"keel-hq/keel": {
+"branch": "master",
+"stars": 2727,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"CVCUDA/CV-CUDA": {
+"branch": "main",
+"stars": 2726,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"brndnmtthws/thetagang": {
+"branch": "main",
+"stars": 2725,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"sheeki03/tirith": {
+"branch": "main",
+"stars": 2724,
+"files": [
+".claude/settings.json",
+".cursor/mcp.json",
+".claude/hooks/tirith-check.py"
+]
+},
+"mattermost/mattermost-mobile": {
+"branch": "main",
+"stars": 2723,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"ExTV/Podroid": {
+"branch": "main",
+"stars": 2723,
+"files": [
+"CLAUDE.md"
+]
+},
+"dgunning/edgartools": {
+"branch": "main",
+"stars": 2723,
+"files": [
+"CLAUDE.md"
+]
+},
+"eth-brownie/brownie": {
+"branch": "master",
+"stars": 2722,
+"files": [
+"AGENTS.md"
+]
+},
+"eternity4719/HowToLiveBetter": {
+"branch": "main",
+"stars": 2720,
+"files": [
+"CLAUDE.md"
+]
+},
+"1Panel-dev/CordysCRM": {
+"branch": "main",
+"stars": 2718,
+"files": [
+"AGENTS.md"
+]
+},
+"spider-rs/spider": {
+"branch": "main",
+"stars": 2718,
+"files": [
+"CLAUDE.md"
+]
+},
+"postgres-ai/database-lab-engine": {
+"branch": "master",
+"stars": 2717,
+"files": [
+"CLAUDE.md"
+]
+},
+"gothinkster/golang-gin-realworld-example-app": {
+"branch": "main",
+"stars": 2716,
+"files": [
+"AGENTS.md"
+]
+},
+"qualcomm/aimet": {
+"branch": "develop",
+"stars": 2713,
+"files": [
+"CLAUDE.md"
+]
+},
+"cocoindex-io/cocoindex-code": {
+"branch": "main",
+"stars": 2712,
+"files": [
+"CLAUDE.md",
+".mcp.json"
+]
+},
+"unpoller/unpoller": {
+"branch": "master",
+"stars": 2712,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".cursorrules",
+".github/copilot-instructions.md"
+]
+},
+"open-telemetry/opentelemetry-rust": {
+"branch": "main",
+"stars": 2708,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"nteract/semiotic": {
+"branch": "main",
+"stars": 2707,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".mcp.json",
+".github/copilot-instructions.md"
+]
+},
+"jfernandez/bpftop": {
+"branch": "main",
+"stars": 2706,
+"files": [
+"CLAUDE.md",
+".github/copilot-instructions.md"
+]
+},
+"glincker/thesvg": {
+"branch": "main",
+"stars": 2701,
+"files": [
+"AGENTS.md"
+]
+},
+"immich-power-tools/immich-power-tools": {
+"branch": "main",
+"stars": 2701,
+"files": [
+".claude/settings.json"
+]
+},
+"strace/strace": {
+"branch": "master",
+"stars": 2700,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"chinchang/web-maker": {
+"branch": "master",
+"stars": 2699,
+"files": [
+"CLAUDE.md"
+]
+},
+"puemos/hls-downloader": {
+"branch": "master",
+"stars": 2699,
+"files": [
+"AGENTS.md"
+]
+},
+"icereed/paperless-gpt": {
+"branch": "main",
+"stars": 2697,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Loongphy/codex-auth": {
+"branch": "main",
+"stars": 2697,
+"files": [
+"AGENTS.md"
+]
+},
+"vczh-libraries/GacUI": {
+"branch": "master",
+"stars": 2696,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".cursorrules",
+".github/copilot-instructions.md",
+".vscode/tasks.json"
+]
+},
+"ForceInjection/AI-fundamentals": {
+"branch": "main",
+"stars": 2696,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"swagger-api/swagger-client": {
+"branch": "main",
+"stars": 2694,
+"files": [
+"CLAUDE.md"
+]
+},
+"libkrun/libkrun": {
+"branch": "main",
+"stars": 2692,
+"files": [
+"AGENTS.md"
+]
+},
+"submariner-io/submariner": {
+"branch": "devel",
+"stars": 2691,
+"files": [
+"CLAUDE.md"
+]
+},
+"jgravelle/jcodemunch-mcp": {
+"branch": "main",
+"stars": 2690,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".claude/hooks/deny_guard.py",
+".claude/hooks/pre_commit.py",
+".claude/hooks/pre_pr.py",
+".claude/hooks/test_edit_guard.py",
+".claude/hooks/surface_guard.py"
+]
+},
+"zachlatta/freeflow": {
+"branch": "main",
+"stars": 2690,
+"files": [
+"AGENTS.md"
+]
+},
+"bcgit/bc-java": {
+"branch": "main",
+"stars": 2689,
+"files": [
+"CLAUDE.md"
+]
+},
+"sharkdp/numbat": {
+"branch": "main",
+"stars": 2688,
+"files": [
+"AGENTS.md"
+]
+},
+"Viren070/AIOStreams": {
+"branch": "main",
+"stars": 2688,
+"files": [
+"CLAUDE.md"
+]
+},
+"chthollyphile/folia-major": {
+"branch": "main",
+"stars": 2688,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"lian-yue/vue-upload-component": {
+"branch": "master",
+"stars": 2687,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"ZHZisZZ/dllm": {
+"branch": "main",
+"stars": 2693,
+"files": [
+"AGENTS.md"
+]
+},
+"Windy3f3f3f3f/claude-code-from-scratch": {
+"branch": "main",
+"stars": 2687,
+"files": [
+"CLAUDE.md",
+".mcp.json"
+]
+},
+"openlake-project/openlake": {
+"branch": "main",
+"stars": 2661,
+"files": [
+"AGENTS.md"
+]
+},
+"wassim249/fastapi-langgraph-agent-production-ready-template": {
+"branch": "master",
+"stars": 2659,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"elie222/rakazo": {
+"branch": "main",
+"stars": 2603,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"kayba-ai/agentic-context-engine": {
+"branch": "main",
+"stars": 2573,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json"
+]
+},
+"Agent-Field/agentfield": {
+"branch": "main",
+"stars": 2563,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"AtomicBot-ai/atomic-agent": {
+"branch": "main",
+"stars": 2547,
+"files": [
+"AGENTS.md"
+]
+},
+"Natively-AI-assistant/natively-cluely-ai-assistant": {
+"branch": "main",
+"stars": 2544,
+"files": [
+"CLAUDE.md",
+".mcp.json"
+]
+},
+"simonlin1212/Vibe-Research": {
+"branch": "main",
+"stars": 2506,
+"files": [
+"AGENTS.md"
+]
+},
+"Exorust/TorchLeet": {
+"branch": "main",
+"stars": 2491,
+"files": [
+"AGENTS.md"
+]
+},
+"Nano-Collective/nanocoder": {
+"branch": "main",
+"stars": 2480,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"FullAgent/fulling": {
+"branch": "main",
+"stars": 2446,
+"files": [
+"AGENTS.md"
+]
+},
+"hydropix/TranslateBooksWithLLMs": {
+"branch": "main",
+"stars": 2413,
+"files": [
+"CLAUDE.md"
+]
+},
+"ailia-ai/ailia-models": {
+"branch": "master",
+"stars": 2392,
+"files": [
+"CLAUDE.md"
+]
+},
+"0xMassi/webclaw": {
+"branch": "main",
+"stars": 2351,
+"files": [
+"CLAUDE.md",
+".mcp.json"
+]
+},
+"instill-ai/instill-core": {
+"branch": "main",
+"stars": 2321,
+"files": [
+"AGENTS.md"
+]
+},
+"lioensky/VCPToolBox": {
+"branch": "main",
+"stars": 2302,
+"files": [
+"AGENTS.md"
+]
+},
+"PrismML-Eng/Bonsai-demo": {
+"branch": "main",
+"stars": 2294,
+"files": [
+"AGENTS.md"
+]
+},
+"Sahir619/fable-method": {
+"branch": "main",
+"stars": 2293,
+"files": [
+"AGENTS.md"
+]
+},
+"jwadow/kiro-gateway": {
+"branch": "main",
+"stars": 2282,
+"files": [
+"AGENTS.md"
+]
+},
+"meizhong986/WhisperJAV": {
+"branch": "main",
+"stars": 2247,
+"files": [
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"MarkPDFdown/markpdfdown": {
+"branch": "master",
+"stars": 2230,
+"files": [
+"AGENTS.md"
+]
+},
+"kubeflow/trainer": {
+"branch": "master",
+"stars": 2222,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"redhat-et/ripwire": {
+"branch": "main",
+"stars": 2221,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".mcp.json"
+]
+},
+"NVIDIA-NeMo/DataDesigner": {
+"branch": "main",
+"stars": 2220,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json"
+]
+},
+"Open-Curiosity/gini-agent": {
+"branch": "main",
+"stars": 2204,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"mozilla-ai/any-llm": {
+"branch": "main",
+"stars": 2197,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"proma-ai/Proma": {
+"branch": "main",
+"stars": 2190,
+"files": [
+"AGENTS.md"
+]
+},
+"Javis603/token-monitor": {
+"branch": "main",
+"stars": 2186,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"samchon/nestia": {
+"branch": "master",
+"stars": 2177,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Xnhyacinth/Awesome-LLM-Long-Context-Modeling": {
+"branch": "main",
+"stars": 2172,
+"files": [
+"CLAUDE.md"
+]
+},
+"HUANGCHIHHUNGLeo/claude-real-video": {
+"branch": "master",
+"stars": 2150,
+"files": [
+".mcp.json"
+]
+},
+"mcp-router/mcp-router": {
+"branch": "main",
+"stars": 2147,
+"files": [
+"CLAUDE.md"
+]
+},
+"lightseekorg/tokenspeed": {
+"branch": "main",
+"stars": 2139,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"777genius/agent-teams-ai": {
+"branch": "main",
+"stars": 2134,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".mcp.json"
+]
+},
+"neuron-core/neuron-ai": {
+"branch": "3.x",
+"stars": 2096,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"4thfever/cultivation-world-simulator": {
+"branch": "main",
+"stars": 2081,
+"files": [
+"AGENTS.md"
+]
+},
+"eugene1g/agent-safehouse": {
+"branch": "main",
+"stars": 2064,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"superglue-ai/superglue": {
+"branch": "main",
+"stars": 2061,
+"files": [
+"CLAUDE.md",
+".cursorrules"
+]
+},
+"sierra-research/tau2-bench": {
+"branch": "main",
+"stars": 2055,
+"files": [
+"AGENTS.md"
+]
+},
+"atomicstrata/llm-wiki-compiler": {
+"branch": "main",
+"stars": 2029,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"rynfar/meridian": {
+"branch": "main",
+"stars": 2019,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"shcherbak-ai/contextgem": {
+"branch": "main",
+"stars": 2003,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Pinvou/pinvou-agent": {
+"branch": "main",
+"stars": 1975,
+"files": [
+"AGENTS.md"
+]
+},
+"xu-xiang/everything-claude-code-zh": {
+"branch": "main",
+"stars": 1947,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"theopenco/llmgateway": {
+"branch": "main",
+"stars": 1642,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".mcp.json",
+".claude/hooks/session-start.sh"
+]
+},
+"e2b-dev/runtime": {
+"branch": "main",
+"stars": 1641,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".vscode/tasks.json"
+]
+},
+"mediar-ai/terminator": {
+"branch": "main",
+"stars": 1640,
+"files": [
+"CLAUDE.md"
+]
+},
+"Darkatse/TauriTavern": {
+"branch": "main",
+"stars": 1630,
+"files": [
+"AGENTS.md"
+]
+},
+"NirDiamant/Controllable-RAG-Agent": {
+"branch": "main",
+"stars": 1625,
+"files": [
+"AGENTS.md"
+]
+},
+"pixeltable/pixeltable": {
+"branch": "main",
+"stars": 1623,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".github/copilot-instructions.md"
+]
+},
+"shiwenwen/hope-agent": {
+"branch": "main",
+"stars": 1605,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Kaelio/ktx": {
+"branch": "main",
+"stars": 1593,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+"GEMINI.md"
+]
+},
+"mex-memory/mex": {
+"branch": "main",
+"stars": 1587,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"google/mantis": {
+"branch": "main",
+"stars": 1572,
+"files": [
+"AGENTS.md"
+]
+},
+"hyperbrowserai/HyperAgent": {
+"branch": "main",
+"stars": 1569,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"NanoNets/docstrange": {
+"branch": "main",
+"stars": 1567,
+"files": [
+"CLAUDE.md"
+]
+},
+"CopilotKit/OpenGenerativeUI": {
+"branch": "main",
+"stars": 1556,
+"files": [
+"CLAUDE.md"
+]
+},
+"utkuozdemir/nvidia_gpu_exporter": {
+"branch": "main",
+"stars": 1554,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+"GEMINI.md",
+".github/copilot-instructions.md"
+]
+},
+"GitHamza0206/simba": {
+"branch": "main",
+"stars": 1541,
+"files": [
+"CLAUDE.md"
+]
+},
+"Mirascope/mirascope": {
+"branch": "main",
+"stars": 1526,
+"files": [
+"AGENTS.md",
+".cursorrules",
+".claude/settings.local.json"
+]
+},
+"fim-ai/fim-one": {
+"branch": "master",
+"stars": 1513,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+"GEMINI.md"
+]
+},
+"vanloctech/youwee": {
+"branch": "main",
+"stars": 1503,
+"files": [
+"AGENTS.md"
+]
+},
+"six2dez/burp-ai-agent": {
+"branch": "main",
+"stars": 1497,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"fynnfluegge/rocketnotes": {
+"branch": "main",
+"stars": 1496,
+"files": [
+"CLAUDE.md",
+"GEMINI.md"
+]
+},
+"openonion/connectonion": {
+"branch": "main",
+"stars": 1481,
+"files": [
+"CLAUDE.md"
+]
+},
+"Open-Source-Legal/OpenContracts": {
+"branch": "main",
+"stars": 1480,
+"files": [
+"CLAUDE.md"
+]
+},
+"ghostwright/phantom": {
+"branch": "main",
+"stars": 1470,
+"files": [
+"CLAUDE.md"
+]
+},
+"dust-tt/dust": {
+"branch": "main",
+"stars": 1466,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".mcp.json"
+]
+},
+"llm-jp/awesome-japanese-llm": {
+"branch": "main",
+"stars": 1432,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"dyoshikawa/rulesync": {
+"branch": "main",
+"stars": 1430,
+"files": [
+".claude/settings.json",
+".gemini/settings.json"
+]
+},
+"yohey-w/multi-agent-shogun": {
+"branch": "main",
+"stars": 1423,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".github/copilot-instructions.md",
+"scripts/session_start_hook.sh",
+"scripts/stop_hook_inbox.sh"
+]
+},
+"Jwuthri/Tracely-ai": {
+"branch": "master",
+"stars": 1405,
+"files": [
+"CLAUDE.md"
+]
+},
+"awaescher/OllamaSharp": {
+"branch": "main",
+"stars": 1405,
+"files": [
+"AGENTS.md"
+]
+},
+"milanglacier/minuet-ai.nvim": {
+"branch": "main",
+"stars": 1404,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"ovg-project/kvcached": {
+"branch": "main",
+"stars": 1393,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"Amm1rr/WebAI-to-API": {
+"branch": "master",
+"stars": 1372,
+"files": [
+"AGENTS.md"
+]
+},
+"mohitagw15856/pm-claude-skills": {
+"branch": "main",
+"stars": 1369,
+"files": [
+"AGENTS.md"
+]
+},
+"wrtnlabs/autobe": {
+"branch": "main",
+"stars": 1360,
+"files": [
+"CLAUDE.md",
+".claude/settings.json"
+]
+},
+"ddalcu/mlx-serve": {
+"branch": "main",
+"stars": 1360,
+"files": [
+"CLAUDE.md"
+]
+},
+"Team-Commonly/commonly": {
+"branch": "main",
+"stars": 1342,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"uzairansaruzi/hermex": {
+"branch": "master",
+"stars": 1332,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"study8677/repobrain": {
+"branch": "main",
+"stars": 1327,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"giuseppe99barchetta/SuggestArr": {
+"branch": "main",
+"stars": 1315,
+"files": [
+"CLAUDE.md"
+]
+},
+"first-fluke/oh-my-agent": {
+"branch": "main",
+"stars": 1307,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".mcp.json"
+]
+},
+"kizuna-ai-lab/sokuji": {
+"branch": "main",
+"stars": 1303,
+"files": [
+"CLAUDE.md"
+]
+},
+"nvk/llm-wiki": {
+"branch": "master",
+"stars": 1297,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+},
+"caliber-ai-org/ai-setup": {
+"branch": "master",
+"stars": 1274,
+"files": [
+"CLAUDE.md",
+"AGENTS.md",
+".claude/settings.json",
+".claude/hooks/caliber-check-sync.sh",
+".claude/hooks/caliber-session-freshness.sh",
+".claude/hooks/caliber-freshness-notify.sh"
+]
+},
+"microsoft/generative-ai-with-javascript": {
+"branch": "main",
+"stars": 1266,
+"files": [
+"AGENTS.md"
+]
+},
+"proxysoul/Empryo": {
+"branch": "main",
+"stars": 1242,
+"files": [
+"CLAUDE.md"
+]
+},
+"mrwadams/attackgen": {
+"branch": "main",
+"stars": 1242,
+"files": [
+"CLAUDE.md",
+"AGENTS.md"
+]
+}
+},
+"fetched": "2026-09-17T09:25Z"
+}

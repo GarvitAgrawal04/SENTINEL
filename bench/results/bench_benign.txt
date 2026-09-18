@@ -1,0 +1,8 @@
+legitimate CLAUDE.md containing...             | Sentinel   | wormhole-guard             | AgentAuditKit
+emoji with a joiner  (man technologist)        | CLEAN      | HIGH: WORM-005             | MEDIUM: AAK-AGENT-005
+England flag emoji                             | CLEAN      | CRITICAL: WORM-006         | silent
+UTF-8 byte-order mark                          | CLEAN      | HIGH: WORM-005             | MEDIUM: AAK-AGENT-005
+Hindi text (needs zero-width joiner)           | CLEAN      | HIGH: WORM-005             | MEDIUM: AAK-AGENT-005
+Persian text (needs zero-width non-joiner)     | CLEAN      | HIGH: WORM-005             | MEDIUM: AAK-AGENT-005
+a guardrail that names a credential            | CLEAN      | silent                     | MEDIUM: AAK-AGENT-004
+two documentation URLs                         | CLEAN      | silent                     | HIGH: AAK-AGENT-002

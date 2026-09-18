@@ -1,0 +1,13 @@
+### bench.py wild corpus   (MAIN set: the corpus our rules were tightened against - in-sample for Sentinel)
+corpus: 590 repositories with agent-config files, out of 1693 checked (2026-09-17T09:06Z)
+
+Sentinel          COMPROMISED   0 (0.0%)   SUSPICIOUS  83 (14.1%)   CLEAN 507
+                  of the SUSPICIOUS: 82 are only un-approved hooks / MCP servers (first-run inventory, by design); 1 have a content finding:
+                    S5  ruvnet/ruflo :: CLAUDE.md :: exfiltration-shaped instruction: "**Upload to Pinata** (read credentials from .env):"
+
+wormhole-guard    HIGH or CRITICAL on 99 of 590 repositories (17%) - the level its own CI default fails on
+                  most common HIGH/CRITICAL rules (repositories): [('WORM-007', 67), ('WORM-001', 19), ('AUTOSTART-003', 17), ('WORM-005', 4), ('WORM-003', 4)]
+                  WORM-007 'concealment directive': 69 of 70 excerpts contain the word 'silently'
+
+AgentAuditKit     HIGH or CRITICAL on 285 of 590 repositories (48%) - the level its own CI default fails on
+                  most common HIGH/CRITICAL rules (repositories): [('AAK-AGENT-002', 206), ('AAK-AGENT-003', 86), ('AAK-AGENT-001', 51), ('AAK-TRUST-004', 25), ('AAK-MCP-001', 18)]
