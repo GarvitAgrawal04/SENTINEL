@@ -1,0 +1,25 @@
+# What Vercel needs to run the API and the web UI: api/, sentinel/, frontend/, samples/, requirements.txt. Nothing else.
+#
+# pyproject.toml is hidden from Vercel ON PURPOSE. When a project has both pyproject.toml and requirements.txt (and no
+# lockfile), Vercel's Python builder installs from pyproject.toml. Ours lists no dependencies, because the scanner is
+# standard-library only, so FastAPI was never installed and every request failed with 500 FUNCTION_INVOCATION_FAILED.
+# Hidden, the builder falls back to requirements.txt (pinned) and finds the app in api/index.py.
+pyproject.toml
+requirements-dev.txt
+
+archive/
+tests/
+bench/
+docs/
+demo/
+action/
+spec/
+vscode-extension/
+.github/
+.sentinel/
+AGENTS.lock
+AGENTS.lock.sig
+Makefile
+setup.sh
+*.md
+!frontend/README.md

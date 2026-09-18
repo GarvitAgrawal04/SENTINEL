@@ -60,3 +60,16 @@ def test_saved_results_match_the_engine_today():
         assert (s["result"]["verdict"], s["result"]["trust_score"], [f["rule_id"] for f in s["result"]["findings"]]) == \
                (live["verdict"], live["trust_score"], [f["rule_id"] for f in live["findings"]]), \
                f"{s['file']} is stale: run python demo/save_sample_results.py"
+
+
+def test_vercel_deployment_stays_deployable():
+    """Vercel installs from pyproject.toml when it can see one, and ours lists no dependencies on purpose.
+    That once took the hosted demo down with 500 FUNCTION_INVOCATION_FAILED. Keep the three things that prevent it."""
+    ignore = (ROOT / ".vercelignore").read_text(encoding="utf-8").splitlines()
+    assert "pyproject.toml" in ignore                                       # the builder must fall back to requirements.txt
+    for needed in ("api/", "sentinel/", "frontend/", "samples/", "requirements.txt"):
+        assert needed not in ignore and needed.rstrip("/") not in ignore, needed
+    reqs = (ROOT / "requirements.txt").read_text(encoding="utf-8")
+    assert "fastapi==" in reqs and "python-multipart==" in reqs
+    import importlib
+    assert type(importlib.import_module("api.index").app).__name__ == "FastAPI"   # the entrypoint Vercel discovers

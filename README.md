@@ -19,7 +19,7 @@ scans.
 
 - [Why this exists](#why-this-exists)
 - [What Sentinel does](#what-sentinel-does)
-- [Install and run](#install-and-run)
+- [Install and run](#install-and-run) · [deploy](#deploy-it-vercel)
 - [Using Sentinel](#using-sentinel): [web UI](#1-the-web-ui) · [command line](#2-the-command-line) · [the gate](#3-the-gate-stop-the-agent-before-it-starts) · [pull requests](#4-check-every-pull-request) · [AGENTS.lock](#5-agentslock-a-signed-record-of-what-was-approved) · [sandbox](#6-the-sandbox-experiment-optional-off-by-default)
 - [Supported files](#supported-files)
 - [How detection works](#how-detection-works)
@@ -123,13 +123,21 @@ pip install "git+https://github.com/GarvitAgrawal04/SENTINEL"          # scanner
 pip install "sentinel-md[sign] @ git+https://github.com/GarvitAgrawal04/SENTINEL"   # + AGENTS.lock signing
 ```
 
+### Deploy it (Vercel)
+
+Import the repository in Vercel and deploy; there is nothing to configure. One URL serves both the web UI (`/`) and the API.
+[`.vercelignore`](.vercelignore) keeps the bundle to `api/`, `sentinel/`, `frontend/`, `samples/` and `requirements.txt`, and
+hides `pyproject.toml` on purpose: with both files present Vercel installs from `pyproject.toml`, which lists no
+dependencies (the scanner needs none), so FastAPI would be missing and every request would fail with
+`500 FUNCTION_INVOCATION_FAILED`. For a faster demo, set the function region close to you (Project Settings → Functions).
+
 ### Check that it works
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.0 (formula v0.1)
+sentinel --version                 # sentinel 0.6.1 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 64 passed
+pytest -q                          # 65 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -682,7 +690,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 64 passed
+bash setup.sh --test                 # or: make test  → 65 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

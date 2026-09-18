@@ -1,3 +1,6 @@
+## 0.6.1 — 2026-09-18 — hosted demo fix
+- Vercel returned `500 FUNCTION_INVOCATION_FAILED` for every request: with both `pyproject.toml` and `requirements.txt` present, Vercel's Python builder installs from `pyproject.toml`, which lists no dependencies, so FastAPI was never installed. `.vercelignore` now hides `pyproject.toml` (and everything the hosted app does not need); the builder falls back to the pinned `requirements.txt` and finds the app in `api/index.py`. A test guards it.
+
 ## 0.6.0 — 2026-09-18 — new web UI
 - Replaced the React / three.js frontend (3.8 MB, 18 npm dependencies, WebGL) with plain HTML, CSS and JS: no framework, no npm packages, no build step, no third-party requests, strict Content-Security-Policy. Light and dark, keyboard accessible, works on a phone.
 - The API serves the UI at `/`, so `bash setup.sh` gives a newcomer the whole product with no Node.js.
