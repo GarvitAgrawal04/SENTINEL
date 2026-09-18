@@ -74,7 +74,7 @@ sentinel fixtures /tmp/fx && sentinel scan /tmp/fx/01_miasma_shape
 sentinel run -- claude                              # the gate
 sentinel init --approve-all && sentinel keygen && sentinel sign --key sentinel_signing_key.pem && sentinel verify
 git checkout -b demo && <edit CLAUDE.md> && git commit -am "chore: bump deps" && sentinel pr --base main
-uvicorn sentinel.api:app --port 8001                # frontend works unchanged
+uvicorn sentinel.api:app --port 8000                # frontend works unchanged
 ```
 
 ## 6. Still open — yours, in this order

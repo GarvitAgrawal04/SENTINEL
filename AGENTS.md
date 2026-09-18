@@ -1,42 +1,22 @@
-# SENTINEL V1 - AGENT CONTEXT
+# SENTINEL - context for AI coding agents
 
-SOURCE OF TRUTH:
-- SENTINEL_PRD_Master_v3(5).md
-- frozen architecture docs (docs/ARCHITECTURE_V1.md)
-- HANDOFF.md
+Sentinel answers one question: what do the files an AI coding agent obeys make it do? This file is one of those files.
 
-CURRENT STATUS:
-- V1 frozen
-- Layer 0–4 status:
-  - Layer 0: FROZEN
-  - Layer 1: FROZEN
-  - Layer 2: IMPLEMENTED WITH SEMANTIC PLACEHOLDER
-  - Layer 3: IMPLEMENTED — BASELINE ONLY
-  - Layer 4: FROZEN
-- known debt: 34 Layer 1 test-contract failures, 3 scoring assertion failures.
-- semantic direction unavailable
-- classifier not promoted
+## What is where
+- `sentinel/core.py` - discovery, the static rules, score, render, the gate, ed25519 sign/verify, fixtures, self-test. Standard library only.
+- `sentinel/detonate.py` - sandbox with fake tools and canary secrets. `sentinel/lock.py` - AGENTS.lock. `sentinel/gitdiff.py` - base vs head.
+- `sentinel/contract.py` - the JSON shape the web UI and the VS Code extension consume. Add keys; never rename or remove one.
+- `sentinel/api.py`, `sentinel/cli.py` - the two entry points. `tests/` - run `pytest -q`; everything must stay green.
+- `archive/` - the retired v1 engine, its tests and reports. Do not import from it and do not revive it.
 
-NON-NEGOTIABLE RULES:
-- no benchmark gaming
-- no fixture-specific hardcoding
-- no invented capabilities
-- no silent scope expansion
-- no modifying the PRD
-- no network access in scanner path
-- no command execution from scanned content
-- no automatic remediation
-- no secret leakage
-- no developer-machine paths
-- no fabricated semantic direction
-- no fabricated attack multiplier
-- no pretending the classifier is promoted
-- preserve Layer 1 freeze
-- preserve evidence traceability
-- preserve clean-corpus FP=0 baseline unless a regression is explicitly investigated
-- future Layer 2/3/4 capabilities must not be backfilled with fake Layer 1 heuristics.
-
-Before changing architecture, read HANDOFF.md and the relevant layer report.
+## Rules for changes
+- Every new rule ships with an attack fixture AND a benign twin, and is re-run on the corpora in `bench/` before it is trusted.
+- Never tune a rule, a fixture or an expected result just to make a number look better. Report what the run says.
+- The scanner path stays offline and read-only: no network access, no executing anything from a scanned repository.
+- Never load configuration from the directory being scanned (see `sentinel/envfile.py` for why).
+- Findings go to terminals, CI logs and public PR comments: never print a secret. Use `core.redact`.
+- No developer-machine paths, no real tokens in fixtures (use obviously fake ones), no key rotation or similar evasions.
+- A model's behaviour may escalate a verdict; only deterministic evidence may convict.
 
 ## Security guardrails for AI agents working in this repository
 

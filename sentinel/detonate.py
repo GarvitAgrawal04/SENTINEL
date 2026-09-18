@@ -134,6 +134,12 @@ PROVIDERS = {                       # base URL for each hosted provider that spe
 
 def model_from_env():
     """Build the right client from environment variables. Anthropic uses its own API shape; the rest are OpenAI-compatible."""
+    try:
+        from .envfile import load_own_env
+    except ImportError:                                     # run as a plain script: python sentinel/detonate.py FILE
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from sentinel.envfile import load_own_env
+    load_own_env()                                          # Sentinel's own .env only - never the working directory's
     provider = os.environ.get("SENTINEL_LLM_PROVIDER", "").lower().strip()
     key = os.environ.get("SENTINEL_LLM_KEY", "")
     model = os.environ.get("SENTINEL_LLM_MODEL")

@@ -1,3 +1,9 @@
+## 0.5.8 — 2026-09-18 — clone and run
+- `bash setup.sh` / `make run`: virtual environment, pinned dependencies, `.env`, self-test, server. Python 3.10+ and Git are the only prerequisites.
+- `requirements.txt` / `requirements-dev.txt` pinned and verified by the test suite; CI installs the same files.
+- `.env.example` lists every variable the code reads. Sentinel loads only its own `.env`, never the scanned repository's (a hostile repo could otherwise redirect your API key).
+- One port everywhere (8000). `demo/preflight.py` rewritten for v5 with the standard library. `AGENTS.md` and `CONTRIBUTING.md` no longer describe the deleted v1 engine. README rewritten for newcomers.
+
 ## 0.5.7 — 2026-09-18
 - Detonation measured on two models (results in `bench/detonation/results/`): D1 recall 11/30 and 5/30, 0/30 false positives on both. Below the 50% gate, so it stays opt-in and is documented as an experiment.
 - D2 (new sensitive behaviour without a leak) fired on 20/30 benign files with the small model. It is now an unscored observation; only a canary leaving the sandbox (D1) affects a verdict.

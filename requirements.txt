@@ -1,4 +1,9 @@
-# API deployment only (Vercel). The scanner itself has no third-party dependencies.
-fastapi>=0.111
-python-multipart>=0.0.9
-cryptography>=42
+# Runtime dependencies of the HTTP API (sentinel/api.py) and of AGENTS.lock signing (sentinel/lock.py).
+# The scanner, the gate and the CLI's scan/run/pr commands use the Python standard library only.
+# Pinned: resolved together in a clean virtual environment and verified with the full test suite (18 Sept 2026).
+# These versions need Python 3.10 or newer.
+fastapi==0.141.1
+uvicorn==0.53.0
+python-multipart==0.0.32
+pydantic==2.13.5
+cryptography==50.0.1

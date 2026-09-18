@@ -4,10 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sentinel-md"
-version = "0.5.7"
+version = "0.5.8"
 description = "What do the files your AI coding agent obeys make it do? Static rules, sandbox detonation, a gate and a signed AGENTS.lock."
-requires-python = ">=3.9"
-dependencies = []  # stdlib only for Layer 1 — no install hell on Day 1
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []          # the scanner, the gate and the CLI's scan/run/pr commands are standard library only
+
+[project.optional-dependencies]
+# Exact, tested versions live in requirements.txt / requirements-dev.txt. These are the compatible ranges.
+sign = ["cryptography>=42"]
+api = ["fastapi>=0.111", "uvicorn>=0.29", "python-multipart>=0.0.9", "pydantic>=2", "cryptography>=42"]
+dev = ["pytest>=8", "httpx>=0.27", "jsonschema>=4", "fastapi>=0.111", "python-multipart>=0.0.9", "pydantic>=2", "cryptography>=42"]
 
 [project.scripts]
 sentinel = "sentinel.cli:main"
@@ -15,10 +22,6 @@ sentinel = "sentinel.cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["sentinel*"]
-[project.optional-dependencies]
-sign = ["cryptography>=42"]                    # ed25519 for AGENTS.lock; the scanner itself is standard library only
-api = ["fastapi>=0.111", "uvicorn[standard]>=0.29", "python-multipart>=0.0.9", "cryptography>=42"]
-dev = ["pytest>=8", "httpx>=0.27", "jsonschema>=4", "cryptography>=42"]
 
 [tool.vercel]
 entrypoint = "sentinel.api:app"
