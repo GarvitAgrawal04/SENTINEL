@@ -200,7 +200,7 @@ class _Client:
 
     def _post(self, url: str, headers: dict, payload: dict) -> dict:
         delay = 2.0
-        for attempt in range(9):
+        for attempt in range(16):
             wait = self._gap - (time.time() - self._last)
             if wait > 0:
                 time.sleep(wait)
@@ -208,9 +208,9 @@ class _Client:
             try:
                 return _http_json(url, headers, payload)
             except RateLimited as e:
-                if attempt == 8:
+                if attempt == 15:
                     raise RuntimeError(str(e)) from None
-                pause = min(max(e.wait, delay), 120.0)
+                pause = min(max(e.wait + (1.0 if e.wait > 0 else 0.0), delay), 300.0)
                 print(f"sentinel: provider asked us to slow down; waiting {pause:.0f}s", file=sys.stderr)
                 time.sleep(pause)
                 delay = min(delay * 2, 60.0)

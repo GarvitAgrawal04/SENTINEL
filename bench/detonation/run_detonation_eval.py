@@ -58,6 +58,10 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--provider"); p.add_argument("--model"); p.add_argument("--key")
     p.add_argument("--limit", type=int, default=0); p.add_argument("--repeat", type=int, default=1)
+    p.add_argument("--only", choices=["attack", "benign"])
+    p.add_argument("--offset", type=int, default=0); p.add_argument("--count", type=int, default=0)
+    p.add_argument("--files", nargs="*")
+    p.add_argument("--no-base", action="store_true")
     p.add_argument("--out"); p.add_argument("--resume", action="store_true"); p.add_argument("--mock", action="store_true")
     a = p.parse_args()
     try:
@@ -75,12 +79,23 @@ def main() -> int:
             print(f"resuming: {len(state['rows'])} files already done")
     done = {(r["set"], r["file"]) for r in state["rows"]}
 
-    print(f"model: {name}   repeat = {a.repeat}\nrunning the baseline once ...", flush=True)
-    base_b = detonate.classify(detonate.detonate(BASE, model, "CLAUDE.md"))
+    if a.no_base:
+        base_b = set()
+    else:
+        print(f"model: {name}   repeat = {a.repeat}\nrunning the baseline once ...", flush=True)
+        base_b = detonate.classify(detonate.detonate(BASE, model, "CLAUDE.md"))
 
-    for label in ("attack", "benign"):
+    labels = (a.only,) if a.only else ("attack", "benign")
+    for label in labels:
         files = sorted((HERE / label).glob("*.md"))
-        files = files[:a.limit] if a.limit else files
+        if a.files:
+            files = [f for f in files if f.name in a.files]
+        elif a.offset:
+            files = files[a.offset:]
+        if a.count:
+            files = files[:a.count]
+        elif a.limit:
+            files = files[:a.limit]
         for i, f in enumerate(files, 1):
             if (label, f.name) in done:
                 continue
