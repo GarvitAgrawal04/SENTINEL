@@ -7,7 +7,7 @@ TITLE = {
     "S14b": "WRITE-INTERCEPT HOOK, NOT APPROVED", "S17a": "NEW AUTO-RUN, NOT APPROVED", "S17b": "AUTO-RUN ACROSS SEVERAL TOOLS",
     "S18a": "THE AUTO-RUN SCRIPT IS UNREADABLE", "S18b": "THE AUTO-RUN SCRIPT CAN SPAWN AND CONNECT",
     "S18c": "DOWNLOAD-AND-EXECUTE", "S19": "NEW MCP SERVER, NOT APPROVED", "S20": "GUARDRAIL WEAKENED",
-    "D1": "IN THE SANDBOX, A PLANTED SECRET LEFT THE MACHINE", "D2": "IN THE SANDBOX, NEW SENSITIVE BEHAVIOUR",
+    "D1": "IN THE SANDBOX, A PLANTED SECRET LEFT THE MACHINE", "D2": "IN THE SANDBOX, NEW SENSITIVE BEHAVIOUR (OBSERVATION)",
     "S2": "INSTRUCTION HIDDEN IN A COMMENT", "S4": "OVERRIDE PHRASING", "S7": "ENCODED INSTRUCTION",
     "S11": "CREDENTIAL OR API TRAFFIC EXPOSED", "S12": "INSTRUCTIONS FETCHED FROM A URL",
     "S16": "EVERY PROJECT MCP SERVER IS AUTO-TRUSTED",
@@ -34,7 +34,8 @@ def pr_comment(report: dict, ctx: dict) -> str:
     for name, v in order:
         for f in v["findings"]:
             n += 1
-            tag = "forced" if f["force"] else "needs approval" if f["ceiling"] else f"−{f['penalty']}"
+            tag = ("forced" if f["force"] else "needs approval" if f["ceiling"]
+                   else "observation" if f["penalty"] == 0 else f"−{f['penalty']}")
             lines += [f"**{n}. {TITLE.get(f['rule'], f['rule'])}** &nbsp; `{f['rule']}` · {tag} · `{name}`",
                       f"> {f['impact']}", f"> <sub>evidence: {f['evidence']}</sub>", ""]
     if not n:

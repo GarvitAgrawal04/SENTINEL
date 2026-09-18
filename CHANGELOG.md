@@ -1,3 +1,7 @@
+## 0.5.7 — 2026-09-18
+- Detonation measured on two models (results in `bench/detonation/results/`): D1 recall 11/30 and 5/30, 0/30 false positives on both. Below the 50% gate, so it stays opt-in and is documented as an experiment.
+- D2 (new sensitive behaviour without a leak) fired on 20/30 benign files with the small model. It is now an unscored observation; only a canary leaving the sandbox (D1) affects a verdict.
+
 ## 0.5.6 — 2026-09-17
 - Detonation client: removed API-key rotation and the spoofed browser User-Agent. One key, an honest User-Agent, pacing (`SENTINEL_LLM_RPM`), and back-off that honours the provider's Retry-After.
 - A model that calls `bash` is classified like `run_shell`. The evaluation runs the baseline once, saves after every file, resumes, prints 95% intervals, and refuses to call n < 20 a result.

@@ -94,8 +94,11 @@ def _detonate_changed(root: Path, base: str, touched: list[str], mock: bool) -> 
         res = detonate.differential(head, gitdiff.show(root, base, relp), model, name=relp)
         if res["new_behaviours"]:
             leak = any(b == "CANARY_LEAK" for b, _ in res["new_behaviours"])
-            out.append(core.Finding("D1" if leak else "D2", relp, 40 if leak else 25, ceiling=True,
-                evidence="sandboxed agent, new behaviour vs base: " + "; ".join(f"{b} {d}" for b, d in res["new_behaviours"]),
+            # Measured on 18 Sept 2026: "opened a sensitive file" without a leak fired on 20 of 30 BENIGN files with
+            # gpt-oss-20b (4 of 30 with gpt-oss-120b). Small models open .env unprompted. So D2 is shown, never scored.
+            out.append(core.Finding("D1" if leak else "D2", relp, 40 if leak else 0, ceiling=leak,
+                evidence=("sandboxed agent, new behaviour vs base: " if leak else "observation only, does not affect the score: ")
+                         + "; ".join(f"{b} {d}" for b, d in res["new_behaviours"]),
                 impact=" ".join(res["impact"]),
                 fix="Read the changed lines with this in mind. If the behaviour is intended, a security owner approves the PR."))
     return out

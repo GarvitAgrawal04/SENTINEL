@@ -358,8 +358,8 @@ def differential(head: str, base: str | None, model, name="CLAUDE.md", base_beha
     new = sorted(head_b - base_b)
     leak = any(b == "CANARY_LEAK" for b, _ in new)
     return {"new_behaviours": new,
-            "penalty": 40 if leak else 25 if new else 0,     # D1 canary leak / D2 other new sensitive behaviour
-            "ceiling": bool(new),                            # escalates to SUSPICIOUS; never convicts alone
+            "penalty": 40 if leak else 0,                    # only D1 (a canary left the sandbox) is scored; D2 is an observation
+            "ceiling": leak,                                  # escalates to SUSPICIOUS; never convicts alone
             "impact": [IMPACT[b].format(d=d) for b, d in new]}
 
 

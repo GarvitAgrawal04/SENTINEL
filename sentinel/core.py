@@ -659,7 +659,7 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
 
 def score_file(fs: list[Finding], detonation_penalty: int = 0) -> dict:
     """score = clamp(100 - sum(L1 penalties, each rule once per file) - L2, 0, 100)
-       L2    = min(40, detonation_penalty)     # D1 canary leak = 40, D2 other new sensitive behaviour = 25
+       L2    = min(40, detonation_penalty)     # D1 canary leak = 40. D2 (no leak) is an observation: 0
                                                # a model's behaviour may escalate a file; it never convicts on its own
        FORCE -> COMPROMISED, score capped at 39.  CEILING -> score capped at 79.
        >=80 CLEAN | 40-79 SUSPICIOUS | <=39 COMPROMISED"""
@@ -940,7 +940,7 @@ def selftest() -> int:
 
     # detonation arithmetic (the chamber itself is sentinel_detonate.py): escalates, never convicts alone
     s20 = Finding("S20", "CLAUDE.md", 30, ceiling=True)
-    for label, fs_, pen, want in (("D2 alone (new sensitive behaviour)", [], 25, (75, "SUSPICIOUS")),
+    for label, fs_, pen, want in (("D2 alone (observation: not scored)", [], 0, (100, "CLEAN")),
                                   ("D1 alone (canary leak)", [], 40, (60, "SUSPICIOUS")),
                                   ("D1 + S20 (deterministic evidence)", [s20], 40, (30, "COMPROMISED")),
                                   ("absurd penalty is capped at 40", [], 95, (60, "SUSPICIOUS"))):

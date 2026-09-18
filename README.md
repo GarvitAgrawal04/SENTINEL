@@ -9,7 +9,7 @@ Sentinel is four controls in one CLI and one GitHub Action:
 | Control | What it does |
 |---|---|
 | **Static rules** | 20 deterministic rules. Every finding says *what the agent would have done*, in one sentence, and what to do about it. |
-| **Detonation chamber** | Does not ask a model whether a file is malicious. Lets a model *obey* it in a sandbox of fake tools and planted canary secrets, and reports what it reached for. *(Harness built and mock-tested; real-model hit rate not yet measured.)* |
+| **Detonation chamber** | Does not ask a model whether a file is malicious. Lets a model *obey* it in a sandbox of fake tools and planted canary secrets, and reports what it reached for. *Measured 18 Sept 2026 on 30 paraphrased attacks that every static rule misses: a planted secret left the sandbox on 11/30 (gpt-oss-20b) and 5/30 (gpt-oss-120b), with 0/30 false positives on benign files for both. Below our own 50% bar, so it is opt-in (`--detonate`) and presented as an experiment: [`bench/detonation/results`](bench/detonation/results/README.md).* |
 | **Gate** | `sentinel run -- claude` — the agent does not start until the repository passes. Still works when the attacker pushes with `[skip ci]`. |
 | **`AGENTS.lock`** | A signed (ed25519) lockfile for agent behaviour: which hooks may auto-run (pinned to script hashes), which MCP servers are approved, which guardrails exist. |
 

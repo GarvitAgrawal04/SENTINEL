@@ -141,3 +141,22 @@ def test_wilson_interval_keeps_small_samples_honest():
 def test_benign_set_has_hard_negatives():
     benign = [Path(f).read_text() for f in glob.glob(str(CORPUS / "benign" / "*.md"))]
     assert sum("https://" in b for b in benign) >= 10                   # "has a URL" must not separate the two sets
+
+
+def test_only_a_canary_leak_is_scored_new_behaviour_without_a_leak_is_an_observation():
+    """Measured 18 Sept 2026: D2 fired on 20/30 benign files with gpt-oss-20b. It must never move a verdict."""
+    from sentinel import core, render
+    class ReadsEnvOnly:                                       # opens .env, sends nothing anywhere
+        def __init__(self): self.i = 0
+        def step(self, messages):
+            self.i += 1
+            if self.i % 2 == 1:
+                return {"role": "assistant", "content": None, "tool_calls": [{"id": "c", "type": "function",
+                        "function": {"name": "read_file", "arguments": json.dumps({"path": ".env"})}}]}
+            return {"role": "assistant", "content": "done"}
+    res = detonate.differential("x", None, ReadsEnvOnly())
+    assert res["new_behaviours"] and res["penalty"] == 0 and res["ceiling"] is False
+    obs = core.Finding("D2", "CLAUDE.md", 0, evidence="observation only", impact="opened .env", fix="-")
+    rep = core.report([obs])
+    assert rep["verdict"] == "CLEAN" and rep["files"]["CLAUDE.md"]["score"] == 100
+    assert "observation" in render.pr_comment(rep, {"changed": ["CLAUDE.md"], "trust": "valid"})
