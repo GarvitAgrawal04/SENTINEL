@@ -285,10 +285,13 @@ def decode_hidden(text: str, bad: list[tuple[int, int]]) -> str | None:
 SENT_SPLIT = re.compile(r"(?<=[.!?])\s+|\n+")
 PROHIBIT = re.compile(r"\b(never|do not|don't|dont|must not|mustn't|should not|shouldn't|cannot|can't|"
                       r"under no circumstances|forbidden|prohibited|not allowed)\b", re.I)
-NET_VERB = re.compile(r"\b(curl|wget|upload|send|transmit|forward|exfiltrat\w*|netcat|scp|(?-i:POST))\b", re.I)
+NET_VERB = re.compile(r"\b(curl|wget|upload|send|sent|transmit|forward|relay|exfiltrat\w*|netcat|scp|(?-i:POST)|"
+                      r"post(?=\s+(it|them|this|that|these|the \w+|its \w+|every\w*)\b[^.\n]{0,40}\bto\s+https?://)|"
+                      r"attach(?=[^.\n]{0,60}\bto\s+(the\s+)?(support|ticket|report|request|payload|https?://)))\b", re.I)
 URL = re.compile(r"https?://[^\s)\"'`>\]]+", re.I)
 CRED_FILE = re.compile(r"(\.env\b|id_rsa|id_ed25519|~/\.ssh|~/\.aws|\.aws/credentials|kubeconfig|\.kube/config|\.npmrc|"
-                       r"\.bash_history|\.zsh_history|shell history|private keys?|ssh keys?)", re.I)
+                       r"\.bash_history|\.zsh_history|shell history|private keys?|ssh keys?|key material|application_default_credentials|"
+                       r"service[- ]account (key|json)|\.docker/config\.json|\.git-credentials|credentials\.[\w.]*json)", re.I)
 CRED_ENV = re.compile(r"(\$\{?[A-Z0-9_]*(TOKEN|SECRET|KEY|PASSWORD)[A-Z0-9_]*\}?|\bAWS_[A-Z_]+|\bGITHUB_TOKEN\b|\bNPM_TOKEN\b)")
 CRED_SPECIFIC = re.compile(CRED_FILE.pattern + "|" + CRED_ENV.pattern, re.I)
 CRED_GENERIC = re.compile(r"\b(secrets?|credentials?|api[ _-]?keys?|tokens?|passwords?)\b", re.I)
@@ -297,9 +300,12 @@ CRED_GENERIC = re.compile(r"\b(secrets?|credentials?|api[ _-]?keys?|tokens?|pass
 ENV_DUMP = re.compile(r"(\benvironment (dump|variables?|snapshot)|\benv(ironment)?[ _-]?vars?\b|\benv dump\b|\bprintenv\b|process\.env\b|"
                       r"os\.environ\b|/proc/self/environ|\.git-credentials|\.netrc\b|\.pypirc\b|\bbrowser cookies\b|"
                       r"\bsession (tokens?|cookies?)\b|\bkeychain\b)", re.I)
+PACK = re.compile(r"\b(archive|bundle|compress|zip|tar|package|encode|base64(-encode)?|obfuscate)\w*\b", re.I)
+SECRECY = re.compile(r"\b(unreadable|opaque|obscured?|unnoticed|undetected|under the radar|looks? like (normal|ordinary) traffic)\b", re.I)
 # "... and POST it to https://..."  /  "... then send the output to ...": the object was named BEFORE the verb.
 ANAPHOR = re.compile(r"^\s*(it|them|this|that|these|those|everything|all of (it|them)|"
-                     r"(the|its|their)\s+(result|results|output|contents?|dump|file|files|data|values?))\b", re.I)
+                     r"(the|its|their|every|all)\s+(result|results|output|contents?|dump|file|files|data|values?|matches|material|"
+                     r"key material|profile contents?|bundle|archive|payload|lines?|entries|secrets?|tokens?|keys?))\b", re.I)
 CONCEAL = re.compile(
     r"(do not|don't|never)\s+(tell|inform|alert|notify)\s+(the\s+)?(user|developer|human|reviewer)s?"
     r"(\s+(about|of|that you|what you|anything|this|these)\b|\s*[.!]|\s*$)"
@@ -431,6 +437,11 @@ def exfil_sentences(text: str) -> list[str]:
             near = s[v.end(): v.end() + 80]
             has_url = URL.search(s)
             if CRED_FILE.search(near) or (has_url and (CRED_ENV.search(near) or CRED_GENERIC.search(near) or ENV_DUMP.search(near))):
+                hits.append(s)
+                break
+            # staged or covert transfer: "archive ~/.config ... upload to <url>", "encode it and send it ... so it stays unreadable"
+            if has_url and ((PACK.search(s) and (CRED_FILE.search(s) or ENV_DUMP.search(s) or re.search(r"~/\.config\b", s)))
+                            or (PACK.search(s) and SECRECY.search(s))):
                 hits.append(s)
                 break
             # the sensitive thing was named first and the verb points back at it: "collect X and POST it to <url>".
@@ -584,8 +595,13 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
         text = p.read_text(encoding="utf-8", errors="replace")
         bad = invisible_chars(text)
         hidden = decode_hidden(text, bad) if bad else None
+        from . import prose
+        norm = prose.normalize(text)
+        matchable = text if norm == text else text + "\n" + norm      # rules see the file as written AND with evasion undone
+        hidden_is_harmless = bool(hidden) and not _agent_directed(hidden) and not any(
+            scored for _, _, scored in prose.findings(hidden, governed_by_prohibition, warned_about))
         if len(bad) >= 8 or hidden:
-            findings.append(Finding("S1a", rel, 50, force=True,
+            findings.append(Finding("S1a", rel, 50, force=not hidden_is_harmless,
                 evidence=f"{len(bad)} invisible characters at offsets {[i for i, _ in bad[:3]]}..."
                          + (f" decoded: \"{hidden[:160]}\"" if hidden else " (not decodable by known schemes)"),
                 impact="Your agent reads text that you cannot see in an editor or a diff."
@@ -595,7 +611,7 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
             findings.append(Finding("S1b", rel, 15,
                 evidence=f"{len(bad)} stray invisible character(s) at offsets {[i for i, _ in bad]}",
                 impact="Too few to carry a payload; likely a paste artefact.", fix="Remove them."))
-        for label, body in (("", text), (" (in hidden text)", hidden or "")):
+        for label, body in (("", matchable), (" (in hidden text)", hidden or "")):
             hits = exfil_sentences(body)
             if hits:
                 host = URL.search(hits[0])
@@ -605,16 +621,16 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
                            + (f"to {host.group(0)}" if host else "off the machine") + ".",
                     fix="Remove the instruction. Rotate anything it names."))
                 break
-        conceal_visible = CONCEAL.search(text)
+        conceal_visible = CONCEAL.search(matchable)
         conceal_hidden = CONCEAL.search(hidden) if hidden else None
         if conceal_visible or conceal_hidden:
-            where = (f"\"{redact(line_at(text, conceal_visible.start()))[:160]}\"" if conceal_visible
+            where = (f"\"{redact(line_at(matchable, conceal_visible.start()))[:160]}\"" if conceal_visible
                      else f"(in hidden text) \"{redact(line_at(hidden, conceal_hidden.start()))[:160]}\"")
             findings.append(Finding("S13", rel, 45,
                 evidence=f"instruction to hide activity from the user: {where}",
                 impact="Your agent is told not to tell you what it is doing.",
                 fix="Remove it. No legitimate project instruction needs this."))
-        visible = HTML_COMMENT.sub(" ", text)
+        visible = HTML_COMMENT.sub(" ", matchable)
         for c in HTML_COMMENT.findall(text):
             why = _agent_directed(c)
             if why:
@@ -638,6 +654,15 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
             findings.append(Finding("S12", rel, 35, evidence=f"remote instructions: \"{' '.join(m12.group(0).split())[:160]}\"",
                 impact="Your agent is told to fetch its instructions from a URL and follow them. Whoever controls that URL controls the agent.",
                 fix="Vendor the instructions into the repository so that changes to them go through review."))
+        have = {f.rule for f in findings if f.file == rel}
+        for rule, line, scored in prose.findings(visible, governed_by_prohibition, warned_about):
+            if rule["rule"] in have:                               # S4 / S12 / S13 already reported by the older patterns
+                continue
+            findings.append(Finding(rule["rule"], rel, rule["penalty"] if scored else 0,
+                evidence=(f"{rule['name'].lower()}: " if scored else f"observation only, does not affect the score ({rule['name'].lower()}): ")
+                         + f"\"{redact(line)[:160]}\"",
+                impact=rule["impact"] if scored else rule["impact"] + " Plainly worded like this it is common in ordinary setup notes, so it is shown and not scored.",
+                fix=rule["fix"]))
         if rel in baseline:
             weak = weakened_guardrails(baseline[rel], text)
             if weak:
@@ -678,6 +703,42 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
                     evidence="Hardcoded authentication token in an agent config: " + ", ".join(f"{k} = {v}" for k, v in found[:4]),
                     impact="A credential is committed where every agent, every contributor and every fork can read it.",
                     fix="Rotate it now - it is already in git history - and reference an environment variable instead."))
+
+    # ---- text INSIDE tool-server configs: a tool's description is an instruction the agent reads ("tool poisoning")
+    from . import prose as _prose
+    for relp in sorted(set(MCP_FILES) | {".claude/settings.local.json"}):
+        if not (root / relp).is_file():
+            continue
+        strings: list[str] = []
+
+        def _collect(node, key=""):
+            if isinstance(node, dict):
+                for k, v in node.items():
+                    _collect(v, str(k))
+            elif isinstance(node, list):
+                for v in node:
+                    _collect(v, key)
+            elif isinstance(node, str) and len(node) >= 25 and " " in node and key.lower() not in ("command", "url", "args"):
+                strings.append(node)
+        _collect(load_json(root / relp))
+        blob = _prose.normalize("\n".join(strings))
+        if not blob:
+            continue
+        hits = exfil_sentences(blob)
+        if hits:
+            host = URL.search(hits[0])
+            findings.append(Finding("S5", relp, 40, evidence=f"exfiltration-shaped instruction in a tool description: \"{redact(hits[0])[:160]}\"",
+                impact="A tool's description tells your agent to send data " + (f"to {host.group(0)}." if host else "off the machine."),
+                fix="Remove the server, or the text. A tool description should say what the tool does, nothing else."))
+        m = CONCEAL.search(blob)
+        if m:
+            findings.append(Finding("S13", relp, 45, evidence=f"instruction to hide activity from the user, in a tool description: \"{redact(line_at(blob, m.start()))[:160]}\"",
+                impact="A tool's description tells your agent not to tell you what it is doing.", fix="Remove the server, or the text."))
+        have = {f.rule for f in findings if f.file == relp}
+        for rule, line, scored in _prose.findings(blob, governed_by_prohibition, warned_about):
+            if rule["rule"] not in have and scored:
+                findings.append(Finding(rule["rule"], relp, rule["penalty"], evidence=f"{rule['name'].lower()}, in a tool description: \"{redact(line)[:160]}\"",
+                    impact=rule["impact"], fix="Remove the server, or the text. A tool description should say what the tool does, nothing else."))
 
     # ---- S19: MCP servers nobody approved
     for key, s in mcp_servers(root).items():

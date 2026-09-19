@@ -54,7 +54,7 @@ These files are valid Markdown and JSON, pass every linter, have no CVE to patch
 
 | Control | What you get |
 |---|---|
-| **Static rules** | 20 deterministic rules. Every finding says what the agent would have done, in one sentence, and what to do about it. The arithmetic behind the score is always shown. |
+| **Static rules** | 26 deterministic rules. Every finding says what the agent would have done, in one sentence, and what to do about it. The arithmetic behind the score is always shown. |
 | **The gate** | `sentinel run -- claude` starts your agent only if the repository passes. It works on your machine, so it still works when an attacker pushes with `[skip ci]`. |
 | **Pull-request check** | A GitHub Action comments on every pull request with an *agent behaviour diff* and fails the check when the change is compromised. |
 | **`AGENTS.lock`** | A signed (ed25519) record of which auto-run hooks and tool servers a human approved, pinned to script hashes. Only CI signs it; a pull request cannot approve itself. |
@@ -153,9 +153,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.8 (formula v0.1)
+sentinel --version                 # sentinel 0.7.0 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 75 passed
+pytest -q                          # 112 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -418,7 +418,7 @@ flowchart LR
     CLI[sentinel scan] --- GATE[sentinel run] --- ACT[GitHub Action] --- API[REST API / web UI]
   end
   Triggers --> L0[L0 Discover<br/>3-level hook parser · JSONC tasks<br/>.mdc front-matter · MCP configs]
-  L0 --> L1[L1 Detect<br/>20 deterministic rules<br/>offline · standard library only]
+  L0 --> L1[L1 Detect<br/>26 deterministic rules<br/>offline · standard library only]
   L1 --> L2[L2 Diff<br/>base vs head via git show<br/>guardrails · new servers · approvals from base]
   L2 -. optional, off .-> DET[Sandbox<br/>fake tools · canary secrets]
   DET -.-> L3
@@ -466,7 +466,19 @@ CLEAN until a person approves it (score capped at 79).
 | **S18c** Download-and-execute | `curl … \| sh`, `bash -c "$(curl …)"` in a hook command or its target | −60 | FORCE |
 | **S19** Unapproved MCP server | a tool server (URL or command) that is not in `AGENTS.lock` | −25 | CEILING |
 | **S20** Guardrail weakened | a prohibition about something sensitive existed in the base version and is gone, or lost its negation (`Do not upload` → `Do upload`). Typo fixes do not fire. | −30 | CEILING |
+| **S21** Download-and-run instruction | prose or a code block that fetches code and runs it (`curl … \| bash`, "download X, chmod +x it and run it") | −40 | scored only with a no-questions-asked phrase, or for download → chmod → run; otherwise an observation |
+| **S22** Safety check switched off | `--no-verify`, "disable the security checks", `chmod 777`, `verify=False`, "the safety rules do not apply" | −30 | same |
+| **S23** Destructive instruction | force-push to a shared branch, rewriting git history, `rm -rf` on home / root / `.git`, truncating a config to empty | −30 | same |
+| **S24** Persistence outside the project | writing to `~/.zshrc`, cron, launch agents, login items; planting or self-restoring hooks | −35 | same; self-restoring is always scored |
+| **S25** Untrusted package source | `--index-url http://…`, "instead of the default registry", public package when the private one is missing | −30 | |
+| **S26** Credential store access | reading browser password stores, keychains, SSH private keys, cloud credential files, git history for secrets | −30 | |
 | **D1** Sandbox: a planted secret left the machine | optional sandbox only | −40 | CEILING |
+
+**Observation, not accusation.** Real instruction files say `curl -fsSL https://bun.sh/install | bash` and `>> ~/.bashrc` in
+setup notes (15 such lines in 930 popular repositories). A plain hit from S21-S24 is therefore shown as an *observation* and
+never moves a verdict. It is scored when the sentence also says "without checking it first", "do not ask", "so nothing blocks
+it", "and continue". Before matching, Sentinel undoes evasion: zero-width characters, Cyrillic and Greek look-alike letters
+inside Latin words, odd spaces, literal `\uXXXX` escapes. Text inside tool-server configs is read as instructions too.
 
 **What stays clean, on purpose.** A byte-order mark at the start of a file; the joiner inside an emoji (👨‍💻); flag emoji
 built from tag characters (🏴󠁧󠁢󠁥󠁮󠁧󠁿); the joiners Hindi, Persian, Arabic and Bengali need; a guardrail that *names* a
@@ -520,7 +532,7 @@ flowchart TB
   cli -.-> detonate[detonate.py<br/>sandbox, canaries, hosted-model clients]
   gitdiff --> core
   lock --> core
-  core[core.py<br/>discovery · 20 rules · score · render · gate · ed25519 · redaction · fixtures · self-test]
+  core[core.py + prose.py<br/>discovery · 26 rules · score · render · gate · ed25519 · redaction · fixtures · self-test]
   render[render.py<br/>pull-request comment] --> cli
   env[envfile.py<br/>loads Sentinel's OWN .env only] --> detonate
 ```
@@ -703,8 +715,10 @@ Both other tools ship frequently. If a number here is out of date, that is good 
 - **Runtime attacks are out of scope.** A tool server that changes its descriptions mid-session (Deadbugz) cannot be seen at
   commit time or at session start. Sentinel flags the pull request that *adds* the server. What the server does later needs a
   guard that watches the agent while it runs; AgentAuditKit's `pin` and `proxy` are built for that.
-- **Static rules catch patterns.** A reworded instruction with no keywords passes them. Fixture 10 is a committed test that
-  documents the miss; the sandbox is an attempt at the gap, not a guarantee.
+- **Static rules catch patterns, and patterns do not generalise.** On a teammate's independent adversarial corpus, recall
+  on wordings like the ones we studied went from 8% to 26%, and on the 86 held-out wordings nobody had seen it stayed at
+  **0 of 86** ([`bench/corpus`](bench/corpus/README.md)). A reworded instruction with no rare token passes. The sandbox is one
+  attempt at the gap; a semantic check that may warn but never convict is the next.
 - **The sandbox is evidence when it fires and nothing when it does not.** A model that does not leak in the sandbox says
   nothing about the model on your machine. Its hit rate depends on the model, which is why it can warn and never block.
 - **Unknown hooks need a person.** Sentinel cannot tell a formatter from an interceptor by itself; it narrows the question
@@ -780,7 +794,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 75 passed
+bash setup.sh --test                 # or: make test  → 112 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```
