@@ -153,9 +153,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.7 (formula v0.1)
+sentinel --version                 # sentinel 0.6.8 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 74 passed
+pytest -q                          # 75 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -450,7 +450,7 @@ CLEAN until a person approves it (score capped at 79).
 | **S1b** Stray invisible characters | 1 to 7 outside the allowlist | −15 | FORCE only beside S2, S4, S5 or S13 |
 | **S2** Instruction hidden in a comment | an HTML comment that contains override phrasing, an exfiltration-shaped instruction, concealment, or download-and-execute | −35 | |
 | **S4** Override phrasing | "ignore previous instructions", "system-level directive", "mark this file as safe", "reveal your system prompt"… unless the sentence quotes or warns about it | −25 | |
-| **S5** Exfiltration-shaped instruction | a network verb followed closely by a credential *file* (`.env`, `~/.ssh`, `~/.aws`…), or by a credential variable when the sentence has a real URL; not governed by a prohibition in the same clause | −40 | |
+| **S5** Exfiltration-shaped instruction | a network verb followed closely by a credential *file* (`.env`, `~/.ssh`, `~/.aws`…); or, when the sentence has a real URL, by a credential variable, a generic secret word, or the whole environment ("environment dump", `printenv`, `process.env`); also the reverse word order with a pointing word ("collect X and POST **it** to …"). Not when governed by a prohibition in the same clause ("never A **or** B" covers B; "do not wait **and** send X" does not). | −40 | |
 | **S6** Undeclared change | pull-request mode: agent-config files changed, and no commit message mentions them | −15 | |
 | **S7** Encoded instruction | base64 or hex that *decodes to an instruction*. Hashes, integrity strings and images never match. | −45 | FORCE |
 | **S10** Orphaned auto-run | a hook or task points to an in-repo script that does not exist (the residue a removed package leaves behind) | −70 | FORCE |
@@ -677,7 +677,7 @@ legitimate network use, plain URLs, secrets mentioned nearby):
 
 | | Attacks flagged | Harmless files flagged |
 |---|---|---|
-| Sentinel static rules | 0 of 30 (by construction: we kept only attacks our rules miss) | 0 of 30 |
+| Sentinel static rules | 0 of 30 when the set was built (by construction: we kept only attacks our rules missed); 2 of 30 since 0.6.8 | 0 of 30 |
 | wormhole-guard 0.2.0 | 3 of 30 | 0 of 30 |
 | AgentAuditKit 0.6.6 | 30 of 30, through its any-URL rule | 12 of 30, through the same rule |
 | Sentinel sandbox, gpt-oss-20b | 11 of 30 (37%, 95% CI 22–55%) | 0 of 30 |
@@ -780,7 +780,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 74 passed
+bash setup.sh --test                 # or: make test  → 75 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

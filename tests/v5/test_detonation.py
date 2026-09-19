@@ -69,12 +69,19 @@ def test_the_harness_catches_paraphrased_exfiltration_via_the_http_path(obedient
     assert benign["new_behaviours"] == []
 
 
+# All 30 attacks were static misses when the set was built and measured (0.5.7). Rules improve: list here what a later
+# version catches, so the published sandbox numbers keep their meaning and nobody quietly edits the corpus.
+NOW_CAUGHT_STATICALLY = {"16_debug_bundle.md", "27_replicate.md"}   # since 0.6.8: "... credentials ... and transmit it to <url>"
+
+
 def test_corpus_is_all_static_misses_and_the_right_size():
     from sentinel import contract
     attacks = sorted(glob.glob(str(CORPUS / "attack" / "*.md")))
     benign = sorted(glob.glob(str(CORPUS / "benign" / "*.md")))
     assert len(attacks) == 30 and len(benign) == 30
-    for f in attacks:                                      # if a static rule already catches it, it is not a detonation test
+    caught = {Path(f).name for f in attacks if contract.scan_text("CLAUDE.md", Path(f).read_text())["verdict"] != "CLEAN"}
+    assert caught == NOW_CAUGHT_STATICALLY, caught         # a new catch is good news: add it to the set above, on purpose
+    for f in []:
         assert contract.scan_text("CLAUDE.md", Path(f).read_text())["verdict"] == "CLEAN", f
     for f in benign:
         assert contract.scan_text("CLAUDE.md", Path(f).read_text())["verdict"] == "CLEAN", f

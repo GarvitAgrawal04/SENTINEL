@@ -292,6 +292,14 @@ CRED_FILE = re.compile(r"(\.env\b|id_rsa|id_ed25519|~/\.ssh|~/\.aws|\.aws/creden
 CRED_ENV = re.compile(r"(\$\{?[A-Z0-9_]*(TOKEN|SECRET|KEY|PASSWORD)[A-Z0-9_]*\}?|\bAWS_[A-Z_]+|\bGITHUB_TOKEN\b|\bNPM_TOKEN\b)")
 CRED_SPECIFIC = re.compile(CRED_FILE.pattern + "|" + CRED_ENV.pattern, re.I)
 CRED_GENERIC = re.compile(r"\b(secrets?|credentials?|api[ _-]?keys?|tokens?|passwords?)\b", re.I)
+# The whole environment is a bag of secrets: tokens, keys and passwords live there. "Collect the environment dump and POST it"
+# names no credential and still takes all of them. (Found by a teammate's test corpus, fixture EXFIL-002.)
+ENV_DUMP = re.compile(r"(\benvironment (dump|variables?|snapshot)|\benv(ironment)?[ _-]?vars?\b|\benv dump\b|\bprintenv\b|process\.env\b|"
+                      r"os\.environ\b|/proc/self/environ|\.git-credentials|\.netrc\b|\.pypirc\b|\bbrowser cookies\b|"
+                      r"\bsession (tokens?|cookies?)\b|\bkeychain\b)", re.I)
+# "... and POST it to https://..."  /  "... then send the output to ...": the object was named BEFORE the verb.
+ANAPHOR = re.compile(r"^\s*(it|them|this|that|these|those|everything|all of (it|them)|"
+                     r"(the|its|their)\s+(result|results|output|contents?|dump|file|files|data|values?))\b", re.I)
 CONCEAL = re.compile(
     r"(do not|don't|never)\s+(tell|inform|alert|notify)\s+(the\s+)?(user|developer|human|reviewer)s?"
     r"(\s+(about|of|that you|what you|anything|this|these)\b|\s*[.!]|\s*$)"
@@ -391,7 +399,14 @@ def governed_by_prohibition(sentence: str, verb_start: int) -> bool:
     m = None
     for m in PROHIBIT.finditer(window):
         pass
-    return bool(m) and not CLAUSE_BREAK.search(window[m.end():])
+    if m and not CLAUSE_BREAK.search(window[m.end():]):
+        return True
+    # "never collect X or POST it": under a negation, "or"/"nor" carries the prohibition to the second verb.
+    # Deliberately NOT for "and": "do not wait and send X" is how an attacker slips past a prohibition check.
+    far = None
+    for far in PROHIBIT.finditer(before):
+        pass
+    return bool(far) and not CLAUSE_BREAK.search(before[far.end():]) and bool(re.search(r"\b(or|nor)\s+(to\s+)?$", before, re.I))
 
 
 def warned_about(before: str) -> bool:
@@ -405,7 +420,7 @@ def warned_about(before: str) -> bool:
 
 
 def exfil_sentences(text: str) -> list[str]:
-    """verb ... credential, close together, not governed by a prohibition.
+    """verb ... credential, close together (or credential ... verb + "it/them/the output"), not governed by a prohibition.
     Credential files count on their own. Environment-variable names and generic words need a real URL beside them:
     real instruction files are full of `curl ... $API_TOKEN` documentation."""
     hits = []
@@ -414,7 +429,15 @@ def exfil_sentences(text: str) -> list[str]:
             if governed_by_prohibition(s, v.start()):
                 continue
             near = s[v.end(): v.end() + 80]
-            if CRED_FILE.search(near) or (URL.search(s) and (CRED_ENV.search(near) or CRED_GENERIC.search(near))):
+            has_url = URL.search(s)
+            if CRED_FILE.search(near) or (has_url and (CRED_ENV.search(near) or CRED_GENERIC.search(near) or ENV_DUMP.search(near))):
+                hits.append(s)
+                break
+            # the sensitive thing was named first and the verb points back at it: "collect X and POST it to <url>".
+            # Only with that pointing word: "export $TOKEN, then curl https://api..." is ordinary documentation.
+            before = s[max(0, v.start() - 100): v.start()]
+            if has_url and ANAPHOR.match(s[v.end():]) and (CRED_FILE.search(before) or CRED_ENV.search(before)
+                                                           or CRED_GENERIC.search(before) or ENV_DUMP.search(before)):
                 hits.append(s)
                 break
     return hits
