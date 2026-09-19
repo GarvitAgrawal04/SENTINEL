@@ -1,3 +1,8 @@
+## 0.6.5 — 2026-09-19 — Windows newcomers
+- `setup.bat` (+ `setup.ps1`): the one-command setup for Windows PowerShell and cmd. A teammate following the website typed `bash setup.sh` in PowerShell and got "bash is not recognized". Works where scripts are disabled by policy; PowerShell 5.1 compatible; tested under PowerShell 7.
+- Website "Use it": Windows and macOS/Linux commands side by side; the gate commands say they need the setup first; the pull-request snippet is a complete file and says it is a file, not a command; new "In VS Code" tab with the install steps (and the warning not to double-click a `.vsix` on Windows).
+- `.gitattributes` pins line endings for `*.sh`, `*.bat`, `*.ps1`.
+
 ## 0.6.4 — 2026-09-18 — hosted site and VS Code extension actually work for a first-time visitor
 - **Website:** on the hosted copy, pasting or uploading said "needs the scanner running". Cause: the health check gave up after 2.5 s, a cold serverless start (from another continent) takes longer, and the page then stayed in saved-results mode for good. Now it waits up to 20 s, says "Waking the scanner", keeps retrying in the background, wakes the scanner when you press Scan, and switches to live results by itself. A public page no longer probes `http://127.0.0.1:8000` on the visitor's machine.
 - **Uploading several loose files** (no folder) ignored `settings.json`, `tasks.json` and unknown names, because they landed at the root where no agent reads them: a hook piping curl into sh came back CLEAN. Each loose file is now placed where its tool would read it, reported under the name that was uploaded, and rules that need the rest of the repository are switched off for loose files.

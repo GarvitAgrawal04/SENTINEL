@@ -389,6 +389,15 @@ h3 { font-size: 17px; font-weight: 600; letter-spacing: -.008em; }
 .use { margin-top: 24px; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 36px; align-items: start; }
 .snippet { display: grid; gap: 14px; justify-items: start; }
 .snippet p { font-size: 16px; color: var(--graphite); max-width: 56ch; }
+.snippet .note { font-size: 14px; }
+.snippet code { font-family: var(--mono); }
+.snippet p code, .howto code { font-size: 13px; background: var(--mist); padding: 2px 6px; border-radius: 6px; }
+.os { width: 100%; display: grid; gap: 10px; justify-items: start; }
+.os-name { font-size: 14px !important; font-weight: 600; color: var(--ink) !important; }
+.howto { counter-reset: how; display: grid; gap: 10px; font-size: 15px; color: var(--graphite); max-width: 60ch; }
+.howto li { counter-increment: how; padding-left: 28px; position: relative; }
+.howto li::before { content: counter(how); position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+.howto b { color: var(--ink); font-weight: 600; }
 .snippet pre { width: 100%; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 18px 20px; overflow-x: auto; font: 14px/1.7 var(--mono); }
 
 .shot { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--hairline); box-shadow: 0 24px 48px -36px rgb(0 0 0 / .3); }

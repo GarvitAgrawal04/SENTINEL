@@ -104,3 +104,19 @@ def test_loose_multi_file_upload_is_read_the_way_each_tool_would_read_it():
     # with folders in the names it is a real repository layout and nothing is moved
     out = c.post("/scan/bundle", json={"files": {"src/app.py": "x = 1", "settings.json": hook}}).json()
     assert out["verdict"] == "CLEAN" and out["treated_as"] == {}
+
+
+def test_windows_newcomers_get_one_command_that_really_works():
+    """A teammate cloned the repo in Windows PowerShell, typed `bash setup.sh` from the website and hit
+    "bash is not recognized". Then they pasted the workflow YAML into the terminal."""
+    ps1 = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+    assert (ROOT / "setup.bat").read_text(encoding="utf-8").count("ExecutionPolicy Bypass") == 1
+    for ps7_only in ("&&", "||", "??", "?.", "$IsWindows"):                       # must run on Windows PowerShell 5.1
+        assert ps7_only not in "\n".join(l for l in ps1.splitlines() if not l.lstrip().startswith("#")), ps7_only
+    assert "requirements-dev.txt" in ps1 and "sentinel.cli" in ps1 and "uvicorn" in ps1
+    attrs = (ROOT / ".gitattributes").read_text(encoding="utf-8")
+    assert "*.sh  text eol=lf" in attrs and "*.bat text eol=crlf" in attrs      # CRLF in setup.sh breaks Git Bash
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    assert ".\\setup.bat" in html and "bash setup.sh" in html                    # both systems, side by side
+    assert "This is a file, not a command." in html                              # the workflow is not something to paste in a terminal
+    assert "Install from VSIX" in html and "Do not double-click the file" in html

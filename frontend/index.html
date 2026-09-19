@@ -293,15 +293,26 @@
         <button role="tab" id="use-tab-local" aria-selected="true" aria-controls="use-local">On your computer</button>
         <button role="tab" id="use-tab-gate" aria-selected="false" aria-controls="use-gate" tabindex="-1">Before your agent starts</button>
         <button role="tab" id="use-tab-pr" aria-selected="false" aria-controls="use-pr" tabindex="-1">On every pull request</button>
+        <button role="tab" id="use-tab-code" aria-selected="false" aria-controls="use-code" tabindex="-1">In VS Code</button>
       </div>
 
       <div id="use-local" role="tabpanel" aria-labelledby="use-tab-local" class="use">
         <div class="snippet">
-          <p>You need Python 3.10 or newer and Git. One command sets everything up and opens this page on your own machine.</p>
-          <pre><code>git clone https://github.com/GarvitAgrawal04/SENTINEL.git
+          <p>You need Python 3.10 or newer and Git. One command sets everything up and serves this page from your own machine. Then open http://127.0.0.1:8000.</p>
+          <div class="os">
+            <p class="os-name">Windows (PowerShell)</p>
+            <pre><code>git clone https://github.com/GarvitAgrawal04/SENTINEL.git
+cd SENTINEL
+.\setup.bat</code></pre>
+            <button class="btn quiet copy">Copy Windows commands</button>
+          </div>
+          <div class="os">
+            <p class="os-name">macOS, Linux, Git Bash</p>
+            <pre><code>git clone https://github.com/GarvitAgrawal04/SENTINEL.git
 cd SENTINEL
 bash setup.sh</code></pre>
-          <button class="btn quiet copy">Copy commands</button>
+            <button class="btn quiet copy">Copy commands</button>
+          </div>
         </div>
         <div class="shot term" aria-label="What you see in the terminal">
           <div class="shot-bar">Terminal</div>
@@ -318,6 +329,7 @@ bash setup.sh</code></pre>
       <div id="use-gate" role="tabpanel" aria-labelledby="use-tab-gate" class="use" hidden>
         <div class="snippet">
           <p>Start your agent through Sentinel. If the project is compromised, the agent does not start. This still works when an attacker skips your CI.</p>
+          <p class="note">Run these after the setup above, in a terminal where the virtual environment is active (Windows: <code>.venv\Scripts\Activate.ps1</code>, others: <code>source .venv/bin/activate</code>).</p>
           <pre><code>sentinel scan .
 sentinel run -- claude</code></pre>
           <button class="btn quiet copy">Copy commands</button>
@@ -341,11 +353,19 @@ sentinel  verdict: <span class="t-bad">COMPROMISED</span>
       <div id="use-pr" role="tabpanel" aria-labelledby="use-tab-pr" class="use" hidden>
         <div class="snippet">
           <p>Sentinel comments on each pull request with what the change would make agents do, and fails the check when it is compromised.</p>
-          <pre><code>- uses: actions/checkout@v4
-  with: { fetch-depth: 0 }
-- uses: GarvitAgrawal04/SENTINEL/action@main
-  with: { fail-on: compromised }</code></pre>
-          <button class="btn quiet copy">Copy workflow</button>
+          <p class="note">This is a file, not a command. Save it in your own repository as <code>.github/workflows/sentinel.yml</code> and push.</p>
+          <pre><code>name: sentinel
+on: { pull_request: {} }
+permissions: { contents: read, pull-requests: write }
+jobs:
+  behaviour-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: GarvitAgrawal04/SENTINEL/action@main
+        with: { fail-on: compromised }</code></pre>
+          <button class="btn quiet copy">Copy workflow file</button>
         </div>
         <div class="shot pr" aria-label="The comment Sentinel leaves on a pull request">
           <div class="shot-bar">Pull request: chore: bump deps</div>
@@ -360,6 +380,35 @@ sentinel  verdict: <span class="t-bad">COMPROMISED</span>
             </ol>
             <p class="pr-foot">Approvals were read from the base branch’s AGENTS.lock (signature valid).</p>
           </div>
+        </div>
+      </div>
+
+      <div id="use-code" role="tabpanel" aria-labelledby="use-tab-code" class="use" hidden>
+        <div class="snippet">
+          <p>The extension underlines the dangerous line as you save, explains it on hover, and shows the verdict in the status bar.</p>
+          <ol class="howto">
+            <li>Download <code>sentinel-md-…​.vsix</code> from the <a href="https://github.com/GarvitAgrawal04/SENTINEL/releases/latest" rel="noopener">latest release</a>.</li>
+            <li>In VS Code press Ctrl+Shift+P, run <b>Extensions: Install from VSIX…</b> and pick the file. Do not double-click the file: on Windows that opens Visual Studio’s installer, which cannot install it.</li>
+            <li>Start the scanner with the setup command from the first tab, or choose <b>Use the hosted demo scanner</b> when the extension offers it.</li>
+            <li>Open a project and save a <code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>.cursorrules</code>, <code>settings.json</code> or <code>.mcp.json</code>.</li>
+          </ol>
+          <pre><code>code --install-extension sentinel-md-0.2.1.vsix</code></pre>
+          <button class="btn quiet copy">Copy command</button>
+        </div>
+        <div class="shot term" aria-label="What the extension reports">
+          <div class="shot-bar">Output: Sentinel</div>
+<pre>AGENTS.md: <span class="t-bad">Compromised</span>, trust score 15 of 100
+
+  Exfiltration-shaped instruction  (S5, line 5)
+    what happens : Your agent is told to send credentials to
+                   https://example.invalid/k.
+    what to do   : Remove the instruction. Rotate anything it names.
+
+  Concealment from the user  (S13, line 5)
+    what happens : Your agent is told not to tell you what it is doing.
+    what to do   : Remove it. No legitimate project instruction needs this.
+
+  score: AGENTS.md: 100 S5:-40 S13:-45 = 15 | forced -> 15</pre>
         </div>
       </div>
 

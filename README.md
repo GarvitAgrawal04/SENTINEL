@@ -73,7 +73,17 @@ What it deliberately does not do is listed under [Limitations](#limitations).
 
 Nothing else. No Node.js, no Docker, no database, no cloud account, no API key.
 
-### One command (macOS, Linux, Git Bash on Windows)
+### One command
+
+**Windows (PowerShell or cmd):**
+
+```powershell
+git clone https://github.com/GarvitAgrawal04/SENTINEL.git
+cd SENTINEL
+.\setup.bat
+```
+
+**macOS, Linux, Git Bash:**
 
 ```bash
 git clone https://github.com/GarvitAgrawal04/SENTINEL.git
@@ -84,7 +94,10 @@ bash setup.sh
 When you see `Uvicorn running on http://127.0.0.1:8000`, open **http://127.0.0.1:8000**. That is the web UI; the API
 reference is at `/docs`. Stop the server with `Ctrl+C`. Run `bash setup.sh` again at any time; it is safe to repeat.
 
-What `setup.sh` does, in order:
+`setup.bat` runs [`setup.ps1`](setup.ps1) with the script policy bypassed for that one process, so it works even where Windows
+says "running scripts is disabled on this system". Options: `.\setup.bat -InstallOnly`, `.\setup.bat -Test`, `.\setup.bat -Port 8001`.
+
+What the setup script does, in order:
 
 1. finds a Python that is 3.10 or newer (`PYTHON=python3.12 bash setup.sh` picks one explicitly);
 2. creates a virtual environment in `.venv`;
@@ -97,9 +110,9 @@ Variants: `bash setup.sh --install-only` (set up, do not start) · `bash setup.s
 
 Prefer `make`? `make run` · `make install` · `make test` · `make scan` · `make clean`.
 
-### Windows (PowerShell)
+### Windows, by hand
 
-`bash setup.sh` works as-is in Git Bash. In PowerShell, do the same steps by hand:
+If you prefer not to run a script, these are the same steps:
 
 ```powershell
 git clone https://github.com/GarvitAgrawal04/SENTINEL.git
@@ -135,9 +148,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.4 (formula v0.1)
+sentinel --version                 # sentinel 0.6.5 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 70 passed
+pytest -q                          # 71 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -642,7 +655,8 @@ Both other tools ship frequently. If a number here is out of date, that is good 
 
 ```text
 SENTINEL/
-├── setup.sh · Makefile           one-command setup and start
+├── setup.bat · setup.ps1         one-command setup and start on Windows
+├── setup.sh · Makefile           the same on macOS, Linux and Git Bash
 ├── requirements.txt              pinned runtime dependencies (API + lock signing)
 ├── requirements-dev.txt          the above plus pinned test dependencies
 ├── .env.example                  every environment variable the code reads, explained
@@ -682,6 +696,9 @@ SENTINEL/
 | `Python 3.10 or newer was not found` | Install Python from python.org, reopen the terminal, run `bash setup.sh` again. Pick one explicitly with `PYTHON=python3.12 bash setup.sh`. |
 | `could not create a virtual environment` / `ensurepip is not available` | Debian and Ubuntu ship `venv` separately: `sudo apt install python3-venv`, then run `bash setup.sh` again. |
 | `address already in use` / `[Errno 98]` / `[Errno 48]` | Port 8000 is taken: `PORT=8001 bash setup.sh`, or set `PORT` in `.env`. The web UI follows automatically. |
+| `bash : The term 'bash' is not recognized` | You are in Windows PowerShell, which has no bash. Run `.\setup.bat` instead. |
+| `sentinel : The term 'sentinel' is not recognized` | Setup has not run yet, or the virtual environment is not active. Run `.\setup.bat -InstallOnly`, then `.venv\Scripts\Activate.ps1` (or call `.venv\Scripts\sentinel.exe` directly). |
+| Double-clicking the `.vsix` opens Visual Studio's installer, or says it is not installable | That installer is for Visual Studio, not VS Code. In VS Code: Ctrl+Shift+P → **Extensions: Install from VSIX…**, or `code --install-extension sentinel-md-0.2.1.vsix`. |
 | `sentinel: command not found` | It lives in the virtual environment: `source .venv/bin/activate` (Windows: `.venv\Scripts\Activate.ps1`). |
 | `Form data requires "python-multipart"` | A dependency is missing: `bash setup.sh --install-only`. |
 | The hosted page shows \"saved results\" at first | The hosted scanner is a serverless function and its first answer after a quiet spell is slow. The page keeps trying and switches to live results by itself; pressing Scan also wakes it. |
@@ -697,7 +714,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 70 passed
+bash setup.sh --test                 # or: make test  → 71 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

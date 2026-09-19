@@ -1,0 +1,5 @@
+# Line endings that must not depend on a contributor's git settings:
+# a shell script with Windows line endings fails in Git Bash, and cmd wants CRLF in batch files.
+*.sh  text eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf

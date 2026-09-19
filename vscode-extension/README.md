@@ -22,7 +22,13 @@ Command Palette → **Sentinel: Scan this file**.
 
 Status bar click, or **Sentinel: Show the full report**, opens the readable report with the score arithmetic.
 
-## Install it for good
+## Install it (no build needed)
+
+Download `sentinel-md-….vsix` from the [latest release](https://github.com/GarvitAgrawal04/SENTINEL/releases/latest). In VS Code press
+**Ctrl+Shift+P → Extensions: Install from VSIX…** and pick the file, or run `code --install-extension sentinel-md-0.2.1.vsix`.
+**Do not double-click the file:** on Windows that opens Visual Studio's installer, which cannot install a VS Code extension.
+
+## Build the package yourself
 
 Build the package once (needs Node.js), then install it:
 
