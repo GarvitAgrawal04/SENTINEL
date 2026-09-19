@@ -294,6 +294,7 @@
         <button role="tab" id="use-tab-gate" aria-selected="false" aria-controls="use-gate" tabindex="-1">Before your agent starts</button>
         <button role="tab" id="use-tab-pr" aria-selected="false" aria-controls="use-pr" tabindex="-1">On every pull request</button>
         <button role="tab" id="use-tab-code" aria-selected="false" aria-controls="use-code" tabindex="-1">In VS Code</button>
+        <button role="tab" id="use-tab-key" aria-selected="false" aria-controls="use-key" tabindex="-1">Your own API key</button>
       </div>
 
       <div id="use-local" role="tabpanel" aria-labelledby="use-tab-local" class="use">
@@ -425,6 +426,38 @@ jobs:
     what to do   : Remove it. No legitimate project instruction needs this.
 
   score: AGENTS.md: 100 S5:-40 S13:-45 = 15 | forced -> 15</pre>
+        </div>
+      </div>
+
+      <div id="use-key" role="tabpanel" aria-labelledby="use-tab-key" class="use" hidden>
+        <div class="snippet">
+          <p><b>You do not need a key</b> for this website, the scanner, the VS Code extension, the gate or the pull-request check. Only the optional sandbox uses one, and it uses your own key from your own account. This website will never ask you for it.</p>
+          <ol class="howto">
+            <li>Get a key from a provider you have an account with: Groq (has a free tier), OpenAI, Anthropic, Together, Mistral, OpenRouter or DeepInfra.</li>
+            <li>Do the setup on the first tab. Then open a second terminal in the SENTINEL folder and switch the tools on (the “Before your agent starts” tab shows how).</li>
+            <li>Run the first block below and answer three questions: provider, model (press Enter for the suggested one), key. The key stays hidden as you type or paste it.</li>
+            <li>Run the second block to check the key, then try the sandbox on a file.</li>
+          </ol>
+          <div class="os"><p class="os-name">Add your key</p><pre><code>sentinel apikey</code></pre><button class="btn quiet copy">Copy</button></div>
+          <div class="os"><p class="os-name">Check it, then use it</p><pre><code>sentinel apikey --test
+sentinel detonate CLAUDE.md</code></pre><button class="btn quiet copy">Copy</button></div>
+          <p class="note">The key is saved only in the .env file inside your SENTINEL folder. That file is never uploaded. To take the key out again, run sentinel apikey --remove. Never paste a key into a website, a chat or an issue.</p>
+        </div>
+        <div class="shot term" aria-label="What adding a key looks like">
+          <div class="shot-bar">What you should see</div>
+<pre><span class="t-dim">$</span> sentinel apikey
+The optional sandbox needs an API key from a model provider.
+It will be stored only in:
+  C:\Users\you\SENTINEL\.env
+That file is git-ignored and never uploaded.
+
+Provider (anthropic, deepinfra, groq, ...) [groq]:
+Model [openai/gpt-oss-20b]:
+API key (hidden as you type):
+<span class="t-ok">Saved</span> (key …wxyz). Check it with:  sentinel apikey --test
+
+<span class="t-dim">$</span> sentinel apikey --test
+<span class="t-ok">The key works.</span> Try:  sentinel detonate CLAUDE.md</pre>
         </div>
       </div>
 

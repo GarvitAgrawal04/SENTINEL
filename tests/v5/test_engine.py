@@ -109,3 +109,28 @@ def test_env_file_parsing_and_that_the_working_directory_is_never_read(tmp_path,
     import os; assert os.environ.get("SENTINEL_LLM_URL") != "https://attacker.invalid/v1"
     from pathlib import Path as _P
     assert _P(envfile.__file__).resolve().parent.parent == ROOT           # only ever the .env beside Sentinel's own source
+
+
+def test_apikey_command_stores_the_users_own_key_and_never_prints_it(tmp_path, monkeypatch, capsys):
+    import io
+    from sentinel import cli, envfile
+    env = tmp_path / ".env"
+    (tmp_path / ".env.example").write_text("# comment stays\nPORT=8000\nSENTINEL_LLM_KEY=\nSENTINEL_LLM_PROVIDER=groq\nSENTINEL_LLM_MODEL=openai/gpt-oss-20b\n")
+    monkeypatch.setattr(envfile, "OWN_ENV", env)
+    secret = "gsk_TESTONLYnotARealKey1234567890abcd"
+    monkeypatch.setattr("sys.stdin", io.StringIO(secret + "\n"))
+    assert cli.main(["apikey", "--provider", "openai", "--key-stdin"]) == 0
+    out = capsys.readouterr().out
+    assert secret not in out and "…abcd" in out                                  # only the last four characters are ever shown
+    text = env.read_text()
+    assert "# comment stays" in text and "PORT=8000" in text                     # nothing else in the file is touched
+    assert envfile.read_values(env) == {"PORT": "8000", "SENTINEL_LLM_KEY": secret, "SENTINEL_LLM_PROVIDER": "openai", "SENTINEL_LLM_MODEL": "gpt-4o-mini"}
+    assert cli.main(["apikey", "--show"]) == 0
+    shown = capsys.readouterr().out
+    assert secret not in shown and "openai" in shown and "…abcd" in shown
+    assert cli.main(["apikey", "--remove"]) == 0 and "SENTINEL_LLM_KEY" not in envfile.read_values(env)
+    # the key can never be passed as an argument (it would land in shell history)
+    with pytest.raises(SystemExit):
+        cli.main(["apikey", "--key", secret])
+    monkeypatch.setattr("sys.stdin", io.StringIO(""))
+    assert cli.main(["apikey", "--provider", "nope", "--key-stdin"]) == 1

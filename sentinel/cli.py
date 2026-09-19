@@ -236,6 +236,64 @@ def cmd_detonate(a) -> int:
     return 3 if res["new_behaviours"] else 0
 
 
+def cmd_apikey(a) -> int:
+    """Store YOUR OWN model-provider key for the optional sandbox, in Sentinel's own .env. It is never printed, never
+    taken from the command line (so it cannot land in shell history), and never read from a project being scanned."""
+    import getpass
+    from . import detonate, envfile
+    path = envfile.OWN_ENV
+    now = envfile.read_values(path)
+    providers = sorted(list(detonate.PROVIDERS) + ["anthropic"])
+    masked = lambda k: ("…" + k[-4:]) if len(k) > 8 else ("set" if k else "not set")
+    if a.show:
+        print(f"file     : {path}\nprovider : {now.get('SENTINEL_LLM_PROVIDER', 'not set')}\nmodel    : {now.get('SENTINEL_LLM_MODEL', 'not set')}"
+              f"\nkey      : {masked(now.get('SENTINEL_LLM_KEY', ''))}")
+        return 0
+    if a.remove:
+        envfile.set_values({"SENTINEL_LLM_KEY": ""}, path)
+        print(f"Removed the key from {path}. The sandbox is off again. Remember to revoke the key at your provider if you no longer need it.")
+        return 0
+    if a.test:
+        import os
+        envfile.load_own_env(path)
+        if not os.environ.get("SENTINEL_LLM_KEY"):
+            print("No key is stored yet. Add yours with:  sentinel apikey", file=sys.stderr)
+            return 1
+        try:
+            model = detonate.model_from_env()
+            model.step([{"role": "user", "content": "Reply with the single word: ok"}])
+        except Exception as e:
+            print(f"The key did not work: {str(e)[:300]}\nCheck the provider, the model name and the key with: sentinel apikey --show", file=sys.stderr)
+            return 1
+        print("The key works. Try:  sentinel detonate CLAUDE.md")
+        return 0
+    interactive = sys.stdin.isatty() and not a.key_stdin
+    if not interactive and not (a.provider and a.key_stdin):
+        print("Run `sentinel apikey` in a terminal and answer three questions, or pass --provider NAME [--model NAME] --key-stdin "
+              "and pipe the key in. The key is never accepted as a command-line argument.", file=sys.stderr)
+        return 1
+    if interactive:
+        print(f"The optional sandbox needs an API key from a model provider. It will be stored only in:\n  {path}\n"
+              "That file is git-ignored and never uploaded. The scanner, the website and the VS Code extension need no key.\n")
+    provider = a.provider or (input(f"Provider ({', '.join(providers)}) [{now.get('SENTINEL_LLM_PROVIDER', 'groq')}]: ").strip().lower()
+                              or now.get("SENTINEL_LLM_PROVIDER", "groq"))
+    if provider not in providers:
+        print(f"Unknown provider '{provider}'. Choose one of: {', '.join(providers)}", file=sys.stderr)
+        return 1
+    suggested = now.get("SENTINEL_LLM_MODEL") if now.get("SENTINEL_LLM_PROVIDER") == provider and now.get("SENTINEL_LLM_MODEL") else detonate.DEFAULT_MODELS[provider]
+    model = a.model or (input(f"Model [{suggested}]: ").strip() if interactive else "") or suggested
+    key = (sys.stdin.readline() if a.key_stdin else getpass.getpass("API key (hidden as you type; Enter keeps the current one): ")).strip()
+    if not key and not now.get("SENTINEL_LLM_KEY"):
+        print("No key entered. Nothing was changed.", file=sys.stderr)
+        return 1
+    values = {"SENTINEL_LLM_PROVIDER": provider, "SENTINEL_LLM_MODEL": model}
+    if key:
+        values["SENTINEL_LLM_KEY"] = key
+    envfile.set_values(values, path)
+    print(f"Saved to {path} (key {masked(key or now.get('SENTINEL_LLM_KEY', ''))}). Check it with:  sentinel apikey --test")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     for stream in (sys.stdout, sys.stderr):            # cp1252 consoles cannot print the PR comment; never crash on output
@@ -292,6 +350,12 @@ def main(argv: list[str] | None = None) -> int:
     s = add("keygen", cmd_keygen, help="create an ed25519 key pair")
     s.add_argument("--path", default=".")
     s.add_argument("--private", default="sentinel_signing_key.pem")
+    s = add("apikey", cmd_apikey, help="store YOUR OWN model-provider key for the optional sandbox (asks three questions)")
+    s.add_argument("--show", action="store_true", help="show provider, model and the last four characters of the key")
+    s.add_argument("--test", action="store_true", help="make one tiny request to check the key works")
+    s.add_argument("--remove", action="store_true", help="remove the key (switches the sandbox off)")
+    s.add_argument("--provider"); s.add_argument("--model")
+    s.add_argument("--key-stdin", action="store_true", help="read the key from standard input (for scripts)")
     s = add("detonate", cmd_detonate, help="sandbox one instruction file")
     s.add_argument("file")
     s.add_argument("--base-file")

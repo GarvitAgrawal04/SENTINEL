@@ -1,3 +1,7 @@
+## 0.6.7 — 2026-09-19 — your own API key, explained
+- `sentinel apikey`: a guided way to store YOUR OWN model-provider key for the optional sandbox. Three questions; the key is hidden as you type, never accepted as a command-line argument, never printed (only its last four characters), saved in Sentinel's own git-ignored `.env`. `--show`, `--test`, `--remove`.
+- README section 8, a website tab and the extension's description all explain the same thing in plain words: nothing but the sandbox needs a key, where to get one, how to add it, how to use it in GitHub Actions with a secret, and how to keep it safe.
+
 ## 0.6.6 — 2026-09-19 — a beginner can follow it
 - Website "Use it" rewritten as numbered steps: where to type, paste four lines at once (now including `git pull`, so an older clone gets `setup.bat`), what is a file and must NOT be pasted into a terminal, and a real **Download the extension** button (the `.vsix` is served by the site itself, locally and hosted).
 - VS Code extension 0.2.2: **Sentinel: Try it on a demo file** (works with zero setup through the hosted scanner), a one-time welcome, **Sentinel: How to use it**, and a plain-language README that is its Details page. A test checks the downloadable `.vsix` is exactly what `vscode-extension/` contains.

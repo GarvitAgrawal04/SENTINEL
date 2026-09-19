@@ -45,3 +45,33 @@ def load_own_env(path: Path | None = None) -> list[str]:
     for k in fresh:
         os.environ[k] = pairs[k]
     return fresh
+
+
+def set_values(values: dict[str, str], path: Path | None = None) -> Path:
+    """Write KEY=value lines into Sentinel's own .env, keeping every comment and every other line as it is.
+    An empty value blanks the line (that is how a key is removed). Starts from .env.example when .env is missing."""
+    path = path or OWN_ENV
+    if path.is_file():
+        lines = path.read_text(encoding="utf-8-sig").splitlines()
+    else:
+        example = path.with_name(".env.example")
+        lines = example.read_text(encoding="utf-8").splitlines() if example.is_file() else []
+    left = dict(values)
+    for i, line in enumerate(lines):
+        m = re.match(r"^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=", line)
+        if m and m.group(1) in left:
+            lines[i] = f"{m.group(1)}={left.pop(m.group(1))}"
+    lines += [f"{k}={v}" for k, v in left.items()]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    try:
+        path.chmod(0o600)                                   # best effort: readable by you only
+    except OSError:
+        pass
+    return path
+
+
+def read_values(path: Path | None = None) -> dict[str, str]:
+    try:
+        return parse((path or OWN_ENV).read_text(encoding="utf-8-sig"))
+    except OSError:
+        return {}

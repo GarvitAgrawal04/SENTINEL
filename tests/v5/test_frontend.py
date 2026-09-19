@@ -140,3 +140,17 @@ def test_the_downloadable_extension_is_the_one_in_the_repo():
     assert got.status_code == 200 and got.headers["content-type"].startswith("application/vsix")
     html = (FRONTEND / "index.html").read_text(encoding="utf-8")
     assert 'href="sentinel-md.vsix" download' in html
+
+
+def test_every_place_a_newcomer_looks_explains_the_api_key_the_same_way():
+    """Users bring their own key, and only the optional sandbox uses it. The README, the website and the extension's
+    description must all say so, and none of them may ask anyone to type a key into a web page."""
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    ext = (ROOT / "vscode-extension" / "README.md").read_text(encoding="utf-8")
+    for text in (html, readme, ext):
+        assert "sentinel apikey" in text
+    assert "This website will never ask you for it" in html
+    assert 'type="password"' not in html and "SENTINEL_LLM_KEY" not in (FRONTEND / "app.js").read_text(encoding="utf-8")
+    assert "Add your own API key" in readme and "secrets.SENTINEL_LLM_KEY" in readme
+    assert "Do I need an API key?" in ext

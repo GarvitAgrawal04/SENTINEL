@@ -50,6 +50,23 @@ bash setup.sh
 
 Leave that window open. The extension finds the scanner at `http://127.0.0.1:8000` by itself.
 
+## Do I need an API key?
+
+**No.** The extension, the scanner and the website need no key and no account.
+
+A key is only for Sentinel's optional *sandbox* on the command line (`sentinel detonate`), which lets a test AI follow a file
+among decoy secrets. It uses **your own** key from **your own** provider account (Groq, OpenAI, Anthropic, Together, Mistral,
+OpenRouter or DeepInfra). To add it, open a terminal in your SENTINEL folder, switch the tools on
+(Windows: `.venv\Scripts\Activate.ps1` · macOS/Linux: `source .venv/bin/activate`) and run:
+
+```
+sentinel apikey
+```
+
+Answer three questions: provider, model (Enter for the suggested one), key. The key is hidden as you type, stored only in the
+`.env` file inside your SENTINEL folder (git-ignored, never uploaded), and never shown again. `sentinel apikey --test` checks
+it, `sentinel apikey --remove` takes it out. Never paste a key into a website, a chat or a settings field of this extension.
+
 ## If something does not work
 
 | You see | What to do |

@@ -20,7 +20,7 @@ scans.
 - [Why this exists](#why-this-exists)
 - [What Sentinel does](#what-sentinel-does)
 - [Install and run](#install-and-run) · [deploy](#deploy-it-vercel)
-- [Using Sentinel](#using-sentinel): [web UI](#1-the-web-ui) · [command line](#2-the-command-line) · [the gate](#3-the-gate-stop-the-agent-before-it-starts) · [pull requests](#4-check-every-pull-request) · [AGENTS.lock](#5-agentslock-a-signed-record-of-what-was-approved) · [VS Code](#6-inside-vs-code) · [sandbox](#7-the-sandbox-experiment-optional-off-by-default)
+- [Using Sentinel](#using-sentinel): [web UI](#1-the-web-ui) · [command line](#2-the-command-line) · [the gate](#3-the-gate-stop-the-agent-before-it-starts) · [pull requests](#4-check-every-pull-request) · [AGENTS.lock](#5-agentslock-a-signed-record-of-what-was-approved) · [VS Code](#6-inside-vs-code) · [sandbox](#7-the-sandbox-experiment-optional-off-by-default) · [your own API key](#8-add-your-own-api-key-only-for-the-optional-sandbox)
 - [Supported files](#supported-files)
 - [How detection works](#how-detection-works)
 - [Architecture](#architecture)
@@ -153,9 +153,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.6 (formula v0.1)
+sentinel --version                 # sentinel 0.6.7 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 72 passed
+pytest -q                          # 74 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -187,6 +187,7 @@ sentinel scan [PATH] [--json] [--hooks-only] [--global] [--base REF]
 sentinel run [--strict] -- <agent command>
 sentinel pr --base REF [--out FILE] [--json] [--detonate] [--fail-on compromised|suspicious|never]
 sentinel init [--approve-all] | approve [--only TEXT] [--note TEXT] | sign [--key FILE] | verify | keygen
+sentinel apikey [--show | --test | --remove]
 sentinel detonate FILE [--base-file OLDER_VERSION]
 sentinel fixtures DIR | selftest
 ```
@@ -322,11 +323,7 @@ five fake tools and a virtual file system seeded with canary secrets, runs the s
 the file, and looks at what changed. If a planted secret leaves the sandbox (finding `D1`), that is the detection.
 
 ```bash
-# .env (one API key; any of: openai | groq | together | anthropic | mistral | openrouter | deepinfra)
-SENTINEL_LLM_KEY=your-key
-SENTINEL_LLM_PROVIDER=groq
-SENTINEL_LLM_MODEL=openai/gpt-oss-20b
-
+sentinel apikey                     # add YOUR OWN provider key once (section 8 below explains every step)
 sentinel detonate CLAUDE.md --base-file CLAUDE.md.old
 sentinel pr --base main --detonate
 ```
@@ -335,6 +332,62 @@ Measured on 30 disguised attack files that every static rule misses, and 30 harm
 sandbox on **11 of 30** (gpt-oss-20b) and **5 of 30** (gpt-oss-120b), with **0 of 30** false alarms for both. That is below
 our own 50% bar, so the feature is opt-in and presented as an experiment. It can raise a verdict to SUSPICIOUS; it can never
 make one COMPROMISED by itself. Runs and caveats: [`bench/detonation/results`](bench/detonation/results/README.md).
+
+### 8. Add your own API key (only for the optional sandbox)
+
+**You do not need a key** for the scanner, the website, the VS Code extension, the gate, the pull-request check or
+`AGENTS.lock`. Only the optional sandbox (`sentinel detonate`, `sentinel pr --detonate`) talks to a model provider, and it uses
+**your own** key from **your own** account. Sentinel ships no key, the hosted website never asks for one, and a key is never
+read from a project being scanned.
+
+**1. Get a key** from a provider you have an account with:
+Groq (`console.groq.com/keys`, has a free tier) · OpenAI (`platform.openai.com/api-keys`) · Anthropic (`console.anthropic.com`) ·
+Together · Mistral · OpenRouter · DeepInfra.
+
+**2. Give it to Sentinel.** After setup, in a terminal inside the SENTINEL folder with the tools switched on
+(Windows: `.venv\Scripts\Activate.ps1` · macOS/Linux: `source .venv/bin/activate`):
+
+```
+sentinel apikey
+```
+
+It asks three questions: the provider, the model (press Enter for the suggested one), and the key. The key is hidden while you
+type or paste it, is never shown again (only its last four characters), and is saved in the `.env` file inside your SENTINEL
+folder. That file is git-ignored and is never uploaded.
+
+**3. Check it, then use it:**
+
+```
+sentinel apikey --test          # one tiny request: "The key works."
+sentinel apikey --show          # provider, model, last four characters
+sentinel detonate CLAUDE.md     # run a file through the sandbox
+sentinel apikey --remove        # take the key out again
+```
+
+Prefer to edit the file yourself? Open `.env` in the SENTINEL folder (`notepad .env` on Windows) and fill in three lines, with
+no quotes and no spaces around `=`:
+
+```
+SENTINEL_LLM_KEY=paste-your-key-here
+SENTINEL_LLM_PROVIDER=groq
+SENTINEL_LLM_MODEL=openai/gpt-oss-20b
+```
+
+**In GitHub Actions**, never put a key in a file. Add it under *Settings → Secrets and variables → Actions* as
+`SENTINEL_LLM_KEY`, then:
+
+```yaml
+      - uses: GarvitAgrawal04/SENTINEL/action@main
+        with: { fail-on: compromised, detonate: "true" }
+        env:
+          SENTINEL_LLM_KEY: ${{ secrets.SENTINEL_LLM_KEY }}
+          SENTINEL_LLM_PROVIDER: groq
+          SENTINEL_LLM_MODEL: openai/gpt-oss-20b
+```
+
+**Keep it safe:** one key, from your own account · never paste it into a website, a chat or an issue · never commit `.env` ·
+if a key leaks, revoke it at the provider and add a new one. Costs are yours: a sandbox run on one file is a handful of short
+requests to a small model.
 
 ---
 
@@ -717,7 +770,8 @@ SENTINEL/
 | The web page says the scanner is not reachable | The server is not running, or the page was opened by double-clicking `index.html` (browsers block that). Use `bash setup.sh` and open http://127.0.0.1:8000. |
 | `base ref 'main' not found` in CI | The checkout is shallow: `fetch-depth: 0` in `actions/checkout`. |
 | `signature : UNSIGNED` from `sentinel verify` | The lock exists but CI has not signed it yet: set up `action/examples/sentinel-sign.yml`. |
-| `No model configured` from `sentinel detonate` | The sandbox is optional and needs one provider key in `.env`. Everything else works without it. |
+| `No model configured` from `sentinel detonate` | The sandbox is optional and needs your own provider key. Run `sentinel apikey`. Everything else works without it. |
+| `The key did not work` from `sentinel apikey --test` | The message shows the provider's own answer. Usual causes: the key belongs to a different provider than the one chosen, a model name that provider does not offer, or a revoked key. Run `sentinel apikey` again. |
 | The sandbox keeps printing "provider asked us to slow down" | Normal on a free tier; it paces itself and resumes. Lower `SENTINEL_LLM_RPM` if it happens constantly. |
 | pip fails with SSL or proxy errors | `export HTTPS_PROXY=http://your-proxy:port`, then run `bash setup.sh` again. |
 | `Activate.ps1 cannot be loaded because running scripts is disabled` | PowerShell: `Set-ExecutionPolicy -Scope Process Bypass`, then activate again. |
@@ -726,7 +780,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 72 passed
+bash setup.sh --test                 # or: make test  → 74 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

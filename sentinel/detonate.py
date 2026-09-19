@@ -132,6 +132,13 @@ PROVIDERS = {                       # base URL for each hosted provider that spe
 }
 
 
+# A small, cheap, tool-calling model per provider, offered as the default by `sentinel apikey`. Names change; any
+# tool-calling chat model your provider lists will do.
+DEFAULT_MODELS = {"groq": "openai/gpt-oss-20b", "openai": "gpt-4o-mini", "anthropic": "claude-3-5-haiku-latest",
+                  "together": "meta-llama/Llama-3.3-70B-Instruct-Turbo", "mistral": "mistral-small-latest",
+                  "openrouter": "openai/gpt-4o-mini", "deepinfra": "meta-llama/Llama-3.3-70B-Instruct"}
+
+
 def model_from_env():
     """Build the right client from environment variables. Anthropic uses its own API shape; the rest are OpenAI-compatible."""
     try:
