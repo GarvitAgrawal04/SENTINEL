@@ -459,7 +459,7 @@ function drawWaffle(box) {
   const total = +box.dataset.total, flagged = +box.dataset.flagged, cols = 31, size = 8, gap = 2.5, step = size + gap;
   const rows = Math.ceil(total / cols);
   const chart = svg("svg", { viewBox: `0 0 ${cols * step - gap} ${rows * step - gap}`, role: "img",
-    "aria-label": `${flagged} of ${total} squares are filled` });
+    "aria-label": `${total - flagged} of ${total} healthy projects pass; ${flagged} are wrongly blocked` });
   for (let i = 0; i < total; i++) {
     chart.append(svg("rect", { class: i < flagged ? "cell on" : "cell", x: (i % cols) * step, y: Math.floor(i / cols) * step, width: size, height: size, rx: 2 }));
   }

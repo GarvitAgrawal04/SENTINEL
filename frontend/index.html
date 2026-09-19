@@ -263,12 +263,16 @@
     <!-- ── what we measured: every square is a project ──────────────────── -->
     <section id="measured" class="wrap block">
       <h2>What we measured</h2>
-      <p class="sub">We ran Sentinel and two leading open-source scanners on the same 930 popular public projects, all at their default settings. Every square below is one project. A filled square is a project whose build would be blocked over an ordinary English sentence.</p>
+      <p class="sub">We ran Sentinel and two leading open-source scanners on the same 930 popular, healthy public projects, all at their default settings. Every square is one project. More green is better.</p>
+      <ul class="legend" aria-hidden="true">
+        <li><i class="k ok"></i>the healthy project passes, as it should</li>
+        <li><i class="k bad"></i>false alarm: its build is blocked over an ordinary English sentence</li>
+      </ul>
 
       <div class="waffles">
-        <figure><div class="waffle" data-total="930" data-flagged="386"></div><figcaption><span class="who">Scanner A</span><span><b>386</b> of 930 blocked</span></figcaption></figure>
-        <figure><div class="waffle" data-total="930" data-flagged="120"></div><figcaption><span class="who">Scanner B</span><span><b>120</b> of 930 blocked</span></figcaption></figure>
-        <figure class="ours"><div class="waffle" data-total="930" data-flagged="3"></div><figcaption><span class="who">Sentinel</span><span><b>3</b> of 930 blocked</span></figcaption></figure>
+        <figure class="ours"><div class="waffle" data-total="930" data-flagged="3"></div><figcaption><span class="who">Sentinel <em class="tag">fewest false alarms</em></span><span class="big">99.7% pass</span><span><b>3</b> false alarms in 930 projects</span></figcaption></figure>
+        <figure><div class="waffle" data-total="930" data-flagged="120"></div><figcaption><span class="who">Scanner B</span><span class="big">87% pass</span><span><b>120</b> false alarms in 930 projects</span></figcaption></figure>
+        <figure><div class="waffle" data-total="930" data-flagged="386"></div><figcaption><span class="who">Scanner A</span><span class="big">58% pass</span><span><b>386</b> false alarms in 930 projects</span></figcaption></figure>
       </div>
 
       <div class="honest">

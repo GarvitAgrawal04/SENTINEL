@@ -366,14 +366,22 @@ h3 { font-size: 17px; font-weight: 600; letter-spacing: -.008em; }
 .aside span { color: var(--ink); font-weight: 600; }
 
 /* ── unit charts: every square is a project ──────────────────────────── */
-.waffles { margin-top: 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+.waffles { margin-top: 30px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
 .waffle svg { width: 100%; height: auto; display: block; }
-.waffle .cell { fill: color-mix(in srgb, var(--ink) 9%, var(--canvas)); }
+.waffle .cell { fill: color-mix(in srgb, var(--clean) 52%, var(--canvas)); }      /* passes, as it should */
 .waffle .cell.on { fill: var(--flag); }
 .waffles figcaption { margin-top: 18px; display: grid; gap: 2px; font-size: 15px; color: var(--graphite); }
 .waffles figcaption .who { font-size: 17px; font-weight: 600; color: var(--ink); }
 .waffles figcaption b { font-weight: 650; color: var(--ink); font-variant-numeric: tabular-nums; }
-.waffles .ours .who, .waffles .ours b { color: var(--accent); }
+.waffles figcaption .big { font-size: 28px; font-weight: 650; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.waffles .ours .big { color: var(--clean); }
+.waffles .ours .who { color: var(--ink); }
+.waffles .tag { font-style: normal; font-size: 12.5px; font-weight: 600; color: var(--clean); background: var(--clean-tint); padding: 3px 9px; border-radius: 999px; margin-left: 8px; vertical-align: 2px; }
+.legend { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 14.5px; color: var(--graphite); }
+.legend li { display: flex; align-items: center; gap: 9px; }
+.legend .k { width: 13px; height: 13px; border-radius: 3px; display: inline-block; }
+.legend .k.ok { background: color-mix(in srgb, var(--clean) 52%, var(--canvas)); }
+.legend .k.bad { background: var(--flag); }
 
 .honest { margin-top: 64px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; border-top: 1px solid var(--hairline); padding-top: 32px; }
 .honest p { margin-top: 8px; font-size: 15.5px; color: var(--graphite); max-width: 52ch; }

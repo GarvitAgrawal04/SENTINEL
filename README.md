@@ -153,9 +153,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.7.0 (formula v0.1)
+sentinel --version                 # sentinel 0.7.1 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 112 passed
+pytest -q                          # 113 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -645,7 +645,7 @@ auto-run commands inside an agent, and 71 declare tool servers (122 servers, 44 
 | Would block the build at its own default, for any reason | 0 called COMPROMISED · 115 (12%) need a one-time approval of hooks or tool servers that really exist | 137 (15%) | 424 (46%) |
 | Time to scan all 930 | 3.6 s | | |
 
-![Unit charts: every square is one of 930 projects; 386, 120 and 3 are filled](docs/img/ui-measured.png)
+![Every square is one of 930 healthy projects. Green: it passes, as it should. Amber: a false alarm. Sentinel 99.7% pass (3 false alarms), Scanner B 87% (120), Scanner A 58% (386)](docs/img/ui-measured.png)
 
 **Where we got it wrong first.** Sentinel's first version called 22 of the 590 repositories COMPROMISED. Causes: the word
 "silently" (274 matches), inline shell fragments like `2>/dev/null` read as missing scripts, and an entropy threshold that
@@ -794,7 +794,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 112 passed
+bash setup.sh --test                 # or: make test  → 113 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

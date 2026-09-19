@@ -1,3 +1,6 @@
+## 0.7.1 — 2026-09-19 — the measured chart reads the right way round
+- A teammate read the website chart as "Sentinel scores lowest": filled squares meant false alarms, so the best tool looked empty. Same data, positive encoding: green = a healthy project passes, amber = a false alarm; "99.7% / 87% / 58% pass" with the false-alarm counts beside them; Sentinel first; a legend. No number changed, and a test pins them.
+
 ## 0.7.0 — 2026-09-19 — measured on an independent adversarial corpus
 - A teammate's 1,165-file corpus (43 attack families, benign look-alikes, obfuscation, an adversarial holdout) was run through Sentinel for the first time. Honest result in [`bench/corpus`](bench/corpus/README.md): recall on wordings like those studied 8% -> 26% (precision 0.86 -> 0.96); on the 86 held-out wordings **0 -> 0**. Pattern rules do not generalise to unseen wording; that is now written down with numbers.
 - New prose families S21-S26 (download-and-run, safety switched off, destructive, persistence, untrusted package source, credential stores) in `sentinel/prose.py`. A plain hit is an **observation** and never moves a verdict; it is scored only with a no-questions-asked phrase, because ordinary setup notes say `curl ... | bash` too.

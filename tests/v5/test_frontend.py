@@ -154,3 +154,14 @@ def test_every_place_a_newcomer_looks_explains_the_api_key_the_same_way():
     assert 'type="password"' not in html and "SENTINEL_LLM_KEY" not in (FRONTEND / "app.js").read_text(encoding="utf-8")
     assert "Add your own API key" in readme and "secrets.SENTINEL_LLM_KEY" in readme
     assert "Do I need an API key?" in ext
+
+
+def test_the_measured_chart_reads_the_right_way_round():
+    """A teammate read the old chart as "Sentinel scores lowest": filled squares meant FALSE ALARMS, so ours looked empty.
+    Same numbers, positive encoding: green = a healthy project passes. The numbers themselves must never change."""
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    for flagged, passing in (("3", "99.7% pass"), ("120", "87% pass"), ("386", "58% pass")):
+        assert f'data-total="930" data-flagged="{flagged}"' in html and passing in html
+    assert round(100 * (930 - 3) / 930, 1) == 99.7 and round(100 * (930 - 120) / 930) == 87 and round(100 * (930 - 386) / 930) == 58
+    assert "More green is better" in html and "false alarm" in html
+    assert html.index('data-flagged="3"') < html.index('data-flagged="120"') < html.index('data-flagged="386"')
