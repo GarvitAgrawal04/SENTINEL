@@ -1,4 +1,5 @@
 ## 0.7.2 — 2026-09-20 — our own supply chain
+- **Fixed a broken link found by the submission check:** `bench/corpus/README.md` and the corpus adapter never reached GitHub, because a bare `corpus/` ignore rule swallowed them. They are tracked now, and a test asks git (not the disk) whether every file the docs link to exists. The fake key in a test no longer looks like a provider key.
 - Every GitHub Action our workflows use is referenced by commit (`actions/checkout` v4 -> `11d5960`, `actions/setup-python` v5 -> `a26af69`), not by a tag its owner can move. Dependabot proposes the bumps. A test fails if a workflow is un-pinned.
 - The `sentinel-signing` environment now accepts the `main` branch only (repository setting, 20 Sept): a workflow on any other branch cannot ask for the signing key.
 

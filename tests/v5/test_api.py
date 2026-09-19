@@ -40,3 +40,31 @@ def test_our_own_ci_pins_every_action_to_a_commit():
         for ref in re.findall(r"^\s*-?\s*uses:\s*(\S+)", f.read_text(encoding="utf-8"), re.M):
             assert ref.startswith("./") or re.fullmatch(r"[\w.-]+/[\w./-]+@[0-9a-f]{40}", ref), f"{f.name}: {ref} is not pinned to a commit"
     assert (root / ".github" / "dependabot.yml").is_file()
+
+
+def test_every_file_the_readme_links_to_is_really_in_the_repository():
+    """The README once linked to bench/corpus/README.md, which a bare `corpus/` ignore rule had silently kept out of git.
+    The page existed on the author's disk, so a check of the working tree passed. Ask git, not the disk."""
+    import re
+    import subprocess
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[2]
+    try:
+        tracked = set(subprocess.run(["git", "-C", str(root), "ls-files"], capture_output=True, text=True, check=True).stdout.split("\n"))
+    except Exception:
+        pytest.skip("not a git checkout")
+    if len(tracked) < 20:
+        pytest.skip("not a git checkout")
+    for doc in ("README.md", "CHANGELOG.md", "bench/results/README.md", "bench/corpus/README.md", "vscode-extension/README.md"):
+        assert doc in tracked, f"{doc} is not tracked by git"
+        text = (root / doc).read_text(encoding="utf-8")
+        base = Path(doc).parent
+        for link in re.findall(r"\]\((?!https?://|#|mailto:)([^)#\s]+)", text):
+            target = (base / link).as_posix()
+            target = str(Path(target)).replace("\\", "/")
+            parts = []
+            for seg in target.split("/"):
+                if seg == "..": parts.pop()
+                elif seg not in (".", ""): parts.append(seg)
+            target = "/".join(parts)
+            assert target in tracked or any(x.startswith(target.rstrip("/") + "/") for x in tracked), f"{doc} links to {link}, which is not in git"

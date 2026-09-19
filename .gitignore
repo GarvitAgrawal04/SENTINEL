@@ -47,8 +47,14 @@ repro/
 .temp_scan
 sentinel-comment.md
 # corpora rebuilt by bench/wildscan.py (large; the manifests in bench/results/ are what we track)
-corpus/
-heldout/
+# downloaded benchmark corpora (large, re-creatable). The two files that document the adversarial-corpus run ARE tracked:
+# a bare `corpus/` rule once swallowed them silently, and the README linked to a page that did not exist.
+/corpus/
+/heldout/
+bench/corpus/*
+!bench/corpus/README.md
+!bench/corpus/sentinel_adapter.py
+bench/heldout/
 # ad-hoc evaluation output; the two published result files are tracked on purpose
 results*.json
 !bench/detonation/results/*.json

@@ -155,7 +155,7 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
 sentinel --version                 # sentinel 0.7.2 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 114 passed
+pytest -q                          # 115 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -797,7 +797,7 @@ Our own workflows reference every GitHub Action by commit, not by a tag its owne
 bumps; a test fails if someone un-pins one. The `sentinel-signing` environment accepts the `main` branch only.
 
 ```bash
-bash setup.sh --test                 # or: make test  → 114 passed
+bash setup.sh --test                 # or: make test  → 115 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

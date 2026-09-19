@@ -117,7 +117,7 @@ def test_apikey_command_stores_the_users_own_key_and_never_prints_it(tmp_path, m
     env = tmp_path / ".env"
     (tmp_path / ".env.example").write_text("# comment stays\nPORT=8000\nSENTINEL_LLM_KEY=\nSENTINEL_LLM_PROVIDER=groq\nSENTINEL_LLM_MODEL=openai/gpt-oss-20b\n")
     monkeypatch.setattr(envfile, "OWN_ENV", env)
-    secret = "gsk_TESTONLYnotARealKey1234567890abcd"
+    secret = "not-a-real-key-" + "x" * 12 + "abcd"          # deliberately NOT shaped like any provider's key
     monkeypatch.setattr("sys.stdin", io.StringIO(secret + "\n"))
     assert cli.main(["apikey", "--provider", "openai", "--key-stdin"]) == 0
     out = capsys.readouterr().out
