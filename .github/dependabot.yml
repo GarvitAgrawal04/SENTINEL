@@ -1,0 +1,10 @@
+# Our own CI references actions by commit, not by a tag their owner can move. Dependabot proposes the bumps,
+# and each bump goes through the same pull-request checks as any other change.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule: { interval: "monthly" }
+  - package-ecosystem: "github-actions"
+    directory: "/action"
+    schedule: { interval: "monthly" }

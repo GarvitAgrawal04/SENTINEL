@@ -26,3 +26,17 @@ def test_scan_files_and_text():
     out = c.post("/scan/files", files=[("files", (".claude/settings.json", hook))]).json()
     assert out["verdict"] == "COMPROMISED"
     assert c.post("/scan/text", json={"filename": "AGENTS.md", "text": "Use pnpm."}).json()["verdict"] == "CLEAN"
+
+
+def test_our_own_ci_pins_every_action_to_a_commit():
+    """A version tag such as @v4 can be moved by whoever controls that action; popular actions have been hijacked that way.
+    The workflows that hold our signing key must name an exact commit. (The examples we give to users keep readable tags.)"""
+    import re
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[2]
+    files = sorted((root / ".github" / "workflows").glob("*.yml")) + [root / "action" / "action.yml"]
+    assert len(files) >= 5
+    for f in files:
+        for ref in re.findall(r"^\s*-?\s*uses:\s*(\S+)", f.read_text(encoding="utf-8"), re.M):
+            assert ref.startswith("./") or re.fullmatch(r"[\w.-]+/[\w./-]+@[0-9a-f]{40}", ref), f"{f.name}: {ref} is not pinned to a commit"
+    assert (root / ".github" / "dependabot.yml").is_file()
