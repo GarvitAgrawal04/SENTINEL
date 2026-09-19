@@ -118,5 +118,25 @@ def test_windows_newcomers_get_one_command_that_really_works():
     assert "*.sh  text eol=lf" in attrs and "*.bat text eol=crlf" in attrs      # CRLF in setup.sh breaks Git Bash
     html = (FRONTEND / "index.html").read_text(encoding="utf-8")
     assert ".\\setup.bat" in html and "bash setup.sh" in html                    # both systems, side by side
-    assert "This is a file, not a command." in html                              # the workflow is not something to paste in a terminal
-    assert "Install from VSIX" in html and "Do not double-click the file" in html
+    assert "Install from VSIX" in html and "Do not double-click it" in html
+    assert "git pull" in html                                                    # an old clone has no setup.bat: the block updates it
+    assert "Do not paste it into a terminal" in html
+
+
+def test_the_downloadable_extension_is_the_one_in_the_repo():
+    """The website offers frontend/sentinel-md.vsix. It must be exactly what vscode-extension/ contains, or people install
+    something other than the code they can read. Rebuild: cd vscode-extension && npx @vscode/vsce package --no-dependencies,
+    then copy the .vsix to frontend/sentinel-md.vsix."""
+    import zipfile
+    src = ROOT / "vscode-extension"
+    with zipfile.ZipFile(FRONTEND / "sentinel-md.vsix") as z:
+        names = set(z.namelist())
+        assert {"extension/extension.js", "extension/package.json", "extension/readme.md", "extension.vsixmanifest"} <= names
+        norm = lambda b: b.replace(b"\r\n", b"\n")
+        assert norm(z.read("extension/extension.js")) == norm((src / "extension.js").read_bytes()), "rebuild the .vsix"
+        assert json.loads(z.read("extension/package.json"))["version"] == json.loads((src / "package.json").read_text(encoding="utf-8"))["version"]
+        assert norm(z.read("extension/readme.md")) == norm((src / "README.md").read_bytes()), "rebuild the .vsix"
+    got = c.get("/sentinel-md.vsix")
+    assert got.status_code == 200 and got.headers["content-type"].startswith("application/vsix")
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    assert 'href="sentinel-md.vsix" download' in html

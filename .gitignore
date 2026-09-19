@@ -29,6 +29,8 @@ htmlcov/
 node_modules/
 .cache/
 *.vsix
+# the one packaged extension the website offers for download (a test checks it matches vscode-extension/)
+!frontend/sentinel-md.vsix
 
 # ── OS and editors ───────────────────────────────────────────────────────────────
 .DS_Store

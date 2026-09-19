@@ -80,6 +80,7 @@ Nothing else. No Node.js, no Docker, no database, no cloud account, no API key.
 ```powershell
 git clone https://github.com/GarvitAgrawal04/SENTINEL.git
 cd SENTINEL
+git pull
 .\setup.bat
 ```
 
@@ -88,8 +89,12 @@ cd SENTINEL
 ```bash
 git clone https://github.com/GarvitAgrawal04/SENTINEL.git
 cd SENTINEL
+git pull
 bash setup.sh
 ```
+
+Paste all four lines at once into PowerShell (Windows) or Terminal (macOS, Linux). They are safe to run again: if the folder
+already exists the first line complains and the third brings your copy up to date.
 
 When you see `Uvicorn running on http://127.0.0.1:8000`, open **http://127.0.0.1:8000**. That is the web UI; the API
 reference is at `/docs`. Stop the server with `Ctrl+C`. Run `bash setup.sh` again at any time; it is safe to repeat.
@@ -148,9 +153,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.6.5 (formula v0.1)
+sentinel --version                 # sentinel 0.6.6 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 71 passed
+pytest -q                          # 72 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -297,6 +302,11 @@ The format is an open JSON Schema: [`spec/agents-lock.schema.json`](spec/agents-
 verify one.
 
 ### 6. Inside VS Code
+
+**Install:** open the web UI, go to *Use it → In VS Code*, click **Download the extension** (or take
+[`frontend/sentinel-md.vsix`](frontend/sentinel-md.vsix) from this repository). In VS Code press **Ctrl+Shift+P → Extensions: Install from VSIX…** and
+pick the file. Do not double-click it: on Windows that opens Visual Studio's installer. Then **Ctrl+Shift+P → Sentinel: Try it on a
+demo file**. If your own scanner is not running, the extension offers the hosted one.
 
 [`vscode-extension/`](vscode-extension/README.md) underlines the dangerous line as you save, explains it on hover and in the
 Problems panel, and shows the verdict in the status bar. No packaging needed: open that folder in VS Code and press **F5**.
@@ -696,6 +706,8 @@ SENTINEL/
 | `Python 3.10 or newer was not found` | Install Python from python.org, reopen the terminal, run `bash setup.sh` again. Pick one explicitly with `PYTHON=python3.12 bash setup.sh`. |
 | `could not create a virtual environment` / `ensurepip is not available` | Debian and Ubuntu ship `venv` separately: `sudo apt install python3-venv`, then run `bash setup.sh` again. |
 | `address already in use` / `[Errno 98]` / `[Errno 48]` | Port 8000 is taken: `PORT=8001 bash setup.sh`, or set `PORT` in `.env`. The web UI follows automatically. |
+| `.\setup.bat : The term '.\setup.bat' is not recognized` | Your copy of the repository is older than the Windows setup script, or you are not inside the SENTINEL folder. Run `cd SENTINEL`, then `git pull`, then `.\setup.bat`. |
+| `The module '.venv' could not be loaded` | There is no `.venv` in the folder you are in: either you are not inside the SENTINEL folder, or setup has not run. `cd SENTINEL`, then `.\setup.bat -InstallOnly`. |
 | `bash : The term 'bash' is not recognized` | You are in Windows PowerShell, which has no bash. Run `.\setup.bat` instead. |
 | `sentinel : The term 'sentinel' is not recognized` | Setup has not run yet, or the virtual environment is not active. Run `.\setup.bat -InstallOnly`, then `.venv\Scripts\Activate.ps1` (or call `.venv\Scripts\sentinel.exe` directly). |
 | Double-clicking the `.vsix` opens Visual Studio's installer, or says it is not installable | That installer is for Visual Studio, not VS Code. In VS Code: Ctrl+Shift+P → **Extensions: Install from VSIX…**, or `code --install-extension sentinel-md-0.2.1.vsix`. |
@@ -714,7 +726,7 @@ SENTINEL/
 ## Development
 
 ```bash
-bash setup.sh --test                 # or: make test  → 71 passed
+bash setup.sh --test                 # or: make test  → 72 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```

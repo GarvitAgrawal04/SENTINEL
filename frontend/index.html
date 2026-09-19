@@ -298,28 +298,35 @@
 
       <div id="use-local" role="tabpanel" aria-labelledby="use-tab-local" class="use">
         <div class="snippet">
-          <p>You need Python 3.10 or newer and Git. One command sets everything up and serves this page from your own machine. Then open http://127.0.0.1:8000.</p>
+          <p>You need Python 3.10 or newer and Git. Nothing else.</p>
+          <ol class="howto">
+            <li><b>Windows:</b> press Start, type PowerShell, press Enter. <b>Mac or Linux:</b> open Terminal.</li>
+            <li>Copy the block for your system below and paste it into that window. Paste all four lines at once.</li>
+            <li>Wait until it says <b>Open http://127.0.0.1:8000</b>, then open that address in your browser. Leave the window open.</li>
+          </ol>
           <div class="os">
             <p class="os-name">Windows (PowerShell)</p>
             <pre><code>git clone https://github.com/GarvitAgrawal04/SENTINEL.git
 cd SENTINEL
+git pull
 .\setup.bat</code></pre>
-            <button class="btn quiet copy">Copy Windows commands</button>
+            <button class="btn quiet copy">Copy the Windows lines</button>
           </div>
           <div class="os">
-            <p class="os-name">macOS, Linux, Git Bash</p>
+            <p class="os-name">macOS or Linux</p>
             <pre><code>git clone https://github.com/GarvitAgrawal04/SENTINEL.git
 cd SENTINEL
+git pull
 bash setup.sh</code></pre>
-            <button class="btn quiet copy">Copy commands</button>
+            <button class="btn quiet copy">Copy the macOS / Linux lines</button>
           </div>
+          <p class="note">Ran it before? The same four lines are safe to run again. “Already exists” on the first line is fine: the third line brings your copy up to date.</p>
         </div>
         <div class="shot term" aria-label="What you see in the terminal">
-          <div class="shot-bar">Terminal</div>
-<pre><span class="t-dim">$</span> bash setup.sh
-<span class="t-step">==&gt;</span> Using Python 3.12
+          <div class="shot-bar">What you should see</div>
+<pre><span class="t-step">==&gt;</span> Using Python 3.12
 <span class="t-step">==&gt;</span> Creating the virtual environment in .venv
-<span class="t-step">==&gt;</span> Installing dependencies
+<span class="t-step">==&gt;</span> Installing dependencies (first run takes a minute or two)
 <span class="t-step">==&gt;</span> Self-test
 <span class="t-ok">ALL PASS</span>
 <span class="t-step">==&gt;</span> Open http://127.0.0.1:8000 in your browser</pre>
@@ -328,14 +335,20 @@ bash setup.sh</code></pre>
 
       <div id="use-gate" role="tabpanel" aria-labelledby="use-tab-gate" class="use" hidden>
         <div class="snippet">
-          <p>Start your agent through Sentinel. If the project is compromised, the agent does not start. This still works when an attacker skips your CI.</p>
-          <p class="note">Run these after the setup above, in a terminal where the virtual environment is active (Windows: <code>.venv\Scripts\Activate.ps1</code>, others: <code>source .venv/bin/activate</code>).</p>
-          <pre><code>sentinel scan .
-sentinel run -- claude</code></pre>
-          <button class="btn quiet copy">Copy commands</button>
+          <p>Start your agent through Sentinel. If the project is compromised, the agent does not start. This still works when an attacker skips your online checks.</p>
+          <ol class="howto">
+            <li>Do the setup on the first tab once.</li>
+            <li>Open a second terminal window in the SENTINEL folder and switch the tools on. Windows: the first block. Mac or Linux: the second.</li>
+            <li>Go to the project you want to check and run the last block.</li>
+          </ol>
+          <div class="os"><p class="os-name">Windows: switch the tools on</p><pre><code>Set-ExecutionPolicy -Scope Process Bypass
+.venv\Scripts\Activate.ps1</code></pre><button class="btn quiet copy">Copy</button></div>
+          <div class="os"><p class="os-name">macOS or Linux: switch the tools on</p><pre><code>source .venv/bin/activate</code></pre><button class="btn quiet copy">Copy</button></div>
+          <div class="os"><p class="os-name">Then, inside any project</p><pre><code>sentinel scan .
+sentinel run -- claude</code></pre><button class="btn quiet copy">Copy</button></div>
         </div>
         <div class="shot term" aria-label="What you see in the terminal">
-          <div class="shot-bar">Terminal</div>
+          <div class="shot-bar">What a dangerous project looks like</div>
 <pre><span class="t-dim">$</span> sentinel run -- claude
 sentinel  verdict: <span class="t-bad">COMPROMISED</span>
 
@@ -353,8 +366,10 @@ sentinel  verdict: <span class="t-bad">COMPROMISED</span>
       <div id="use-pr" role="tabpanel" aria-labelledby="use-tab-pr" class="use" hidden>
         <div class="snippet">
           <p>Sentinel comments on each pull request with what the change would make agents do, and fails the check when it is compromised.</p>
-          <p class="note">This is a file, not a command. Save it in your own repository as <code>.github/workflows/sentinel.yml</code> and push.</p>
-          <pre><code>name: sentinel
+          <p class="note"><b>This is a file for your GitHub repository. Do not paste it into a terminal.</b> In your repository on GitHub choose Add file, Create new file, name it as shown on the tab below, paste the text, and commit.</p>
+          <div class="os">
+            <p class="file-tab">.github / workflows / sentinel.yml</p>
+            <pre><code>name: sentinel
 on: { pull_request: {} }
 permissions: { contents: read, pull-requests: write }
 jobs:
@@ -365,7 +380,8 @@ jobs:
         with: { fetch-depth: 0 }
       - uses: GarvitAgrawal04/SENTINEL/action@main
         with: { fail-on: compromised }</code></pre>
-          <button class="btn quiet copy">Copy workflow file</button>
+            <button class="btn quiet copy">Copy the file's text</button>
+          </div>
         </div>
         <div class="shot pr" aria-label="The comment Sentinel leaves on a pull request">
           <div class="shot-bar">Pull request: chore: bump deps</div>
@@ -385,18 +401,18 @@ jobs:
 
       <div id="use-code" role="tabpanel" aria-labelledby="use-tab-code" class="use" hidden>
         <div class="snippet">
-          <p>The extension underlines the dangerous line as you save, explains it on hover, and shows the verdict in the status bar.</p>
+          <p>The extension underlines the dangerous line as you save, explains it when you hover, and shows the verdict in the status bar.</p>
+          <a class="btn primary" href="sentinel-md.vsix" download="sentinel-md.vsix">Download the extension</a>
           <ol class="howto">
-            <li>Download <code>sentinel-md-…​.vsix</code> from the <a href="https://github.com/GarvitAgrawal04/SENTINEL/releases/latest" rel="noopener">latest release</a>.</li>
-            <li>In VS Code press Ctrl+Shift+P, run <b>Extensions: Install from VSIX…</b> and pick the file. Do not double-click the file: on Windows that opens Visual Studio’s installer, which cannot install it.</li>
-            <li>Start the scanner with the setup command from the first tab, or choose <b>Use the hosted demo scanner</b> when the extension offers it.</li>
-            <li>Open a project and save a <code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>.cursorrules</code>, <code>settings.json</code> or <code>.mcp.json</code>.</li>
+            <li>Click the button above. A small file is saved to your Downloads folder. <b>Do not double-click it</b>: on Windows that opens the wrong installer.</li>
+            <li>Open VS Code. Press <b>Ctrl+Shift+P</b>, type <b>Install from VSIX</b>, press Enter, and pick the file you downloaded.</li>
+            <li>Press <b>Ctrl+Shift+P</b> again, type <b>Sentinel: Try it on a demo file</b>, press Enter. A demo file opens with red and yellow underlines.</li>
+            <li>If a message says it could not reach your scanner, click <b>Use the hosted demo scanner</b>, or run the setup on the first tab so everything stays on your computer.</li>
           </ol>
-          <pre><code>code --install-extension sentinel-md-0.2.1.vsix</code></pre>
-          <button class="btn quiet copy">Copy command</button>
+          <p class="note">After that it checks CLAUDE.md, AGENTS.md, .cursorrules, settings.json, tasks.json and .mcp.json every time you save them.</p>
         </div>
         <div class="shot term" aria-label="What the extension reports">
-          <div class="shot-bar">Output: Sentinel</div>
+          <div class="shot-bar">What the extension reports</div>
 <pre>AGENTS.md: <span class="t-bad">Compromised</span>, trust score 15 of 100
 
   Exfiltration-shaped instruction  (S5, line 5)

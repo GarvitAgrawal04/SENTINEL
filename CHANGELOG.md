@@ -1,3 +1,8 @@
+## 0.6.6 — 2026-09-19 — a beginner can follow it
+- Website "Use it" rewritten as numbered steps: where to type, paste four lines at once (now including `git pull`, so an older clone gets `setup.bat`), what is a file and must NOT be pasted into a terminal, and a real **Download the extension** button (the `.vsix` is served by the site itself, locally and hosted).
+- VS Code extension 0.2.2: **Sentinel: Try it on a demo file** (works with zero setup through the hosted scanner), a one-time welcome, **Sentinel: How to use it**, and a plain-language README that is its Details page. A test checks the downloadable `.vsix` is exactly what `vscode-extension/` contains.
+- README: the two errors a Windows newcomer actually hit (`.\setup.bat is not recognized`, `The module '.venv' could not be loaded`) are in Troubleshooting.
+
 ## 0.6.5 — 2026-09-19 — Windows newcomers
 - `setup.bat` (+ `setup.ps1`): the one-command setup for Windows PowerShell and cmd. A teammate following the website typed `bash setup.sh` in PowerShell and got "bash is not recognized". Works where scripts are disabled by policy; PowerShell 5.1 compatible; tested under PowerShell 7.
 - Website "Use it": Windows and macOS/Linux commands side by side; the gate commands say they need the setup first; the pull-request snippet is a complete file and says it is a file, not a command; new "In VS Code" tab with the install steps (and the warning not to double-click a `.vsix` on Windows).

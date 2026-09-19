@@ -394,6 +394,9 @@ h3 { font-size: 17px; font-weight: 600; letter-spacing: -.008em; }
 .snippet p code, .howto code { font-size: 13px; background: var(--mist); padding: 2px 6px; border-radius: 6px; }
 .os { width: 100%; display: grid; gap: 10px; justify-items: start; }
 .os-name { font-size: 14px !important; font-weight: 600; color: var(--ink) !important; }
+.file-tab { font: 12.5px/1 var(--mono) !important; color: var(--graphite) !important; background: var(--mist); border: 1px solid var(--hairline); border-bottom: 0; padding: 8px 12px; border-radius: 10px 10px 0 0; margin-bottom: -11px; }
+.snippet a.btn { text-decoration: none; }
+.snippet .note b { color: var(--ink); }
 .howto { counter-reset: how; display: grid; gap: 10px; font-size: 15px; color: var(--graphite); max-width: 60ch; }
 .howto li { counter-increment: how; padding-left: 28px; position: relative; }
 .howto li::before { content: counter(how); position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }

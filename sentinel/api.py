@@ -111,5 +111,7 @@ async def scan_package() -> dict:
 # The web UI is plain files. Mounted last so that every API route above wins.
 FRONTEND = Path(__file__).resolve().parent.parent / "frontend"
 if (FRONTEND / "index.html").is_file():
+    import mimetypes
     from fastapi.staticfiles import StaticFiles
+    mimetypes.add_type("application/vsix", ".vsix")         # otherwise the extension download is served as text/plain
     app.mount("/", StaticFiles(directory=FRONTEND, html=True), name="ui")

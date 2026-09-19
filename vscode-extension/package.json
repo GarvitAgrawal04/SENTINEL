@@ -1,8 +1,8 @@
 {
   "name": "sentinel-md",
   "displayName": "Sentinel",
-  "description": "Underlines what a file would make your AI coding agent do. Needs the Sentinel API running on your machine.",
-  "version": "0.2.1",
+  "description": "Shows what a file would make your AI coding agent do. Underlines dangerous lines in CLAUDE.md, AGENTS.md, .cursorrules, settings.json and MCP configs, and explains them in plain English.",
+  "version": "0.2.2",
   "publisher": "sentinel",
   "license": "Apache-2.0",
   "repository": {
@@ -22,12 +22,20 @@
   "contributes": {
     "commands": [
       {
+        "command": "sentinel.tryDemo",
+        "title": "Sentinel: Try it on a demo file"
+      },
+      {
         "command": "sentinel.scanFile",
         "title": "Sentinel: Scan this file"
       },
       {
         "command": "sentinel.showReport",
         "title": "Sentinel: Show the full report"
+      },
+      {
+        "command": "sentinel.howTo",
+        "title": "Sentinel: How to use it"
       }
     ],
     "configuration": {
@@ -54,5 +62,14 @@
       "description": "Sentinel only reads the open file and sends it to the scanner you configured. It never runs anything from the workspace, so it is safe, and most useful, in folders you do not trust."
     },
     "virtualWorkspaces": true
-  }
+  },
+  "keywords": [
+    "security",
+    "ai",
+    "agents",
+    "claude",
+    "cursor",
+    "mcp",
+    "prompt injection"
+  ]
 }
