@@ -1,3 +1,8 @@
+## 0.7.4 — 2026-09-21 — a README that shows instead of tells
+- New README: banner, working buttons, a real animation of the web app, real screenshots in light and dark, the real terminal output and the real pull-request comment drawn as images, an icon grid, a benchmark chart, a trust-score scale and a full architecture diagram. All existing reference content is kept below it.
+- The diagrams build themselves: `python docs/build_readme_assets.py` (standard library only) writes every SVG; `python docs/take_screenshots.py` re-takes the screenshots and the animation from the running app. Tests fail if an image is missing from git, a button or anchor leads nowhere, an unexpected external link appears, or a committed diagram drifts from its generator.
+- `SECURITY.md` added (the README linked to it; it had never reached the repository).
+
 ## 0.7.3 — 2026-09-21 — copyright holders named
 - Apache-2.0, as before. The copyright holders are now named: **Mayan Kamboj** and **Garvit Agrawal**, in a new `NOTICE` file, in the boilerplate notice at the end of `LICENSE`, in the README, in `pyproject.toml` and in the VS Code extension (0.2.4). **Fixed:** our `LICENSE` had one wrong word in section 8 ("exemplary damages" where Apache-2.0 says "consequential damages"), so it was not the real licence text. It is now the official text, verbatim, and a test pins its digest.
 

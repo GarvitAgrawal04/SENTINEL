@@ -1,38 +1,51 @@
-# SENTINEL
+<div align="center">
 
-**See what a file would make your AI coding agent do, before it does it.**
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/banner-dark.svg">
+  <img alt="Sentinel: see what a file would make your AI coding agent do, before the agent reads it" src="docs/img/banner-light.svg">
+</picture>
 
-[![tests](https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml/badge.svg)](https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml)
+<p>
+  <a href="https://sentinel-ivory-two-76.vercel.app/"><img src="docs/img/btn-live-demo.svg" height="38" alt="Try the live demo"></a>
+  <a href="#quick-start"><img src="docs/img/btn-quick-start.svg" height="38" alt="Quick start"></a>
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL/releases/latest/download/sentinel-md.vsix"><img src="docs/img/btn-vscode.svg" height="38" alt="Download the VS Code extension"></a>
+  <a href="#measured-not-claimed"><img src="docs/img/btn-benchmarks.svg" height="38" alt="Benchmarks"></a>
+  <a href="#architecture"><img src="docs/img/btn-architecture.svg" height="38" alt="Architecture"></a>
+</p>
 
-AI coding agents (Claude Code, Cursor, Gemini CLI, GitHub Copilot) treat ordinary files in your repository as instructions:
-`CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.claude/settings.json`, `.vscode/tasks.json`, `.mcp.json`. Whoever can edit those
-files can steer the agent, and the agent acts with your access to code, terminal and credentials.
+<p>
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml"><img src="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml/badge.svg?branch=main" alt="tests"></a>
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/sentinel-sign.yml"><img src="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/sentinel-sign.yml/badge.svg?branch=main" alt="lock signed by CI"></a>
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL/releases/latest"><img src="https://img.shields.io/github/v/release/GarvitAgrawal04/SENTINEL?label=release&color=2457f5" alt="latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2457f5" alt="Apache-2.0 licence"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-2457f5" alt="Python 3.10 or newer">
+  <img src="https://img.shields.io/badge/scanner-offline%20%C2%B7%20zero%20dependencies-1b8a5a" alt="the scanner is offline and has zero dependencies">
+</p>
 
-Sentinel is a static analyzer, a merge gate and a signed lockfile for those files. It reads them and answers in plain words:
-*"opening this repo runs `node .github/setup.js` before you type anything"*, *"the rule that stopped your agent uploading
-`.env` was removed"*. It runs offline, its scanner has zero dependencies, and it never executes anything from the project it
-scans.
+</div>
 
-![The Sentinel web UI: a sample file with invisible characters revealed, and the verdict beside it](docs/img/ui-scanner.png)
+AI coding agents (Claude Code, Cursor, Gemini CLI, GitHub Copilot) treat ordinary files in your repository as **orders**:
+`CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.claude/settings.json`, `.vscode/tasks.json`, `.mcp.json`. Whoever can edit those files
+can steer the agent, and the agent acts with *your* access to code, terminal and credentials.
+
+**Sentinel reads those files first and tells you, in plain words, what each one would make the agent do.** It is a scanner, a
+gate that refuses to start an agent in a compromised project, a pull-request check, a CI-signed approval list, a web app and
+a VS Code extension. It runs offline, needs no account and no API key, and never executes anything from the project it scans.
+
+<div align="center">
+  <img src="docs/img/demo.gif" alt="The web app: a healthy file scores 100; a file with invisible characters is revealed and scores 39; a pasted instruction to send an SSH key away scores 15" width="860">
+  <br><sub>The real web app, captured by <a href="docs/take_screenshots.py"><code>docs/take_screenshots.py</code></a>. Nothing in this README is a mock-up unless it says so.</sub>
+</div>
 
 ## Contents
 
-- [Why this exists](#why-this-exists)
-- [What Sentinel does](#what-sentinel-does)
-- [Install and run](#install-and-run) · [deploy](#deploy-it-vercel)
-- [Using Sentinel](#using-sentinel): [web UI](#1-the-web-ui) · [command line](#2-the-command-line) · [the gate](#3-the-gate-stop-the-agent-before-it-starts) · [pull requests](#4-check-every-pull-request) · [AGENTS.lock](#5-agentslock-a-signed-record-of-what-was-approved) · [VS Code](#6-inside-vs-code) · [sandbox](#7-the-sandbox-experiment-optional-off-by-default) · [your own API key](#8-add-your-own-api-key-only-for-the-optional-sandbox)
-- [Supported files](#supported-files)
-- [How detection works](#how-detection-works)
-- [Architecture](#architecture)
-- [API reference](#api-reference)
-- [Configuration](#configuration)
-- [How it compares, with data](#how-it-compares-with-data)
-- [Limitations](#limitations)
-- [Project structure](#project-structure)
-- [Troubleshooting](#troubleshooting)
-- [Development](#development)
+**Start here:** [Why this exists](#why-this-exists) · [See it in 60 seconds](#see-it-in-60-seconds) · [Quick start](#quick-start) ·
+[How it works](#how-it-works) · [Where it runs](#where-it-runs) · [Measured, not claimed](#measured-not-claimed) · [Architecture](#architecture)
 
----
+**Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [Supported files](#supported-files) ·
+[How detection works](#how-detection-works) · [API](#api-reference) · [Configuration](#configuration) ·
+[How it compares, with data](#how-it-compares-with-data) · [Limitations](#limitations) · [Project structure](#project-structure) ·
+[Troubleshooting](#troubleshooting) · [Development](#development) · [Built by](#built-by)
 
 ## Why this exists
 
@@ -48,19 +61,171 @@ Three shapes have been seen in the wild:
 These files are valid Markdown and JSON, pass every linter, have no CVE to patch, and change legitimately all the time, so
 "this file changed" is an alarm that rings every day. The useful question is *what does the change make the agent do?*
 
-![Three ways a file takes over an agent](docs/img/ui-threat.png)
+## See it in 60 seconds
 
-## What Sentinel does
+**In the browser.** The animation above is the real web app. [Open the live demo](https://sentinel-ivory-two-76.vercel.app/), pick a sample or
+paste a file, and press *Reveal hidden content*.
 
-| Control | What you get |
-|---|---|
-| **Static rules** | 26 deterministic rules. Every finding says what the agent would have done, in one sentence, and what to do about it. The arithmetic behind the score is always shown. |
-| **The gate** | `sentinel run -- claude` starts your agent only if the repository passes. It works on your machine, so it still works when an attacker pushes with `[skip ci]`. |
-| **Pull-request check** | A GitHub Action comments on every pull request with an *agent behaviour diff* and fails the check when the change is compromised. |
-| **`AGENTS.lock`** | A signed (ed25519) record of which auto-run hooks and tool servers a human approved, pinned to script hashes. Only CI signs it; a pull request cannot approve itself. |
-| **Sandbox experiment** | Optional and off by default: a sandboxed model follows the file among decoy secrets while Sentinel watches what it reaches for. |
+**In VS Code.** The dangerous line is underlined as you save, explained on hover, and the verdict sits in the status bar.
 
-What it deliberately does not do is listed under [Limitations](#limitations).
+<img src="docs/img/vscode-illustration.svg" alt="Illustration of the VS Code extension: three underlined lines in CLAUDE.md, a hover card explaining the exfiltration instruction, and a red status bar reading Sentinel: Compromised 0/100">
+
+**In the terminal.** Start your agent *through* Sentinel. In a compromised project the agent never starts. This is real output
+for reference attack 01, drawn by the generator from the live command.
+
+<img src="docs/img/terminal-gate.svg" alt="Terminal output of sentinel run: verdict COMPROMISED, four tools wired to auto-run one unreadable 60 kB script, and the line 'sentinel: refusing to start claude here'">
+
+**On a pull request.** A four-character edit hidden in a commit called *chore: bump deps* gets this comment, and the check fails.
+The text is the real comment from [pull request #6](https://github.com/GarvitAgrawal04/SENTINEL/pull/6).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/pr-comment-dark.svg">
+  <img alt="The comment Sentinel leaves on a pull request: exfiltration-shaped instruction, guardrail weakened, a planted secret left the sandbox, new tool server not approved, undeclared change; verdict COMPROMISED" src="docs/img/pr-comment-light.svg">
+</picture>
+
+## Quick start
+
+You need **Python 3.10+** and **Git**. Nothing else: no account, no API key, no Node.
+
+**Windows (PowerShell or cmd)**
+
+```powershell
+git clone https://github.com/GarvitAgrawal04/SENTINEL.git
+cd SENTINEL
+git pull
+.\setup.bat
+```
+
+**macOS, Linux, Git Bash**
+
+```bash
+git clone https://github.com/GarvitAgrawal04/SENTINEL.git
+cd SENTINEL
+git pull
+bash setup.sh
+```
+
+Paste all four lines at once. When it prints `Open http://127.0.0.1:8000`, open that address: the same web app as the live demo,
+now running on your machine, where nothing you scan leaves it. For the command-line tools, open a second terminal in the folder
+and switch them on (Windows: `.venv\Scripts\Activate.ps1` · others: `source .venv/bin/activate`), then:
+
+```bash
+sentinel scan .                # what would the files in this project make an agent do?
+sentinel run -- claude         # start your agent only if the project is not compromised
+```
+
+<p>
+  <a href="#install-and-run"><img src="docs/img/btn-docs.svg" height="40" alt="Full reference"></a>&nbsp;
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL/releases/latest/download/sentinel-md.vsix"><img src="docs/img/btn-vscode.svg" height="40" alt="Download the VS Code extension"></a>&nbsp;
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL/issues/new"><img src="docs/img/btn-report.svg" height="40" alt="Report a bypass or a false alarm"></a>
+</p>
+
+## How it works
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/how-it-works-dark.svg">
+  <img alt="Four steps: find the files agents obey, compare before and after a change, check 26 fixed offline rules, explain each problem in one sentence with one fix. The result is a trust score. An optional AI sandbox, off by default, can warn but never convict." src="docs/img/how-it-works-light.svg">
+</picture>
+
+- **Deterministic.** 26 rules with fixed, published weights. Same input, same answer, no internet, no model in the loop.
+- **Explained.** Every finding is one sentence about what the agent would have done, one fix, and the exact line.
+- **Quiet on honest files.** Ordinary setup notes (`curl … | bash`, `>> ~/.bashrc`) are *shown as observations*, never scored; a
+  prohibition (“never pipe curl into bash”) is recognised as the guardrail it is. That is how 99.7% of healthy projects pass.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/score-dark.svg">
+  <img alt="The trust score scale from 0 to 100: 39 or less is Compromised, 40 to 79 is Suspicious, 80 or more is Clean, with three example scores" src="docs/img/score-light.svg">
+</picture>
+
+## Where it runs
+
+<table>
+  <tr>
+    <td width="33%" valign="top"><img src="docs/img/icon-cli.svg" width="44" alt=""><br><b><a href="#2-the-command-line">Command line</a></b><br><code>sentinel scan .</code> reads a project in milliseconds. Exit codes 0 / 3 / 2 for scripts.</td>
+    <td width="33%" valign="top"><img src="docs/img/icon-gate.svg" width="44" alt=""><br><b><a href="#3-the-gate-stop-the-agent-before-it-starts">The gate</a></b><br><code>sentinel run -- claude</code> refuses to start an agent in a compromised project. Works even when CI is bypassed.</td>
+    <td width="33%" valign="top"><img src="docs/img/icon-pr.svg" width="44" alt=""><br><b><a href="#4-check-every-pull-request">Pull-request check</a></b><br>One workflow file. A plain-English comment on every PR; the check fails when the change is compromised. <a href="https://github.com/GarvitAgrawal04/SENTINEL/pull/6">See a real one</a>.</td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="docs/img/icon-lock.svg" width="44" alt=""><br><b><a href="#5-agentslock-a-signed-record-of-what-was-approved">AGENTS.lock</a></b><br>A signed record of which hooks and tool servers were approved, by whom. Only CI can sign it; a PR cannot approve itself.</td>
+    <td valign="top"><img src="docs/img/icon-web.svg" width="44" alt=""><br><b><a href="#1-the-web-ui">Web app and API</a></b><br>Paste, upload or drop a folder. Hidden characters revealed in place. <a href="https://sentinel-ivory-two-76.vercel.app/">Live demo</a>, or run it locally.</td>
+    <td valign="top"><img src="docs/img/icon-vscode.svg" width="44" alt=""><br><b><a href="#6-inside-vs-code">VS Code extension</a></b><br>Underlines the line as you save. Works in untrusted folders. <a href="https://github.com/GarvitAgrawal04/SENTINEL/releases/latest/download/sentinel-md.vsix">Download the .vsix</a>.</td>
+  </tr>
+</table>
+
+## Measured, not claimed
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/benchmark-dark.svg">
+  <img alt="Bar chart: on 930 popular public repositories, 99.7% of healthy projects pass Sentinel with 3 false alarms; Scanner B passes 87% with 120 false alarms; Scanner A passes 58% with 386 false alarms" src="docs/img/benchmark-light.svg">
+</picture>
+
+| What we checked | Result | |
+|---|---|---|
+| Healthy projects wrongly called **compromised** | **0 of 930** real repositories | ✅ |
+| Our own first version's false alarms | **22 → 0**, found, fixed, re-tested on 340 repositories it had never seen | ✅ |
+| Emoji, Hindi, Persian, BOM flagged as an attack | **0 of 7** · the other two tools: 5 and 6 | ✅ |
+| AI sandbox experiment | caught **11 of 30** and 5 of 30 disguised attacks, 0 false alarms: below our own bar, so it **ships switched off** | ⚠️ |
+| A teammate's independent adversarial corpus, wordings like the ones we studied | recall **8% → 26%**, precision 0.96 | ⚠️ |
+| The same corpus, **86 wordings nobody had seen** | **0 of 86**. Patterns catch structure, not meaning | ❌ |
+| Attacks that begin while an agent is already running | not covered | ❌ |
+
+Every number is reproducible from this repository: [`bench/results`](bench/results/README.md) (the 930 repositories, tool names,
+versions, raw output) and [`bench/corpus`](bench/corpus/README.md) (the adversarial corpus run). The full comparison, including
+where the other tools beat us, is [below](#how-it-compares-with-data).
+
+## Architecture
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/architecture-dark.svg">
+  <img alt="Architecture: five entry points (command line, gate, pull request, web app and REST API, VS Code) feed a five-stage offline engine (discover, detect, diff, explain, score) with an optional sandbox; outputs are the terminal, a stopped agent, a pull-request comment, a CI-signed AGENTS.lock and JSON; trust boundaries: a pull request cannot approve itself, only CI can sign, the scanner never runs what it scans, and the project's own CI is pinned" src="docs/img/architecture-light.svg">
+</picture>
+
+<details>
+<summary><b>Module map</b> (Mermaid source, and what each file does)</summary>
+
+```mermaid
+flowchart TB
+  subgraph EP["Entry points"]
+    cli[cli.py<br/>scan · run · pr · init · approve · sign · verify · keygen · detonate]
+    api[api.py<br/>FastAPI, also serves frontend/]
+    act[action/action.yml<br/>composite GitHub Action]
+  end
+  cli --> core
+  api --> contract[contract.py<br/>report → the JSON the UI and extension consume]
+  contract --> core
+  act --> cli
+  cli --> gitdiff[gitdiff.py<br/>base vs head, approvals from base]
+  cli --> lock[lock.py<br/>AGENTS.lock: build · approve · sign · verify · key pinning]
+  cli -.-> detonate[detonate.py<br/>sandbox, canaries, hosted-model clients]
+  gitdiff --> core
+  lock --> core
+  core[core.py + prose.py<br/>discovery · 26 rules · score · render · gate · ed25519 · redaction · fixtures · self-test]
+  render[render.py<br/>pull-request comment] --> cli
+  env[envfile.py<br/>loads Sentinel's OWN .env only] --> detonate
+```
+
+Design rules the code keeps:
+
+- **The scanner is offline, read-only and dependency-free.** `core.py` uses the standard library only. It never executes,
+  imports or evaluates anything from the repository it scans.
+- **Configuration is never loaded from the scanned directory.** A hostile repository could otherwise ship a `.env` that
+  redirects your API key. Sentinel reads only the `.env` beside its own source tree; a test plants an attacker `.env` and
+  checks that it is ignored.
+- **One third-party package on the security path:** `cryptography`, for ed25519. The standard library has no asymmetric
+  signatures.
+- **The JSON contract is additive.** Keys are added, never renamed or removed, so the web UI and the VS Code extension keep
+  working.
+- **Text from a scanned file is untrusted** in the UI too: it is placed with `textContent`, never as HTML, under a strict
+  Content-Security-Policy.
+
+Speed: 930 real repositories scanned in 3.6 seconds on one core. Marginal cost per scan: zero.
+
+---
+
+</details>
+
+The diagrams in this README are generated, not drawn by hand: `python docs/build_readme_assets.py` rebuilds every SVG, and a test
+fails if the committed images drift from the generator.
 
 ---
 
@@ -153,9 +318,9 @@ dependencies (the scanner needs none), so FastAPI would be missing and every req
 
 ```bash
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-sentinel --version                 # sentinel 0.7.3 (formula v0.1)
+sentinel --version                 # sentinel 0.7.4 (formula v0.1)
 sentinel selftest                  # 12 reference attacks and look-alikes, lock tamper tests: ALL PASS
-pytest -q                          # 116 passed
+pytest -q                          # 122 passed
 python demo/preflight.py           # with the server running: checks the UI and every demo sample, ends with GO
 ```
 
@@ -410,8 +575,6 @@ file, `settings.json` / `tasks.json` / `*.mdc` / other `*.json` as the agent con
 
 ## How detection works
 
-![Flowchart: project files go through find, compare, check and explain, and come out as a comment, a stopped agent, or a signed approval list](docs/img/ui-flow.png)
-
 ```mermaid
 flowchart LR
   subgraph Triggers
@@ -514,47 +677,6 @@ Worked examples, all produced by `sentinel selftest`:
 
 ---
 
-## Architecture
-
-```mermaid
-flowchart TB
-  subgraph EP["Entry points"]
-    cli[cli.py<br/>scan · run · pr · init · approve · sign · verify · keygen · detonate]
-    api[api.py<br/>FastAPI, also serves frontend/]
-    act[action/action.yml<br/>composite GitHub Action]
-  end
-  cli --> core
-  api --> contract[contract.py<br/>report → the JSON the UI and extension consume]
-  contract --> core
-  act --> cli
-  cli --> gitdiff[gitdiff.py<br/>base vs head, approvals from base]
-  cli --> lock[lock.py<br/>AGENTS.lock: build · approve · sign · verify · key pinning]
-  cli -.-> detonate[detonate.py<br/>sandbox, canaries, hosted-model clients]
-  gitdiff --> core
-  lock --> core
-  core[core.py + prose.py<br/>discovery · 26 rules · score · render · gate · ed25519 · redaction · fixtures · self-test]
-  render[render.py<br/>pull-request comment] --> cli
-  env[envfile.py<br/>loads Sentinel's OWN .env only] --> detonate
-```
-
-Design rules the code keeps:
-
-- **The scanner is offline, read-only and dependency-free.** `core.py` uses the standard library only. It never executes,
-  imports or evaluates anything from the repository it scans.
-- **Configuration is never loaded from the scanned directory.** A hostile repository could otherwise ship a `.env` that
-  redirects your API key. Sentinel reads only the `.env` beside its own source tree; a test plants an attacker `.env` and
-  checks that it is ignored.
-- **One third-party package on the security path:** `cryptography`, for ed25519. The standard library has no asymmetric
-  signatures.
-- **The JSON contract is additive.** Keys are added, never renamed or removed, so the web UI and the VS Code extension keep
-  working.
-- **Text from a scanned file is untrusted** in the UI too: it is placed with `textContent`, never as HTML, under a strict
-  Content-Security-Policy.
-
-Speed: 930 real repositories scanned in 3.6 seconds on one core. Marginal cost per scan: zero.
-
----
-
 ## API reference
 
 Base URL `http://127.0.0.1:8000`. Stateless: each request is scanned in a temporary directory that is deleted afterwards.
@@ -645,7 +767,10 @@ auto-run commands inside an agent, and 71 declare tool servers (122 servers, 44 
 | Would block the build at its own default, for any reason | 0 called COMPROMISED · 115 (12%) need a one-time approval of hooks or tool servers that really exist | 137 (15%) | 424 (46%) |
 | Time to scan all 930 | 3.6 s | | |
 
-![Every square is one of 930 healthy projects. Green: it passes, as it should. Amber: a false alarm. Sentinel 99.7% pass (3 false alarms), Scanner B 87% (120), Scanner A 58% (386)](docs/img/ui-measured.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-measured-dark.png">
+  <img alt="The website's measured section: every square is one of 930 healthy projects; green passes, amber is a false alarm" src="docs/img/shot-measured-light.png">
+</picture>
 
 **Where we got it wrong first.** Sentinel's first version called 22 of the 590 repositories COMPROMISED. Causes: the word
 "silently" (274 matches), inline shell fragments like `2>/dev/null` read as missing scripts, and an entropy threshold that
@@ -759,6 +884,9 @@ SENTINEL/
 ├── samples/                      demo inputs used by the web UI and /scan/demo
 ├── demo/                         preflight.py (pre-demo check) · make_flip_pr.py (builds the demo pull request)
 ├── spec/                         JSON Schema for AGENTS.lock
+├── docs/build_readme_assets.py     rebuilds every diagram in this README (standard library only)
+├── docs/take_screenshots.py        re-takes the screenshots and the demo animation from the running app
+├── docs/check_readme_links.py      checks that every button, badge and link in this README answers (needs internet)
 ├── docs/                         sample PR comment, upstream issue texts, screenshots, rebuild notes
 ├── vscode-extension/             optional VS Code extension that calls the local API
 ├── AGENTS.md                     instructions for AI agents working in this repo; Sentinel protects it
@@ -797,7 +925,7 @@ Our own workflows reference every GitHub Action by commit, not by a tag its owne
 bumps; a test fails if someone un-pins one. The `sentinel-signing` environment accepts the `main` branch only.
 
 ```bash
-bash setup.sh --test                 # or: make test  → 116 passed
+bash setup.sh --test                 # or: make test  → 122 passed
 sentinel selftest                    # the engine's own fixtures
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```
@@ -813,9 +941,24 @@ anything sensitive, contact a maintainer privately before opening a public issue
 tool-name shadowing) · a runtime guard that pins tool-server descriptions per session · a multi-model sandbox matrix ·
 proposing `AGENTS.lock` as an open specification.
 
+## Built by
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/kambojmayan-png"><img src="https://github.com/kambojmayan-png.png?size=120" width="72" alt="Mayan Kamboj"><br><b>Mayan Kamboj</b></a></td>
+    <td align="center"><a href="https://github.com/GarvitAgrawal04"><img src="https://github.com/GarvitAgrawal04.png?size=120" width="72" alt="Garvit Agrawal"><br><b>Garvit Agrawal</b></a></td>
+  </tr>
+</table>
+
 **License.** [Apache-2.0](LICENSE). Copyright 2026 [Mayan Kamboj](https://github.com/kambojmayan-png) and
-[Garvit Agrawal](https://github.com/GarvitAgrawal04); see [`NOTICE`](NOTICE).
+[Garvit Agrawal](https://github.com/GarvitAgrawal04); see [`NOTICE`](NOTICE). Security reports: [`SECURITY.md`](SECURITY.md).
 
 **Acknowledgements.** The benign-twin testing idea is borrowed from wormhole-guard. Incident research by Pillar Security,
 Socket, StepSecurity, OpenSourceMalware, Datadog Security Labs, Elastic Security Labs, Microsoft Threat Intelligence, Snyk,
 Aikido, Wiz and Trail of Bits made this project possible. Built for Geeks2Code 2026, Cybersecurity track.
+
+<div align="center"><br>
+  <a href="https://sentinel-ivory-two-76.vercel.app/"><img src="docs/img/btn-live-demo.svg" height="44" alt="Try the live demo"></a>&nbsp;
+  <a href="#quick-start"><img src="docs/img/btn-quick-start.svg" height="44" alt="Quick start"></a>&nbsp;
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL/issues/new"><img src="docs/img/btn-report.svg" height="44" alt="Report a bypass or a false alarm"></a>
+</div>
