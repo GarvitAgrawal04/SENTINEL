@@ -68,3 +68,23 @@ def test_every_file_the_readme_links_to_is_really_in_the_repository():
                 elif seg not in (".", ""): parts.append(seg)
             target = "/".join(parts)
             assert target in tracked or any(x.startswith(target.rstrip("/") + "/") for x in tracked), f"{doc} links to {link}, which is not in git"
+
+
+def test_the_licence_terms_are_untouched_and_the_owners_are_named_everywhere():
+    import hashlib
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[2]
+    lic = (root / "LICENSE").read_text(encoding="utf-8")
+    end = "END OF TERMS AND CONDITIONS"
+    terms = lic[lic.index("Apache License"): lic.index(end) + len(end)]
+    # digest of the OFFICIAL Apache-2.0 terms (52 independent copies on the build machine agree on it). Our file once said
+    # "exemplary damages" where the licence says "consequential damages": one wrong word in a legal text.
+    assert hashlib.sha256(" ".join(terms.split()).encode()).hexdigest() == "59d8f0ba87ad9a2f1a431123c8d16646e5b89ba53653e818f16d136d77263c99", "the Apache-2.0 terms differ from the official text"
+    assert lic.lstrip().startswith("Apache License") and "Version 2.0, January 2004" in lic
+    for where in (lic, (root / "NOTICE").read_text(encoding="utf-8"), (root / "README.md").read_text(encoding="utf-8")):
+        assert "Mayan Kamboj" in where and "Garvit Agrawal" in where
+        assert "github.com/kambojmayan-png" in where and "github.com/GarvitAgrawal04" in where
+    assert (root / "vscode-extension" / "LICENSE").read_text(encoding="utf-8") == lic
+    assert 'license = { text = "Apache-2.0" }' in (root / "pyproject.toml").read_text(encoding="utf-8")
+    assert json.loads((root / "vscode-extension" / "package.json").read_text(encoding="utf-8"))["license"] == "Apache-2.0"

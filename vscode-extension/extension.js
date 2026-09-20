@@ -166,7 +166,7 @@ function activate(context) {
         }),
         vscode.commands.registerCommand('sentinel.showReport', () => out.show(true)));
 
-    out.appendLine('Sentinel 0.2.3 is active and watching agent instruction and config files. Scanner: ' + apiUrl());
+    out.appendLine('Sentinel 0.2.4 is active and watching agent instruction and config files. Scanner: ' + apiUrl());
     // First run: say hello once, with a way to see it work in ten seconds.
     try {
         if (context.globalState && !context.globalState.get('sentinel.welcomed')) {
