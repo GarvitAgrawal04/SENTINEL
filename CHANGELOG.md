@@ -1,5 +1,6 @@
 ## 0.7.5 — 2026-09-21 — cleaner clean-scan message
 - docs: the clean-scan message now reads `No findings.` without the `'checked, not safe'` note.
+- vscode: clean-scan output now reads `No findings.`; refreshed the downloadable .vsix on the site.
 
 ## 0.7.4 — 2026-09-21 — a README that shows instead of tells
 - New README: banner, working buttons, a real animation of the web app, real screenshots in light and dark, the real terminal output and the real pull-request comment drawn as images, an icon grid, a benchmark chart, a trust-score scale and a full architecture diagram. All existing reference content is kept below it.

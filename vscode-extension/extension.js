@@ -70,7 +70,7 @@ function report(result) {
         lines.push('', `  ${f.rule_name}  (${f.rule_id}${f.line ? ', line ' + f.line : ''})`, `    what happens : ${f.impact || ''}`,
             `    what to do   : ${f.fix || ''}`, `    evidence     : ${f.message || ''}`);
     }
-    if (!(result.findings || []).length) lines.push('  No findings. This means checked, not safe.');
+    if (!(result.findings || []).length) lines.push('  No findings.');
     for (const b of result.breakdown || []) lines.push('', '  score: ' + b);
     return lines.join('\n');
 }
