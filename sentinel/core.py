@@ -834,7 +834,7 @@ def render(rep: dict) -> str:
             lines += [f"    {f['rule']}{flag}: {f['evidence']}", f"      what happens : {f['impact']}", f"      what to do   : {f['fix']}"]
         lines.append("")
     if not rep["files"]:
-        lines.append("No findings. This means 'checked', not 'safe'.")
+        lines.append("No findings.")
     return "\n".join(lines)
 
 

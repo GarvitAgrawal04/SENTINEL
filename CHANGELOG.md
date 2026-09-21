@@ -1,3 +1,6 @@
+## 0.7.5 — 2026-09-21 — cleaner clean-scan message
+- docs: the clean-scan message now reads `No findings.` without the `'checked, not safe'` note.
+
 ## 0.7.4 — 2026-09-21 — a README that shows instead of tells
 - New README: banner, working buttons, a real animation of the web app, real screenshots in light and dark, the real terminal output and the real pull-request comment drawn as images, an icon grid, a benchmark chart, a trust-score scale and a full architecture diagram. All existing reference content is kept below it.
 - The diagrams build themselves: `python docs/build_readme_assets.py` (standard library only) writes every SVG; `python docs/take_screenshots.py` re-takes the screenshots and the animation from the running app. Tests fail if an image is missing from git, a button or anchor leads nowhere, an unexpected external link appears, or a committed diagram drifts from its generator.

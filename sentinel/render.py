@@ -41,7 +41,7 @@ def pr_comment(report: dict, ctx: dict) -> str:
             lines += [f"**{n}. {TITLE.get(f['rule'], f['rule'])}** &nbsp; `{f['rule']}` · {tag} · `{name}`",
                       f"> {f['impact']}", f"> <sub>evidence: {f['evidence']}</sub>", ""]
     if not n:
-        lines += ["No findings. That means *checked*, not *safe*.", ""]
+        lines += ["No findings.", ""]
     req = ctx.get("requested") or {}
     if req.get("autoexec") or req.get("mcp"):
         lines.append("**Approvals requested in this PR** — merging accepts these; a security owner should be the one to click:")

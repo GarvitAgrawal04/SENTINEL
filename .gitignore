@@ -50,6 +50,7 @@ sentinel-comment.md
 # downloaded benchmark corpora (large, re-creatable). The two files that document the adversarial-corpus run ARE tracked:
 # a bare `corpus/` rule once swallowed them silently, and the README linked to a page that did not exist.
 /corpus/
+/benchmark/
 /heldout/
 bench/corpus/*
 !bench/corpus/README.md
