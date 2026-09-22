@@ -42,7 +42,7 @@ a VS Code extension. It runs offline, needs no account and no API key, and never
 **Start here:** [Why this exists](#why-this-exists) · [See it in 60 seconds](#see-it-in-60-seconds) · [Quick start](#quick-start) ·
 [How it works](#how-it-works) · [Where it runs](#where-it-runs) · [Measured, not claimed](#measured-not-claimed) · [Architecture](#architecture)
 
-**Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [Supported files](#supported-files) ·
+**Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [The Instruction Doctor](#the-instruction-doctor) · [Supported files](#supported-files) ·
 [How detection works](#how-detection-works) · [API](#api-reference) · [Configuration](#configuration) ·
 [How it compares, with data](#how-it-compares-with-data) · [Limitations](#limitations) · [Project structure](#project-structure) ·
 [Troubleshooting](#troubleshooting) · [Development](#development) · [Built by](#built-by)
@@ -178,6 +178,8 @@ sentinel run -- claude         # start your agent only if the project is not com
 | Healthy projects wrongly called **compromised** | **0 of 930** real repositories | ✅ |
 | Our own first version's false alarms | **22 → 0**, found, fixed, re-tested on 340 repositories it had never seen | ✅ |
 | Emoji, Hindi, Persian, BOM flagged as an attack | **0 of 7** · the other two tools: 5 and 6 | ✅ |
+| Instruction Doctor token delta (50 public agent files) | **median -20.0 tokens** (max 0, 302 safe fixes, net -1,463 tokens saved) | ✅ |
+| Safe Rewrite Gate red-team (30 poisoned attacks) | **0 gate escapes** (30 of 30 blocked, 0.0% escape rate) | ✅ |
 | AI sandbox experiment | caught **11 of 30** and 5 of 30 disguised attacks, 0 false alarms: below our own bar, so it **ships switched off** | ⚠️ |
 | A teammate's independent adversarial corpus, wordings like the ones we studied | recall **8% → 26%**, precision 0.96 | ⚠️ |
 | The same corpus, **86 wordings nobody had seen** | **0 of 86**. Patterns catch structure, not meaning | ❌ |
@@ -567,6 +569,69 @@ SENTINEL_LLM_MODEL=openai/gpt-oss-20b
 **Keep it safe:** one key, from your own account · never paste it into a website, a chat or an issue · never commit `.env` ·
 if a key leaks, revoke it at the provider and add a new one. Costs are yours: a sandbox run on one file is a handful of short
 requests to a small model.
+
+---
+
+## The Instruction Doctor
+
+Stale, bloated, and unhygienic agent instruction files degrade context windows, cause hallucinated tool calls, and create covert attack surfaces. **The Instruction Doctor** audits the complete instruction graph across `@import` and `@include` directives, enforces 8 deterministic hygiene checks (D001–D008), provides automated safe fixes, and offers an AI-assisted **Safe Rewrite** action in VS Code protected by an offline security gate.
+
+<img src="docs/img/doctor-illustration.svg" alt="Illustration of Sentinel Instruction Doctor: Load Graph, Deterministic Fixes, and Gated Safe Rewrite">
+
+### 1. The Load Graph & Hierarchy Traversal
+
+Agent instruction files frequently use `@import` and `@include` directives (or nested directory configurations like `.cursor/rules/` and child `CLAUDE.md` files) to compose behaviors. The Doctor traverses this hierarchy (`sentinel.doctor.graph`):
+- **Graph discovery**: Builds the complete dependency tree (`nodes`, `edges`, execution `order`).
+- **Safety checks**: Detects cyclic dependency loops and caps recursion depth.
+- **Budget tracking**: Counts tokens consumed per file and section against context limits.
+- **Web App visualization**: The web UI renders this load graph interactively as an SVG directly from `GET /doctor/graph`:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-doctor-dark.png">
+  <img alt="The web app load graph view: interactive SVG dependency tree with token counts and cycle detection" src="docs/img/shot-doctor-light.png">
+</picture>
+
+### 2. Deterministic Hygiene Checks (D001–D008)
+
+The Doctor runs 8 deterministic hygiene checks without invoking third-party models or incurring API costs. In an honest hit-rate evaluation across 372 real-world public repositories containing agent instruction files ([`bench/results/doctor_eval.md`](bench/results/doctor_eval.md)), checks firing on >5% of healthy repos were designated as **OBSERVATIONS** rather than WARNINGs to prevent alert fatigue:
+
+| Check ID | Description | Prevalence (372 repos) | Status | Safe Auto-Fix |
+|---|---|---|---|---|
+| **D001** | Broken `@include` / `@import` target path | 0.27% (1 repo) | **WARNING** | Prunes missing include line |
+| **D002** | Backticked path does not exist on disk | 38.71% (144 repos) | **OBSERVATION** | Flags line for review |
+| **D003** | Named script not defined in manifests (`package.json`, `Makefile`, `pyproject.toml`) | 9.95% (37 repos) | **OBSERVATION** | Flags missing script |
+| **D004** | Normalized duplicate rule in file | 82.80% (308 repos) | **OBSERVATION** | Keeps first, drops duplicates |
+| **D005** | Rule contradicts guardrail in same graph | 4.57% (17 repos) | **WARNING** | Flags conflicting directive |
+| **D006** | File exceeds token budget (>1,500 tokens) | 78.76% (293 repos) | **OBSERVATION** | Recommends largest sections to trim |
+| **D007** | Secret-shaped credential pattern in prompt | 0.00% (0 repos) | **WARNING** | Flags secret; never sends to model |
+| **D008** | ANSI terminal escape sequences in text | 0.00% (0 repos) | **WARNING** | Strips escape characters |
+
+### 3. Benchmark: Token Delta on 50 Public Agent Files
+
+Running `sentinel doctor --fix` on 50 public agent files from real-world open-source repositories ([`bench/results/doctor_token_delta.md`](bench/results/doctor_token_delta.md)):
+- **35 of 50 files (70.0%)** contained fixable hygiene defects.
+- **302 safe fixes applied** automatically (dead includes pruned, duplicate rules removed, ANSI escapes stripped).
+- **Median token delta:** **-20.0 tokens** (mean: **-29.26 tokens**, net: **-1,463 tokens** saved).
+- **Max token delta:** **0 tokens** — auto-fixes strictly prune or preserve tokens, never adding context bloat.
+
+### 4. VS Code Quick Fixes & Gated Safe Rewrite
+
+In VS Code, deterministic fixes for D001, D004, and D008 are offered as instant one-click Quick Fix actions.
+
+For rephrasing confusing or borderline instructions, the extension provides **"Sentinel: Suggest a safer wording"**:
+1. **Key in SecretStorage**: The API key is stored securely in VS Code `SecretStorage` — never in `.vscode/settings.json` or committed workspace files.
+2. **Explicit confirmation**: A confirmation dialog displays the exact redacted prompt, selected range, and estimated token spend before dispatching.
+3. **Data isolation**: The instruction is wrapped inside strict data delimiters (`=== BEGIN USER INSTRUCTION ===`) to eliminate model hijacking.
+4. **The Security Gate**: The suggested rewrite is intercepted and verified by `sentinel.doctor.gate.check()` against all security rules (S1–S26) and Doctor blockers before reaching the user. In our 30-attack red-team evaluation ([`bench/results/gate_redteam.md`](bench/results/gate_redteam.md)), the gate achieved **0 escapes** (30 of 30 blocked, 100% block rate).
+5. **Safe display**: Clean rewrites are presented as inline unified diffs with accept/reject controls. The command is automatically disabled in untrusted workspaces.
+
+### 5. CLI & SARIF 2.1.0 Export
+
+```bash
+sentinel doctor CLAUDE.md                    # print deterministic findings
+sentinel doctor . --fix                      # safely prune duplicates, broken includes, ANSI escapes
+sentinel doctor . --format sarif > out.sarif # SARIF 2.1.0 report for GitHub Code Scanning
+```
 
 ---
 

@@ -1,3 +1,13 @@
+## 0.9.2 — 2026-09-23 — SARIF export, rewrite gate red-team, load graph UI, token delta bench, and README (Day 3 T6–T10)
+- feat(doctor): `sentinel/doctor/sarif.py` implementing `to_sarif()` for SARIF 2.1.0 output compliant with GitHub Code Scanning; integrated via `sentinel doctor <path> --format sarif`.
+- test(gate): 30-file red-team evaluation suite in `bench/gate_redteam.py` and `tests/v5/test_gate_redteam.py` with 0 gate escapes across adversarial poisoned rewrites (100% blocked, 0.0% escape rate).
+- feat(ui): added interactive SVG load graph visualizer to frontend (`frontend/app.js`, `frontend/styles.css`) powered by `GET /doctor/graph` endpoint in `sentinel/api.py`.
+- bench(doctor): `bench/doctor_token_delta.py` evaluating 50 public agent files before and after `sentinel doctor --fix`:
+  - 302 safe auto-fixes applied across 35 repos (70% had fixable hygiene issues).
+  - Median token delta: -20.0 tokens (mean: -29.26 tokens; net saving: -1,463 tokens).
+  - Max token delta: 0 (hygiene fixes strictly reduce or maintain context size).
+- docs: added comprehensive "The Instruction Doctor" section to `README.md` with verified real numbers from evaluations, architecture diagram (`docs/img/doctor-illustration.svg`), and real web app screenshots (`shot-doctor-light.png`, `shot-doctor-dark.png`) captured via `docs/take_screenshots.py`.
+
 ## 0.9.1 — 2026-09-23 — gated Safe Rewrite in VS Code (Day 3 T5)
 - feat(doctor): `sentinel/doctor/gate.py` implementing `check()` to validate proposed rewrites against Sentinel security rules (S1–S26) and Doctor blockers (D001, D005, D007, D008).
 - feat(api): added `POST /doctor/gate/check` endpoint to validate suggested rewrites before presentation or application.

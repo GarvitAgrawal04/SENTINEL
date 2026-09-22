@@ -66,6 +66,11 @@ def main():
                 page.wait_for_timeout(500)
                 crop_section(page, "#scan", OUT / f"shot-scanner-{scheme}.png")
                 crop_section(page, "#measured", OUT / f"shot-measured-{scheme}.png", max_height=760)
+
+                # Instruction Doctor load-graph snapshot
+                page.click(".load-graph-details summary")
+                page.wait_for_timeout(800)
+                page.locator(".load-graph-details").screenshot(path=str(OUT / f"shot-doctor-{scheme}.png"))
                 ctx.close()
 
             # the demo animation: one viewport, a handful of real states

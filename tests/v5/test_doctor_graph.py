@@ -118,3 +118,20 @@ def test_edge_properties_and_json(tmp_path: Path):
     loaded = json.loads(dumped)
     assert loaded["nodes"] == ["entry.md"]
     assert loaded["tokens"] > 0
+
+
+def test_api_doctor_graph_endpoint(tmp_path: Path):
+    from fastapi.testclient import TestClient
+    from sentinel.api import app
+    c = TestClient(app)
+
+    (tmp_path / "CLAUDE.md").write_text("# Main\n@include sub.md\n", encoding="utf-8")
+    (tmp_path / "sub.md").write_text("# Sub\n", encoding="utf-8")
+
+    res = c.get(f"/doctor/graph?entry=CLAUDE.md&root={tmp_path}")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["entry_file"] == "CLAUDE.md"
+    assert "CLAUDE.md" in data["nodes"]
+    assert "sub.md" in data["nodes"]
+    assert ["CLAUDE.md", "sub.md"] in data["edges"]

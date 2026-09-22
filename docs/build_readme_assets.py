@@ -297,6 +297,75 @@ def feature_icon(d):
     return svg(56, 56, R(1, 1, 54, 54, 14, "#2457f51f", "#5b82ff", 1.2) + f'<g transform="translate(14,14) scale(1.17)"><path d="{d}" fill="none" stroke="#5b82ff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></g>', "icon")
 
 
+def doctor_diagram():
+    W, H = 1180, 520
+    b = [R(0.5, 0.5, W - 1, H - 1, 14, "#0e1320", "#2a3147", 1),
+         R(0.5, 0.5, W - 1, 40, 14, "#161c2e"),
+         f'<rect x="1" y="26" width="{W - 2}" height="15" fill="#161c2e"/>',
+         R(16, 8, 170, 32, 8, "#0e1320"),
+         T(28, 29, "Instruction Doctor", 13, 600, "#7398ff", family=MONO),
+         T(W - 20, 26, "load graph · deterministic hygiene · gated safe rewrite", 12, 400, "#7d8696", "end"),
+
+         # Left: Load Graph & Token Delta
+         R(24, 60, 550, 436, 12, "#131929", "#242d45", 1),
+         T(44, 92, "1. INSTRUCTION LOAD GRAPH & HYGIENE", 12, 700, "#7398ff", extra='letter-spacing="1.2"'),
+         T(44, 116, "Root entry point with import traversal, cycle detection & token budget", 13, 400, "#a3abbb"),
+
+         # Graph nodes
+         R(44, 140, 220, 52, 8, "#1a2238", "#3b82f6", 1.4),
+         T(60, 163, "CLAUDE.md", 14, 600, "#eef0f6", family=MONO),
+         T(60, 182, "root · 1,606 tokens", 12, 400, "#a3abbb"),
+
+         R(330, 140, 220, 52, 8, "#1a2238", "#ff7b66", 1.4),
+         T(346, 163, "rules/deploy.md", 14, 600, "#ff7b66", family=MONO),
+         T(346, 182, "D001: broken import (auto-fix)", 12, 400, "#ff7b66"),
+
+         R(44, 230, 220, 52, 8, "#1a2238", "#f0b357", 1.4),
+         T(60, 253, "rules/code-style.md", 14, 600, "#f0b357", family=MONO),
+         T(60, 272, "D004: duplicate rules (-25 tok)", 12, 400, "#f0b357"),
+
+         R(330, 230, 220, 52, 8, "#1a2238", "#5fd09a", 1.4),
+         T(346, 253, "rules/guardrails.md", 14, 600, "#5fd09a", family=MONO),
+         T(346, 272, "clean · 240 tokens · cycle safe", 12, 400, "#5fd09a"),
+
+         arrow(264, 166, 330, 166, "#ff7b66", cls="flow"),
+         arrow(154, 192, 154, 230, "#f0b357", cls="flow"),
+         arrow(264, 256, 330, 256, "#5fd09a", cls="flow"),
+
+         # Token Metrics Box
+         R(44, 304, 506, 172, 8, "#0e1320", "#242d45", 1),
+         T(60, 330, "Measured on 50 Public Agent Files (bench/results):", 13, 600, "#eef0f6"),
+         T(60, 356, "• Median token delta: -20.0 tokens (net -1,463 tokens saved)", 13, 400, "#5fd09a"),
+         T(60, 382, "• Safe auto-fixes applied: 302 across 35 repos (70% had hygiene debt)", 13, 400, "#a3abbb"),
+         T(60, 408, "• D001 dead imports pruned · D004 duplicate rules kept-first · D008 ANSI stripped", 12.5, 400, "#a3abbb"),
+         T(60, 434, "• Max token delta: 0 (hygiene fixes strictly reduce or preserve budget)", 13, 500, "#7398ff"),
+         T(60, 458, "• Evaluated across 372 public repos: >5% classified as OBSERVATION", 12, 400, "#7d8696"),
+
+         # Right: Gated Safe Rewrite
+         R(606, 60, 550, 436, 12, "#131929", "#242d45", 1),
+         T(626, 92, "2. GATED SAFE REWRITE", 12, 700, "#5fd09a", extra='letter-spacing="1.2"'),
+         T(626, 116, "LLM rewrites verified by doctor.gate.check before user review", 13, 400, "#a3abbb"),
+
+         # Flow box
+         R(626, 140, 510, 142, 8, "#1a2238", "#242d45", 1),
+         T(642, 166, "User Action: 'Sentinel: Suggest a safer wording'", 13.5, 600, "#7398ff"),
+         T(642, 190, "1. Key read securely from SecretStorage (never in settings/workspace)", 12.5, 400, "#a3abbb"),
+         T(642, 212, "2. Confirmation modal displays exact redacted prompt + token count", 12.5, 400, "#a3abbb"),
+         T(642, 234, "3. Strict data delimiters isolate target instruction from system prompt", 12.5, 400, "#a3abbb"),
+         T(642, 256, "4. Output verified against S1-S26 and Doctor blockers before display", 12.5, 400, "#a3abbb"),
+
+         # Red-team benchmark box
+         R(626, 304, 510, 172, 8, "#0e1320", "#242d45", 1),
+         T(642, 330, "Red-Team Evaluation (30 Poisoned Rewrites):", 13, 600, "#eef0f6"),
+         R(642, 344, 478, 34, 6, "#12281d", "#5fd09a", 1),
+         T(658, 366, "0 Gate Escapes  ·  100% Block Rate (30 of 30 Blocked)", 14, 700, "#5fd09a"),
+         T(642, 402, "• Blocked reverse shells, curl|sh, webhooks, canary leaks & bypasses", 12.5, 400, "#ff7b66"),
+         T(642, 426, "• Clean suggested rewrites verified and shown as inline unified diff", 12.5, 400, "#5fd09a"),
+         T(642, 450, "• Disabled in untrusted workspaces · sentinel doctor --format sarif for CI", 12.5, 400, "#a3abbb"),
+    ]
+    return svg(W, H, "".join(b), "Illustration of Sentinel Instruction Doctor: Load Graph, Deterministic Fixes, and Gated Safe Rewrite", FLOW)
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     made = {}
@@ -315,10 +384,11 @@ def main():
         made[f"icon-{slug}.svg"] = feature_icon(d)
     made["terminal-gate.svg"] = terminal()
     made["vscode-illustration.svg"] = editor()
+    made["doctor-illustration.svg"] = doctor_diagram()
     for fn, content in made.items():
         (OUT / fn).write_text(content, encoding="utf-8")
     print(f"wrote {len(made)} files to {OUT}")
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

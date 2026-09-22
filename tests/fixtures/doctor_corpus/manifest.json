@@ -1,0 +1,402 @@
+[
+  {
+    "id": "file_01",
+    "filename": "file_01.md",
+    "original_repo": "1code",
+    "original_path": "1code\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7725
+  },
+  {
+    "id": "file_02",
+    "filename": "file_02.md",
+    "original_repo": "1code",
+    "original_path": "1code\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 660
+  },
+  {
+    "id": "file_03",
+    "filename": "file_03.md",
+    "original_repo": "academic-research-skills",
+    "original_path": "academic-research-skills\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7395
+  },
+  {
+    "id": "file_04",
+    "filename": "file_04.md",
+    "original_repo": "ACE-Step-1.5",
+    "original_path": "ACE-Step-1.5\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6429
+  },
+  {
+    "id": "file_05",
+    "filename": "file_05.md",
+    "original_repo": "ACE-Step-1.5",
+    "original_path": "ACE-Step-1.5\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 7908
+  },
+  {
+    "id": "file_06",
+    "filename": "file_06.md",
+    "original_repo": "ACE-Step-1.5",
+    "original_path": "ACE-Step-1.5\\.github\\copilot-instructions.md",
+    "original_name": "copilot-instructions.md",
+    "bytes": 2615
+  },
+  {
+    "id": "file_07",
+    "filename": "file_07.md",
+    "original_repo": "ace-step-ui",
+    "original_path": "ace-step-ui\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6342
+  },
+  {
+    "id": "file_08",
+    "filename": "file_08.md",
+    "original_repo": "activepieces",
+    "original_path": "activepieces\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6675
+  },
+  {
+    "id": "file_09",
+    "filename": "file_09.md",
+    "original_repo": "activepieces",
+    "original_path": "activepieces\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 11173
+  },
+  {
+    "id": "file_10",
+    "filename": "file_10.md",
+    "original_repo": "advertising-ops",
+    "original_path": "advertising-ops\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6912
+  },
+  {
+    "id": "file_11",
+    "filename": "file_11.md",
+    "original_repo": "agency-agents",
+    "original_path": "agency-agents\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7700
+  },
+  {
+    "id": "file_12",
+    "filename": "file_12.md",
+    "original_repo": "agenda",
+    "original_path": "agenda\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 19071
+  },
+  {
+    "id": "file_13",
+    "filename": "file_13.md",
+    "original_repo": "agent-browser",
+    "original_path": "agent-browser\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6421
+  },
+  {
+    "id": "file_14",
+    "filename": "file_14.md",
+    "original_repo": "agent-browser",
+    "original_path": "agent-browser\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 8702
+  },
+  {
+    "id": "file_15",
+    "filename": "file_15.md",
+    "original_repo": "agent-governance-toolkit",
+    "original_path": "agent-governance-toolkit\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6373
+  },
+  {
+    "id": "file_16",
+    "filename": "file_16.md",
+    "original_repo": "agent-governance-toolkit",
+    "original_path": "agent-governance-toolkit\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 7530
+  },
+  {
+    "id": "file_17",
+    "filename": "file_17.md",
+    "original_repo": "agent-governance-toolkit",
+    "original_path": "agent-governance-toolkit\\.github\\copilot-instructions.md",
+    "original_name": "copilot-instructions.md",
+    "bytes": 24331
+  },
+  {
+    "id": "file_18",
+    "filename": "file_18.md",
+    "original_repo": "Agent-Skills-for-Context-Engineering",
+    "original_path": "Agent-Skills-for-Context-Engineering\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7859
+  },
+  {
+    "id": "file_19",
+    "filename": "file_19.md",
+    "original_repo": "Agent-Skills-for-Context-Engineering",
+    "original_path": "Agent-Skills-for-Context-Engineering\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 7905
+  },
+  {
+    "id": "file_20",
+    "filename": "file_20.md",
+    "original_repo": "agentic-inbox",
+    "original_path": "agentic-inbox\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6256
+  },
+  {
+    "id": "file_21",
+    "filename": "file_21.md",
+    "original_repo": "ai",
+    "original_path": "ai\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6990
+  },
+  {
+    "id": "file_22",
+    "filename": "file_22.md",
+    "original_repo": "ai",
+    "original_path": "ai\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 12684
+  },
+  {
+    "id": "file_23",
+    "filename": "file_23.md",
+    "original_repo": "ai-hedge-fund",
+    "original_path": "ai-hedge-fund\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7762
+  },
+  {
+    "id": "file_24",
+    "filename": "file_24.md",
+    "original_repo": "ai-website-cloner-template",
+    "original_path": "ai-website-cloner-template\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 9283
+  },
+  {
+    "id": "file_25",
+    "filename": "file_25.md",
+    "original_repo": "ai-website-cloner-template",
+    "original_path": "ai-website-cloner-template\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 3038
+  },
+  {
+    "id": "file_26",
+    "filename": "file_26.md",
+    "original_repo": "ai-website-cloner-template",
+    "original_path": "ai-website-cloner-template\\GEMINI.md",
+    "original_name": "GEMINI.md",
+    "bytes": 11
+  },
+  {
+    "id": "file_27",
+    "filename": "file_27.md",
+    "original_repo": "ai-website-cloner-template",
+    "original_path": "ai-website-cloner-template\\.github\\copilot-instructions.md",
+    "original_name": "copilot-instructions.md",
+    "bytes": 6852
+  },
+  {
+    "id": "file_28",
+    "filename": "file_28.md",
+    "original_repo": "rules",
+    "original_path": "ai-website-cloner-template\\.cursor\\rules\\project.mdc",
+    "original_name": "project.mdc",
+    "bytes": 271
+  },
+  {
+    "id": "file_29",
+    "filename": "file_29.md",
+    "original_repo": "airbyte",
+    "original_path": "airbyte\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6586
+  },
+  {
+    "id": "file_30",
+    "filename": "file_30.md",
+    "original_repo": "ammo.js",
+    "original_path": "ammo.js\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7406
+  },
+  {
+    "id": "file_31",
+    "filename": "file_31.md",
+    "original_repo": "analytics",
+    "original_path": "analytics\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 10045
+  },
+  {
+    "id": "file_32",
+    "filename": "file_32.md",
+    "original_repo": "andrej-karpathy-skills",
+    "original_path": "andrej-karpathy-skills\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7889
+  },
+  {
+    "id": "file_33",
+    "filename": "file_33.md",
+    "original_repo": "rules",
+    "original_path": "andrej-karpathy-skills\\.cursor\\rules\\karpathy-guidelines.mdc",
+    "original_name": "karpathy-guidelines.mdc",
+    "bytes": 2638
+  },
+  {
+    "id": "file_34",
+    "filename": "file_34.md",
+    "original_repo": "anime-universe-teaser",
+    "original_path": "anime-universe-teaser\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 1237
+  },
+  {
+    "id": "file_35",
+    "filename": "file_35.md",
+    "original_repo": "animejs-claude-skill",
+    "original_path": "animejs-claude-skill\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 9068
+  },
+  {
+    "id": "file_36",
+    "filename": "file_36.md",
+    "original_repo": "ansible",
+    "original_path": "ansible\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6800
+  },
+  {
+    "id": "file_37",
+    "filename": "file_37.md",
+    "original_repo": "ansible",
+    "original_path": "ansible\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 15835
+  },
+  {
+    "id": "file_38",
+    "filename": "file_38.md",
+    "original_repo": "Anthropic-Cybersecurity-Skills",
+    "original_path": "Anthropic-Cybersecurity-Skills\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7711
+  },
+  {
+    "id": "file_39",
+    "filename": "file_39.md",
+    "original_repo": "anthropics-skills",
+    "original_path": "anthropics-skills\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7377
+  },
+  {
+    "id": "file_40",
+    "filename": "file_40.md",
+    "original_repo": "antigravity-awesome-skills",
+    "original_path": "antigravity-awesome-skills\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 9039
+  },
+  {
+    "id": "file_41",
+    "filename": "file_41.md",
+    "original_repo": "anything-llm",
+    "original_path": "anything-llm\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6337
+  },
+  {
+    "id": "file_42",
+    "filename": "file_42.md",
+    "original_repo": "Apollo-11",
+    "original_path": "Apollo-11\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7819
+  },
+  {
+    "id": "file_43",
+    "filename": "file_43.md",
+    "original_repo": "app-store-screenshots",
+    "original_path": "app-store-screenshots\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 7426
+  },
+  {
+    "id": "file_44",
+    "filename": "file_44.md",
+    "original_repo": "apprise",
+    "original_path": "apprise\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 5764
+  },
+  {
+    "id": "file_45",
+    "filename": "file_45.md",
+    "original_repo": "appwrite",
+    "original_path": "appwrite\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6474
+  },
+  {
+    "id": "file_46",
+    "filename": "file_46.md",
+    "original_repo": "appwrite",
+    "original_path": "appwrite\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 6550
+  },
+  {
+    "id": "file_47",
+    "filename": "file_47.md",
+    "original_repo": "arcjet-js",
+    "original_path": "arcjet-js\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6553
+  },
+  {
+    "id": "file_48",
+    "filename": "file_48.md",
+    "original_repo": "astro",
+    "original_path": "astro\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 5983
+  },
+  {
+    "id": "file_49",
+    "filename": "file_49.md",
+    "original_repo": "astro",
+    "original_path": "astro\\AGENTS.md",
+    "original_name": "AGENTS.md",
+    "bytes": 7660
+  },
+  {
+    "id": "file_50",
+    "filename": "file_50.md",
+    "original_repo": "autoresearch",
+    "original_path": "autoresearch\\CLAUDE.md",
+    "original_name": "CLAUDE.md",
+    "bytes": 6333
+  }
+]

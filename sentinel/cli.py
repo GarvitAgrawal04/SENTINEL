@@ -372,6 +372,11 @@ def cmd_doctor(a) -> int:
         }, indent=2))
         return 1 if total_findings else 0
 
+    if getattr(a, "format", "text") == "sarif":
+        from .doctor import sarif
+        print(json.dumps(sarif.to_sarif(all_findings, version=__version__), indent=2))
+        return 1 if total_findings else 0
+
     if not all_findings:
         if total_fixed > 0:
             print(f"sentinel doctor: all fixable issues resolved ({total_fixed} fix(es) applied).")

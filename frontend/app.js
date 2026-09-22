@@ -399,6 +399,9 @@ function showResult(result) {
   if (breakdown.length) body.push(el("details", { class: "calc" }, el("summary", { text: "How this score was calculated" }),
     el("pre", { text: breakdown.join("\n") + "\n\n80 or more is clean, 40 to 79 is suspicious, 39 or less is compromised.\nA decisive finding makes the verdict compromised whatever the arithmetic says." })));
 
+  const primaryFile = (files[0] && files[0].filename) || "CLAUDE.md";
+  body.push(createLoadGraphView(primaryFile));
+
   body.push(el("div", { class: "result-actions" },
     el("button", { class: "btn quiet", type: "button", text: "Copy result as JSON", onclick: (e) => copy(JSON.stringify(result, null, 2), e.currentTarget, "Copy result as JSON") }),
     el("button", { class: "btn quiet", type: "button", text: "Download result", onclick: () => download(result) })));
@@ -406,6 +409,89 @@ function showResult(result) {
   pane.replaceChildren(...head, el("div", { class: "result-body" }, body));
   requestAnimationFrame(() => pin.style.setProperty("left", `${Math.min(Math.max(score, 1), 99)}%`));
   $("#where").textContent = state.offline ? "" : isLocal() ? "Scanned on this computer." : `Scanned by ${scannerHost()}. Nothing is stored.`;
+}
+
+function createLoadGraphView(filename) {
+  const container = el("div", { class: "graph-container" }, el("span", { class: "hint", text: "Click to load instruction graph..." }));
+  const details = el("details", { class: "load-graph-details" },
+    el("summary", { text: "Instruction Load Graph" }),
+    container
+  );
+  details.addEventListener("toggle", async () => {
+    if (!details.open || container.dataset.loaded) return;
+    container.dataset.loaded = "true";
+    container.replaceChildren(el("span", { class: "hint", text: "Loading instruction graph..." }));
+    try {
+      const data = await getJSON(`${state.api}/doctor/graph?entry=${encodeURIComponent(filename)}`);
+      container.replaceChildren(createGraphSvg(data));
+    } catch (e) {
+      container.replaceChildren(el("p", { class: "hint", text: "Could not load graph: " + (e.message || e) }));
+    }
+  });
+  return details;
+}
+
+function createGraphSvg(data) {
+  if (data.error) {
+    return el("p", { class: "hint", text: `${data.error}: ${data.message}` });
+  }
+  const nodes = data.nodes || [];
+  if (!nodes.length) {
+    return el("p", { class: "hint", text: "No dependency nodes in graph." });
+  }
+
+  const nodeWidth = 140;
+  const nodeHeight = 36;
+  const gapX = 40;
+  const totalWidth = Math.max(360, nodes.length * (nodeWidth + gapX) + 40);
+  const totalHeight = 120;
+
+  const svgElem = svg("svg", {
+    class: "graph-svg",
+    viewBox: `0 0 ${totalWidth} ${totalHeight}`,
+    "aria-label": "Instruction file load graph"
+  });
+
+  const posMap = new Map();
+  nodes.forEach((n, idx) => {
+    const x = 30 + idx * (nodeWidth + gapX);
+    const y = 40;
+    posMap.set(n, { x, y });
+  });
+
+  for (const [src, dst] of (data.edges || [])) {
+    const p1 = posMap.get(src);
+    const p2 = posMap.get(dst);
+    if (p1 && p2) {
+      const startX = p1.x + nodeWidth;
+      const startY = p1.y + nodeHeight / 2;
+      const endX = p2.x;
+      const endY = p2.y + nodeHeight / 2;
+      svgElem.append(svg("line", {
+        class: "graph-edge",
+        x1: String(startX),
+        y1: String(startY),
+        x2: String(endX),
+        y2: String(endY)
+      }));
+    }
+  }
+
+  nodes.forEach((n) => {
+    const pos = posMap.get(n);
+    const isEntry = n === data.entry_file;
+    const isMissing = (data.missing_imports || []).includes(n);
+    const cls = "graph-node" + (isEntry ? " graph-node-entry" : "") + (isMissing ? " graph-node-missing" : "");
+    const tok = data.tokens && data.tokens[n] ? ` (~${data.tokens[n]}t)` : "";
+    const label = n.length > 18 ? n.slice(0, 16) + "…" : n;
+
+    svgElem.append(
+      svg("rect", { class: cls, x: String(pos.x), y: String(pos.y), width: String(nodeWidth), height: String(nodeHeight), rx: "6" }),
+      svg("text", { class: "graph-text", x: String(pos.x + nodeWidth / 2), y: String(pos.y + nodeHeight / 2) }, document.createTextNode(label + tok))
+    );
+  });
+
+  return svgElem;
 }
 
 function showNotice(message, isError = false) {

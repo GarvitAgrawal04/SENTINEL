@@ -481,3 +481,14 @@ h3 { font-size: 17px; font-weight: 600; letter-spacing: -.008em; }
   html { scroll-behavior: auto; }
   * { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
 }
+
+/* ── load graph view (Doctor) ─────────────────────────────────────────── */
+.load-graph-details { margin-top: 14px; border: 1px solid var(--hairline); border-radius: 8px; padding: 8px 12px; }
+.load-graph-details summary { cursor: pointer; font-weight: 500; font-size: 14px; }
+.graph-container { margin-top: 12px; overflow-x: auto; padding: 4px 0; }
+.graph-svg { display: block; max-width: 100%; height: auto; }
+.graph-node { fill: var(--bg, #f6f8fa); stroke: var(--hairline, #d0d7de); stroke-width: 1.5; }
+.graph-node-entry { stroke: #2da44e; stroke-width: 2; }
+.graph-node-missing { stroke: #cf222e; stroke-dasharray: 4; }
+.graph-text { font-family: monospace; font-size: 11px; fill: var(--ink, #1f2328); text-anchor: middle; dominant-baseline: middle; }
+.graph-edge { stroke: var(--hairline, #8c959f); stroke-width: 1.5; fill: none; }

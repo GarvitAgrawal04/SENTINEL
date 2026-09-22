@@ -116,6 +116,44 @@ async def doctor_gate_check(body: GateCheckIn) -> dict:
     return gate.check(body.proposed, original=body.original, filename=body.filename)
 
 
+@app.get("/doctor/graph")
+async def doctor_graph(entry: str = "CLAUDE.md", root: str = ".") -> dict:
+    from sentinel.doctor import graph
+    target_root = Path(root).expanduser().resolve()
+    try:
+        g = graph.build(target_root, entry_file=entry)
+        return {
+            "entry_file": str(entry),
+            "nodes": g.nodes,
+            "edges": [list(e) for e in g.edges],
+            "order": g.order,
+            "tokens": g.node_tokens,
+            "total_tokens": g.tokens,
+            "missing_imports": g.missing,
+            "cycles": g.cycles,
+        }
+    except graph.CycleError as e:
+        return {
+            "error": "cycle",
+            "message": str(e),
+            "entry_file": entry,
+            "nodes": [],
+            "edges": [],
+            "missing_imports": [],
+            "tokens": {},
+        }
+    except Exception as e:
+        return {
+            "error": "error",
+            "message": str(e),
+            "entry_file": entry,
+            "nodes": [entry],
+            "edges": [],
+            "missing_imports": [],
+            "tokens": {},
+        }
+
+
 # The web UI is plain files. Mounted last so that every API route above wins.
 FRONTEND = Path(__file__).resolve().parent.parent / "frontend"
 if (FRONTEND / "index.html").is_file():
