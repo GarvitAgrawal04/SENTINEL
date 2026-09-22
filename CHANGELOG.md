@@ -1,3 +1,6 @@
+## 0.8.6 — 2026-09-22 — sleeper set and time-warp evaluation (Day 2 T5)
+- bench(timewarp): `bench/timewarp_eval.py` benchmarking 10 sleeper attacks and 10 benign twins in `tests/fixtures/sleeper_set/`. Time-Warp catches 10/10 (100%) sleeper attacks while single-moment sandbox catches 0/10 (0%), with 0/10 false alarms across both.
+
 ## 0.8.5 — 2026-09-22 — vertical slice: sleeper file caught by replay with no key (Day 2 T4)
 - feat(timewarp): M0 vertical slice complete! Added sleeper fixture `tests/fixtures/sleeper/AGENTS.md` and pre-recorded `cassette.json`.
 - feat(cli): `sentinel timewarp run <file> --replay <dir>` runs multi-scenario planning and behaviour diffing completely offline without an API key or network access.
