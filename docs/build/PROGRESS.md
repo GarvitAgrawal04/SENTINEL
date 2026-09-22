@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-22 · Day 2 · T3 · feat(timewarp): scenario runner + behaviour diff; two-scenario sleeper caught by cassette replay · gate: not run (no rule change) · tests: 167
+
 - 2026-09-22 · Day 2 · T2 · feat(timewarp): virtual clock/state for sandbox tools; property test across 20 scenarios (0 leaks) · gate: not run (no rule change) · tests: 164
 
 - 2026-09-22 · Day 2 · T1 · feat(timewarp): cassette record/replay for model calls; zero network/key offline sandbox replay · gate: not run (no rule change) · tests: 161

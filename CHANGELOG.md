@@ -1,3 +1,6 @@
+## 0.8.4 — 2026-09-22 — scenario runner and behaviour diff (Day 2 T3)
+- feat(timewarp): `sentinel/timewarp/runner.py` for executing scenario plans with early canary escape exit, and `sentinel/timewarp/diff.py` for behavioural diffing against baseline.
+
 ## 0.8.3 — 2026-09-22 — virtual world clock and state for sandbox (Day 2 T2)
 - feat(timewarp): `sentinel/timewarp/clock.py` with `Scenario` and `World`. Fake tools now consult virtual clock, session, and environment so no real host paths, usernames, or dates leak.
 
