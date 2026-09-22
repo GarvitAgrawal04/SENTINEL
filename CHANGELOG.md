@@ -1,3 +1,8 @@
+## 0.8.1 — 2026-09-22 — linear prose scan + perf guardrail (Day 1)
+- perf: `prose.findings()` precomputes the prohibiting-lead-in map once per file (O(lines)) instead of re-splitting the full text on every regex match (was O(matches × file_size)).
+- perf: `scan_repo` short-circuits files with no letters or under 4 bytes — they cannot match any rule pattern.
+- test: perf guardrail `tests/v5/test_perf.py` — 13 reference fixtures must scan in under 2 s; catches accidental O(n²) regressions. All rule-family verdicts verified identical by the full test suite (gate: PENDING corpus download by the human before T2 is committed).
+
 ## 0.8.0 — 2026-09-22 — the build plan and its tooling
 - Day-by-day build prompts (`docs/build/DAILY_PROMPTS.md`, 13 days in 1–10-hour blocks), agent contract (`docs/build/AGENT_CONTRACT.md`) and build log (`docs/build/PROGRESS.md`). Every rule change is now gated by `bench/precision_gate.py` against ~930 real repositories; `bench/rebuild_corpus.py` rebuilds the corpora from the committed manifests. No engine behaviour change.
 

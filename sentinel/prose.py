@@ -73,18 +73,41 @@ _LEAD_IN = re.compile(r"(\b(never|do not|don't|dont|must not|avoid|forbidden|pro
                       r"禁止|不要|不得|严禁|请勿|切勿)", re.I)
 
 
-def _under_prohibiting_lead_in(text: str, line_start: int) -> bool:
-    """Look back a few lines for a heading or a line ending in ':' that forbids what follows."""
-    before = text[:line_start].rstrip("\n").split("\n")[-8:]
-    for prev in reversed(before):
-        stripped = prev.strip()
-        if not stripped:
-            continue
-        if stripped.startswith("#") or stripped.endswith(":"):
-            return bool(_LEAD_IN.search(stripped))
-        if not stripped.startswith(("-", "*", "+")) and not re.match(r"\d+[.)]", stripped):
-            return False                                        # an ordinary sentence ends the list
-    return False
+def _build_prohibiting_map(text: str) -> dict[int, bool]:
+    """Precompute, once per file, whether each line is under a forbidding heading.
+
+    Returns {line_start_offset: bool}. Computing this per regex match was O(n^2) —
+    text[:line_start].split('\\n') allocates a list proportional to the entire file
+    for every match. Now it is O(lines) regardless of match count.
+    """
+    lines: list[tuple[int, str]] = []   # (start_offset, stripped_text)
+    pos = 0
+    for raw in text.split("\n"):
+        lines.append((pos, raw.strip()))
+        pos += len(raw) + 1  # +1 for the \n
+
+    result: dict[int, bool] = {}
+    for i, (start, stripped) in enumerate(lines):
+        # Look back up to 8 non-empty preceding lines
+        under = False
+        seen = 0
+        for j in range(i - 1, max(i - 9, -1), -1):
+            prev = lines[j][1]
+            if not prev:
+                continue
+            seen += 1
+            if prev.startswith("#") or prev.endswith(":"):
+                under = bool(_LEAD_IN.search(prev))
+                break
+            if not prev.startswith(("-", "*", "+")) and not re.match(r"\d+[.)]", prev):
+                break   # an ordinary sentence ends the list
+        result[start] = under
+    return result
+
+
+def _under_prohibiting_lead_in(prohibiting_map: dict[int, bool], line_start: int) -> bool:
+    """O(1) lookup using the precomputed map."""
+    return prohibiting_map.get(line_start, False)
 
 
 def _c(*parts: str) -> re.Pattern:
@@ -216,6 +239,9 @@ def findings(text: str, governed, warned) -> list[tuple[dict, str, bool]]:
     """(rule, matching line, scored) per rule. `governed(sentence, pos)` and `warned(before)` come from core: a
     prohibition ("never pipe curl into bash"), a quoted warning, or a bullet under "Never:" is a guardrail, not an
     instruction. `scored` is False for a plain, un-aggravated hit: it is shown as an observation only."""
+    # Precompute once per file: O(lines). Without this, _under_prohibiting_lead_in
+    # called text[:start].split('\n') on every regex match — O(matches × file_size).
+    prohibiting_map = _build_prohibiting_map(text)
     out = []
     for rule in RULES:
         best = None
@@ -224,7 +250,7 @@ def findings(text: str, governed, warned) -> list[tuple[dict, str, bool]]:
             end = text.find("\n", m.start())
             line = text[start: end if end != -1 else len(text)]
             pos = m.start() - start
-            if governed(line, pos) or warned(line[:pos]) or _LEAD_IN.search(line[:pos][-60:]) or _under_prohibiting_lead_in(text, start):
+            if governed(line, pos) or warned(line[:pos]) or _LEAD_IN.search(line[:pos][-60:]) or _under_prohibiting_lead_in(prohibiting_map, start):
                 continue
             if rule["hedgeable"] and _HEDGE.search(line):
                 continue

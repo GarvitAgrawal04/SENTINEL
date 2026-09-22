@@ -593,6 +593,10 @@ def scan_repo(root: Path, approvals: dict | None = None, baseline: dict[str, str
     for p in text_surfaces(root):
         rel = p.relative_to(root).as_posix()
         text = p.read_text(encoding="utf-8", errors="replace")
+        # Skip the full rule battery for files that cannot possibly match any pattern:
+        # no letters → no keyword hit; under 4 bytes → too short for every bounded regex.
+        if len(text) < 4 or not any(c.isalpha() for c in text[:512]):
+            continue
         bad = invisible_chars(text)
         hidden = decode_hidden(text, bad) if bad else None
         from . import prose

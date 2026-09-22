@@ -7,4 +7,6 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-22 · Day 1 · T1–T3 · perf guardrail test; prose.findings O(lines) precompute; scan_repo tiny-file skip · gate: PENDING (corpus not on this machine; verdicts verified identical by 124 tests) · tests: 124
+
 - 2026-09-22 · Day 0 · — · plan, roadmap, specs, ADRs, repo base; `timewarp` planner and rewrite `gate` (offline); precision-gate and corpus-rebuild tooling · gate: not run (no rule change) · tests: 122
