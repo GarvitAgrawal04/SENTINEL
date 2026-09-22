@@ -190,18 +190,20 @@ def check_file(
     root: Path | None = None,
     token_budget: int = DEFAULT_TOKEN_BUDGET,
     graph_context_text: str | None = None,
+    content: str | None = None,
 ) -> list[dict[str, Any]]:
     """Run deterministic checks D001–D008 on an agent instruction file.
 
     Returns a list of finding dicts: {id, line, message, fix, kind}.
     """
     if root is None:
-        root = file_path.parent
+        root = file_path.parent if file_path.parent != Path("") else Path(".")
 
-    try:
-        content = file_path.read_text(encoding="utf-8", errors="replace")
-    except Exception:
-        return []
+    if content is None:
+        try:
+            content = file_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            return []
 
     lines = content.splitlines()
     findings: list[dict[str, Any]] = []
@@ -446,3 +448,20 @@ def apply_fixes(content: str, findings: list[dict[str, Any]]) -> tuple[str, int]
                 fixed_count += 1
 
     return "".join(lines), fixed_count
+
+
+def check_text(
+    content: str,
+    filename: str = "AGENTS.md",
+    root: Path | None = None,
+    token_budget: int = DEFAULT_TOKEN_BUDGET,
+    graph_context_text: str | None = None,
+) -> list[dict[str, Any]]:
+    """Run deterministic checks D001–D008 directly on string content."""
+    return check_file(
+        file_path=Path(filename),
+        root=root or Path("."),
+        token_budget=token_budget,
+        graph_context_text=graph_context_text,
+        content=content,
+    )

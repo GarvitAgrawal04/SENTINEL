@@ -1,3 +1,15 @@
+## 0.9.1 — 2026-09-23 — gated Safe Rewrite in VS Code (Day 3 T5)
+- feat(doctor): `sentinel/doctor/gate.py` implementing `check()` to validate proposed rewrites against Sentinel security rules (S1–S26) and Doctor blockers (D001, D005, D007, D008).
+- feat(api): added `POST /doctor/gate/check` endpoint to validate suggested rewrites before presentation or application.
+- feat(vscode): added "Sentinel: Suggest a safer wording" action to `SentinelCodeActionProvider` and registered command `sentinel.suggestSaferWording`.
+  - Securely reads/prompts API key via `context.secrets` (SecretStorage).
+  - Explicit confirmation dialog displaying exact redacted prompt and token estimate before contacting the model.
+  - Model prompt encapsulates user instruction in strict data delimiters (`--- BEGIN INSTRUCTION DATA ---`).
+  - Proposed model edit is screened through `doctor.gate.check`; malicious suggestions (e.g. exfiltration, overrides) are blocked with detailed explanations and prevented from modifying files.
+  - Disabled in untrusted workspaces.
+- test: unit tests in `tests/v5/test_doctor_gate.py` and end-to-end smoke tests in `vscode-extension/test/smoke.js` verifying clean rewrites are applied and malicious exfil suggestions are blocked.
+- feat: rebuilt and synchronized `frontend/sentinel-md.vsix` with extension version 0.3.1.
+
 ## 0.9.0 — 2026-09-23 — VS Code: Doctor quick-fixes for safe deterministic checks (Day 3 T4)
 - feat(vscode): added `SentinelCodeActionProvider` providing Quick Fixes for deterministic checks D001 (remove broken include), D004 (remove duplicate rule), and D008 (strip ANSI escape sequences).
 - feat(vscode): registered `sentinel.doctor` command ("Sentinel: Doctor — check this file") for direct manual triggering of hygiene audits.

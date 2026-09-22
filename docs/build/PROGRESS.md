@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 3 · T5 · feat(vscode): gated Safe Rewrite with doctor.gate.check and SecretStorage · gate: PASS (clean applied, exfil blocked) · tests: 201
+
 - 2026-09-23 · Day 3 · T4 · feat(vscode): Doctor quick-fixes for safe deterministic checks (D001/D004/D008) · gate: not run (no rule change) · tests: 193
 
 - 2026-09-23 · Day 3 · T3 · feat(doctor): D005–D008 + honest hit-rate on 372 repos; >5% classified as OBSERVATIONS · gate: not run (no rule change) · tests: 193

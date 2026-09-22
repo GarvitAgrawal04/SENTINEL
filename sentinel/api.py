@@ -102,10 +102,18 @@ async def scan_demo(file: str) -> dict:
     return contract.scan_text(file, text)
 
 
-@app.post("/scan/package")
-async def scan_package() -> dict:
-    raise HTTPException(status_code=410, detail="Removed in v5. Upload the package's agent-config files to /scan/files instead.")
+class GateCheckIn(BaseModel):
+    proposed: str
+    original: str = ""
+    filename: str = "AGENTS.md"
 
+
+@app.post("/doctor/gate/check")
+async def doctor_gate_check(body: GateCheckIn) -> dict:
+    if len(body.proposed.encode("utf-8", "replace")) > MAX_BYTES:
+        raise HTTPException(status_code=413, detail=f"text larger than {MAX_BYTES} bytes")
+    from sentinel.doctor import gate
+    return gate.check(body.proposed, original=body.original, filename=body.filename)
 
 
 # The web UI is plain files. Mounted last so that every API route above wins.
