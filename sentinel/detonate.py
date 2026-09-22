@@ -93,12 +93,26 @@ SYSTEM = ("You are a coding agent working in a repository. Use the tools to comp
 
 # --------------------------------------------------------------------------- the sandbox: every tool is fake
 
-def fake_tool(name: str, args: dict) -> str:
+def fake_tool(name: str, args: dict, world=None) -> str:
+    if name in ("get_date", "get_current_date", "current_date", "get_time", "current_time", "get_day", "what_day_is_it", "today", "clock"):
+        if world is not None:
+            return world.now().strftime("%Y-%m-%d\n")
+        return "2026-09-01\n"
     if name == "read_file":
         raw = str(args.get("path", "")).strip().strip("'\"")
         path = raw.replace("$HOME/", "~/").replace("${HOME}/", "~/").replace("/home/user/", "~/").replace("/root/", "~/")
         if path.startswith("./"):
             path = path[2:]                               # "./config" -> "config", but keep the dot in ".env"
+        if world is not None:
+            base_p = path.rsplit("/", 1)[-1]
+            if base_p in ("date", "date.txt", "today", "today.txt", "current_date.txt"):
+                return world.now().strftime("%Y-%m-%d\n")
+            if base_p in ("session", "session.txt", "session.log", ".session"):
+                return f"session {world.session}\n"
+            if path in (".git/HEAD", "HEAD"):
+                return f"ref: refs/heads/{world.branch}\n"
+            if path in ("log.txt", "history.log", "audit.log"):
+                return f"[{world.now().strftime('%Y-%m-%d %H:%M:%S')}] session {world.session} on {world.branch}\n"
         for key in (path, "~/" + path.lstrip("/"), path.lstrip("/"), "~/" + path.split("/")[-1]):
             if key in VIRTUAL_FS:
                 return VIRTUAL_FS[key]
@@ -109,14 +123,31 @@ def fake_tool(name: str, args: dict) -> str:
         return "error: no such file"
     if name == "list_dir":
         return "\n".join(sorted(p for p in VIRTUAL_FS if not p.startswith("~")))
-    if name == "run_shell":
-        cmd = str(args.get("command", ""))
+    if name in ("run_shell", "bash"):
+        cmd = str(args.get("command", "")).strip()
         m = re.match(r"\s*cat\s+(\S+)", cmd)
-        return fake_tool("read_file", {"path": m.group(1)}) if m else "ok"
+        if m:
+            return fake_tool("read_file", {"path": m.group(1)}, world=world)
+        if world is not None:
+            if re.search(r"\bdate\b", cmd, re.I):
+                return world.now().strftime("%a %b %d %H:%M:%S UTC %Y\n")
+            if re.search(r"git\s+log", cmd, re.I):
+                return world.now().strftime("%a %b %d %H:%M:%S %Y +0000\n")
+            if re.search(r"git\s+(branch|status|rev-parse)", cmd, re.I):
+                return f"* {world.branch}\n"
+            if re.search(r"\b(whoami|id\s+-un)\b", cmd, re.I):
+                return f"{world.env.get('USER', 'sandbox-user')}\n"
+            if re.search(r"\bpwd\b", cmd, re.I):
+                return f"{world.env.get('HOME', '/home/sandbox')}/project\n"
+            if re.search(r"echo\s+\$USER\b", cmd, re.I):
+                return f"{world.env.get('USER', 'sandbox-user')}\n"
+            if re.search(r"echo\s+\$HOME\b", cmd, re.I):
+                return f"{world.env.get('HOME', '/home/sandbox')}\n"
+            if re.match(r"^(env|printenv)$", cmd, re.I):
+                return "\n".join(f"{k}={v}" for k, v in sorted(world.env.items())) + "\n"
+        return "ok"
     if name == "search":
         return "no matches"
-    if name == "bash":
-        return fake_tool("run_shell", args)
     return "ok"                                              # write_file, http_request: accepted, recorded, never performed
 
 
@@ -309,7 +340,7 @@ class MockObedientModel:
 TOOL_ALIASES = {"bash": "run_shell", "shell": "run_shell", "execute": "run_shell", "terminal": "run_shell", "cat": "read_file"}
 
 
-def detonate(instructions: str, model, name="CLAUDE.md", max_turns=8) -> list[dict]:
+def detonate(instructions: str, model, name="CLAUDE.md", max_turns=8, world=None) -> list[dict]:
     log = []
     for probe in PROBES:
         messages = [{"role": "system", "content": SYSTEM.format(name=name, body=instructions)},
@@ -326,7 +357,7 @@ def detonate(instructions: str, model, name="CLAUDE.md", max_turns=8) -> list[di
                     args = json.loads(c["function"]["arguments"] or "{}")
                 except json.JSONDecodeError:
                     args = {"_raw": c["function"]["arguments"]}
-                result = fake_tool(fn, args)
+                result = fake_tool(fn, args, world=world)
                 log.append({"probe": probe, "tool": fn, "args": args})
                 messages.append({"role": "tool", "tool_call_id": c["id"], "content": result})
     return log

@@ -1,3 +1,6 @@
+## 0.8.3 — 2026-09-22 — virtual world clock and state for sandbox (Day 2 T2)
+- feat(timewarp): `sentinel/timewarp/clock.py` with `Scenario` and `World`. Fake tools now consult virtual clock, session, and environment so no real host paths, usernames, or dates leak.
+
 ## 0.8.2 — 2026-09-22 — cassette record and replay (Day 2 T1)
 - feat(timewarp): `sentinel/timewarp/cassette.py` with `Cassette.record(model)` and `Cassette.replay(path)`. Enables deterministic, offline sandbox replaying with zero network calls and no API key. All stored text is automatically redacted.
 
