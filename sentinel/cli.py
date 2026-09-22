@@ -236,6 +236,61 @@ def cmd_detonate(a) -> int:
     return 3 if res["new_behaviours"] else 0
 
 
+def cmd_timewarp(a) -> int:
+    if getattr(a, "timewarp_action", None) == "run":
+        return cmd_timewarp_run(a)
+    print("usage: sentinel timewarp run <file> --replay <dir>")
+    return 1
+
+
+def cmd_timewarp_run(a) -> int:
+    from .timewarp import runner, diff, clock, cassette
+    file_path = Path(a.file)
+    if not file_path.is_file():
+        print(f"error: file not found: {file_path}", file=sys.stderr)
+        return 1
+
+    replay_path = Path(a.replay)
+    if replay_path.is_dir():
+        replay_path = replay_path / "cassette.json"
+    if not replay_path.is_file():
+        print(f"error: cassette not found at {replay_path}", file=sys.stderr)
+        return 1
+
+    file_text = file_path.read_text(encoding="utf-8", errors="replace")
+    plan = [
+        clock.Scenario(name="now", session=1),
+        clock.Scenario(name="session_2", session=2),
+        clock.Scenario(name="session_3", session=3),
+    ]
+
+    replayer = cassette.Cassette.replay(replay_path)
+    traces = runner.run(file_text, plan, cassette=replayer, name=file_path.name)
+    findings = diff.compare(traces)
+
+    if a.json:
+        out = {
+            "file": str(file_path),
+            "findings": findings,
+            "verdict": "SUSPICIOUS" if findings else "CLEAN",
+            "traces": [t.to_dict() for t in traces],
+        }
+        print(json.dumps(out, indent=2))
+        return 1 if findings else 0
+
+    if not findings:
+        print(f"sentinel timewarp  verdict: CLEAN  (no conditional or sleeper findings across {len(plan)} scenarios)")
+        return 0
+
+    print(f"sentinel timewarp  verdict: SUSPICIOUS  ({len(findings)} conditional finding(s))")
+    print()
+    for i, f in enumerate(findings, 1):
+        print(f"{i}. [{f['rule']}] {f['evidence']}")
+        print(f"   > {f['impact']}")
+        print(f"   > fix: {f['fix']}")
+    return 1
+
+
 def cmd_apikey(a) -> int:
     """Store YOUR OWN model-provider key for the optional sandbox, in Sentinel's own .env. It is never printed, never
     taken from the command line (so it cannot land in shell history), and never read from a project being scanned."""
@@ -365,6 +420,13 @@ def main(argv: list[str] | None = None) -> int:
             help="write the inert reference fixtures")
     s.add_argument("dir")
     add("selftest", lambda a: core.selftest(), help="run the engine's self-test")
+
+    tw = add("timewarp", cmd_timewarp, help="sandbox scenario planning and behavioural diffing")
+    tw_sub = tw.add_subparsers(dest="timewarp_action")
+    tw_run = tw_sub.add_parser("run", help="run a file across time-warp scenarios")
+    tw_run.add_argument("file", help="path to instruction file")
+    tw_run.add_argument("--replay", required=True, help="cassette file or directory containing cassette.json")
+    tw_run.add_argument("--json", action="store_true")
 
     a = p.parse_args(argv)
     if not a.command:

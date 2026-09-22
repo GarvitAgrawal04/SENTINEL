@@ -27,6 +27,7 @@ SUBCOMMANDS = [
     "detonate",
     "fixtures",
     "selftest",
+    "timewarp",
 ]
 
 
@@ -100,3 +101,14 @@ def test_cli_pr_trivial(tmp_path: Path):
     r = sentinel(repo, "pr", "--path", str(repo), "--base", "HEAD")
     assert r.returncode == 0
     assert "sentinel-agent-behaviour-diff" in r.stdout
+
+
+def test_cli_timewarp_run_trivial():
+    fixture_dir = ROOT / "tests" / "fixtures" / "sleeper"
+    agents_file = fixture_dir / "AGENTS.md"
+    r = sentinel(ROOT, "timewarp", "run", str(agents_file), "--replay", str(fixture_dir))
+    # Sleeper finding correctly triggers exit code 1 (SUSPICIOUS)
+    assert r.returncode == 1
+    assert "sentinel timewarp" in r.stdout
+    assert "SUSPICIOUS" in r.stdout
+

@@ -1,3 +1,8 @@
+## 0.8.5 — 2026-09-22 — vertical slice: sleeper file caught by replay with no key (Day 2 T4)
+- feat(timewarp): M0 vertical slice complete! Added sleeper fixture `tests/fixtures/sleeper/AGENTS.md` and pre-recorded `cassette.json`.
+- feat(cli): `sentinel timewarp run <file> --replay <dir>` runs multi-scenario planning and behaviour diffing completely offline without an API key or network access.
+- test: `tests/v5/test_slice.py` verifies end-to-end that baseline single-moment detonation misses the sleeper attack, while multi-scenario Time-Warp catches the exfiltration in session 3 and attributes the trigger.
+
 ## 0.8.4 — 2026-09-22 — scenario runner and behaviour diff (Day 2 T3)
 - feat(timewarp): `sentinel/timewarp/runner.py` for executing scenario plans with early canary escape exit, and `sentinel/timewarp/diff.py` for behavioural diffing against baseline.
 
