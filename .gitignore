@@ -17,7 +17,7 @@ venv/
 env/
 *.egg-info/
 .eggs/
-build/
+/build/
 dist/
 .pytest_cache/
 .mypy_cache/
@@ -59,3 +59,6 @@ bench/heldout/
 # ad-hoc evaluation output; the two published result files are tracked on purpose
 results*.json
 !bench/detonation/results/*.json
+
+# local, machine-specific benchmark baselines (see bench/precision_gate.py)
+*.local.json

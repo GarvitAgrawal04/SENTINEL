@@ -1,3 +1,6 @@
+## 0.8.0 — 2026-09-22 — the build plan and its tooling
+- Day-by-day build prompts (`docs/build/DAILY_PROMPTS.md`, 13 days in 1–10-hour blocks), agent contract (`docs/build/AGENT_CONTRACT.md`) and build log (`docs/build/PROGRESS.md`). Every rule change is now gated by `bench/precision_gate.py` against ~930 real repositories; `bench/rebuild_corpus.py` rebuilds the corpora from the committed manifests. No engine behaviour change.
+
 ## 0.7.5 — 2026-09-21 — cleaner clean-scan message
 - docs: the clean-scan message now reads `No findings.` without the `'checked, not safe'` note.
 - vscode: clean-scan output now reads `No findings.`; refreshed the downloadable .vsix on the site.
