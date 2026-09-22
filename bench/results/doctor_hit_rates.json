@@ -1,0 +1,35 @@
+{
+  "total_repos_inspected": 387,
+  "repos_with_agent_files": 372,
+  "elapsed_seconds": 23.69,
+  "check_hits": {
+    "D001": 1,
+    "D002": 144,
+    "D003": 37,
+    "D004": 308,
+    "D005": 17,
+    "D006": 293,
+    "D007": 0,
+    "D008": 0
+  },
+  "hit_rates": {
+    "D001": 0.0027,
+    "D002": 0.3871,
+    "D003": 0.0995,
+    "D004": 0.828,
+    "D005": 0.0457,
+    "D006": 0.7876,
+    "D007": 0.0,
+    "D008": 0.0
+  },
+  "classifications": {
+    "D001": "WARNING",
+    "D002": "OBSERVATION",
+    "D003": "OBSERVATION",
+    "D004": "OBSERVATION",
+    "D005": "WARNING",
+    "D006": "OBSERVATION",
+    "D007": "WARNING",
+    "D008": "WARNING"
+  }
+}

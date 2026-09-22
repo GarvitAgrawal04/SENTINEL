@@ -120,3 +120,67 @@ def test_hygiene_does_not_convict():
     # Must be CLEAN: broken includes or duplicate rules are not exfiltration or malware
     assert rep["verdict"] == "CLEAN"
     assert rep["trust_score"] == 100
+
+
+def test_d005_guardrail_contradiction():
+    """D005 flags rules that contradict guardrails in the same instruction set."""
+    bad_file = FIXTURES_DIR / "d005_contradiction.md"
+    findings = check_file(bad_file, root=FIXTURES_DIR)
+    assert len(findings) == 1
+    assert findings[0]["id"] == "D005"
+    assert "contradicts guardrail" in findings[0]["message"]
+    assert findings[0]["fix"] is None
+
+    twin_file = FIXTURES_DIR / "d005_twin.md"
+    twin_findings = check_file(twin_file, root=FIXTURES_DIR)
+    assert twin_findings == []
+
+
+def test_d006_token_budget():
+    """D006 flags files exceeding token budget and suggests large sections to cut."""
+    bad_file = FIXTURES_DIR / "d006_bloated_file.md"
+    findings = check_file(bad_file, root=FIXTURES_DIR, token_budget=1500)
+    assert len(findings) == 1
+    assert findings[0]["id"] == "D006"
+    assert "exceeds token budget" in findings[0]["message"]
+    assert "Section 1" in findings[0]["message"] or "Section 2" in findings[0]["message"]
+
+    twin_file = FIXTURES_DIR / "d006_twin.md"
+    twin_findings = check_file(twin_file, root=FIXTURES_DIR, token_budget=1500)
+    assert twin_findings == []
+
+
+def test_d007_secret_value():
+    """D007 flags secret-shaped credentials that must never be sent to a model."""
+    bad_file = FIXTURES_DIR / "d007_secret.md"
+    findings = check_file(bad_file, root=FIXTURES_DIR)
+    assert len(findings) == 1
+    assert findings[0]["id"] == "D007"
+    assert "Secret-shaped value" in findings[0]["message"]
+    assert findings[0]["fix"] is None
+
+    twin_file = FIXTURES_DIR / "d007_twin.md"
+    twin_findings = check_file(twin_file, root=FIXTURES_DIR)
+    assert twin_findings == []
+
+
+def test_d008_ansi_escape():
+    """D008 flags ANSI escape codes and provides auto-fix to strip them."""
+    bad_file = FIXTURES_DIR / "d008_ansi_escape.md"
+    findings = check_file(bad_file, root=FIXTURES_DIR)
+    assert len(findings) == 1
+    assert findings[0]["id"] == "D008"
+    assert "ANSI" in findings[0]["message"]
+    assert findings[0]["fix"] is not None
+
+    # Test auto-fix strips ANSI codes
+    content = bad_file.read_text(encoding="utf-8")
+    cleaned, count = apply_fixes(content, findings)
+    assert count == 1
+    assert "\x1b" not in cleaned
+    assert "Build Succeeded" in cleaned
+
+    twin_file = FIXTURES_DIR / "d008_twin.md"
+    twin_findings = check_file(twin_file, root=FIXTURES_DIR)
+    assert twin_findings == []
+

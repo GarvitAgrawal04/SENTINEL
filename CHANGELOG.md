@@ -1,3 +1,12 @@
+## 0.8.10 — 2026-09-23 — D005–D008 + honest hit-rate across public repos (Day 3 T3)
+- feat(doctor): added checks D005–D008 to `sentinel/doctor/lints.py`:
+  - D005: rule contradicts a guardrail in the same load graph (flag, 4.6% baseline rate).
+  - D006: file exceeds token budget (default 1500 tokens; suggests largest sections to cut, 78.8% baseline rate).
+  - D007: secret-shaped value in instruction file (flag, 0.0% baseline rate).
+  - D008: ANSI/terminal escape in text with auto-fix (strip escapes, 0.0% baseline rate).
+- bench: `bench/doctor_eval.py` measured hit-rate across 372 repositories with agent files. Checks firing on >5% of healthy repos (D002, D003, D004, D006) are classified as OBSERVATIONS rather than WARNINGS, documented in `bench/results/doctor_eval.md`.
+- test: fixtures and benign twins for D005–D008 with comprehensive unit tests in `tests/v5/test_doctor_lints.py`.
+
 ## 0.8.9 — 2026-09-23 — deterministic lints D001–D004 with fixtures and twins (Day 3 T2)
 - feat(doctor): `sentinel/doctor/lints.py` implementing deterministic hygiene checks:
   - D001: broken `@include` / `@import` with safe auto-fix (remove line).
