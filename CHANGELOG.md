@@ -1,3 +1,12 @@
+## 0.8.9 — 2026-09-23 — deterministic lints D001–D004 with fixtures and twins (Day 3 T2)
+- feat(doctor): `sentinel/doctor/lints.py` implementing deterministic hygiene checks:
+  - D001: broken `@include` / `@import` with safe auto-fix (remove line).
+  - D002: backticked path that does not exist on disk (flag).
+  - D003: named command/script not defined in `package.json`, `Makefile`, or `pyproject.toml` (flag).
+  - D004: normalized duplicate rule with safe auto-fix (keep first, remove duplicate).
+- feat(cli): `sentinel doctor <path> [--fix]` command to inspect agent instruction files and apply safe in-place fixes.
+- test: fixtures and benign twins in `tests/fixtures/doctor/` for D001–D004, unit tests in `tests/v5/test_doctor_lints.py`, and CLI smoke tests.
+
 ## 0.8.8 — 2026-09-23 — load graph for agent files (Day 3 T1)
 - feat(doctor): `sentinel/doctor/graph.py` building agent file load graphs by following `@import` / `@include` directives and hierarchical nested `CLAUDE.md` files. Includes cycle detection (`CycleError`), max depth capping, missing import tracking, and token estimation.
 - test: `tests/v5/test_doctor_graph.py` covering multi-file import chains, cycle detection, missing import handling, and nested instruction discovery.

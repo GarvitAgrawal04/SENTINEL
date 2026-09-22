@@ -302,6 +302,98 @@ def cmd_timewarp_run(a) -> int:
     return 1
 
 
+def cmd_doctor(a) -> int:
+    from .doctor import graph, lints
+    target = Path(a.path).expanduser()
+    if not target.exists():
+        print(f"sentinel doctor: '{target}' does not exist", file=sys.stderr)
+        return 1
+
+    root = _repo_root(target)
+
+    # Collect files to check
+    files_to_check: list[Path] = []
+    if target.is_file():
+        files_to_check.append(target)
+    else:
+        # If directory, find agent files or follow load graph
+        entry_candidates = ["CLAUDE.md", ".cursorrules", "AGENTS.md"]
+        found_entry = False
+        for ec in entry_candidates:
+            ec_path = target / ec
+            if ec_path.is_file():
+                found_entry = True
+                g = graph.build(target, ec_path.name)
+                for node in g.nodes:
+                    node_p = target / node
+                    if node_p.is_file() and node_p not in files_to_check:
+                        files_to_check.append(node_p)
+        if not found_entry:
+            # Fallback: scan markdown files in target directory
+            for f in sorted(target.iterdir()):
+                if f.is_file() and f.suffix.lower() == ".md":
+                    files_to_check.append(f)
+
+    if not files_to_check:
+        print("sentinel doctor: no instruction files found to check")
+        return 0
+
+    all_findings: dict[str, list[dict]] = {}
+    total_findings = 0
+    total_fixed = 0
+
+    for f_path in files_to_check:
+        try:
+            rel_name = f_path.resolve().relative_to(root.resolve()).as_posix()
+        except ValueError:
+            rel_name = f_path.name
+
+        findings = lints.check_file(f_path, root=root)
+
+        if a.fix and findings:
+            content = f_path.read_text(encoding="utf-8", errors="replace")
+            new_content, count = lints.apply_fixes(content, findings)
+            if count > 0:
+                f_path.write_text(new_content, encoding="utf-8")
+                total_fixed += count
+                # Re-check to reflect remaining unfixable findings
+                findings = lints.check_file(f_path, root=root)
+
+        if findings:
+            all_findings[rel_name] = findings
+            total_findings += len(findings)
+
+    # Format output
+    if getattr(a, "format", "text") == "json":
+        print(json.dumps({
+            "files": all_findings,
+            "total_findings": total_findings,
+            "total_fixed": total_fixed,
+        }, indent=2))
+        return 1 if total_findings else 0
+
+    if not all_findings:
+        if total_fixed > 0:
+            print(f"sentinel doctor: all fixable issues resolved ({total_fixed} fix(es) applied).")
+        else:
+            print("sentinel doctor: no instruction hygiene issues found.")
+        return 0
+
+    print(f"sentinel doctor: found {total_findings} hygiene issue(s){f' ({total_fixed} fixed)' if total_fixed else ''}:")
+    print()
+    for fname, findings in all_findings.items():
+        print(f"{fname}:")
+        for f in findings:
+            fix_str = " (fix available with --fix)" if f.get("fix") else ""
+            print(f"  [{f['id']}] line {f['line']}: {f['message']}{fix_str}")
+        print()
+
+    if not a.fix and any(f.get("fix") for fl in all_findings.values() for f in fl):
+        print("Run `sentinel doctor --fix` to apply safe automatic fixes.")
+
+    return 1
+
+
 def cmd_apikey(a) -> int:
     """Store YOUR OWN model-provider key for the optional sandbox, in Sentinel's own .env. It is never printed, never
     taken from the command line (so it cannot land in shell history), and never read from a project being scanned."""
@@ -439,6 +531,11 @@ def main(argv: list[str] | None = None) -> int:
     tw_run.add_argument("--replay", required=True, help="cassette file or directory containing cassette.json")
     tw_run.add_argument("--budget", type=float, default=None, help="max scenario budget limit")
     tw_run.add_argument("--json", action="store_true")
+
+    doc = add("doctor", cmd_doctor, help="instruction file hygiene checks and safe auto-fixes")
+    doc.add_argument("path", nargs="?", default=".", help="instruction file or repository path")
+    doc.add_argument("--fix", action="store_true", help="apply safe auto-fixes in place")
+    doc.add_argument("--format", choices=("text", "json", "sarif"), default="text", help="output format")
 
     a = p.parse_args(argv)
     if not a.command:

@@ -28,6 +28,7 @@ SUBCOMMANDS = [
     "fixtures",
     "selftest",
     "timewarp",
+    "doctor",
 ]
 
 
@@ -111,4 +112,13 @@ def test_cli_timewarp_run_trivial():
     assert r.returncode == 1
     assert "sentinel timewarp" in r.stdout
     assert "SUSPICIOUS" in r.stdout
+
+
+def test_cli_doctor_trivial(tmp_path: Path):
+    clean_file = tmp_path / "CLAUDE.md"
+    clean_file.write_text("# Clean project rules\nRun tests before commit.\n", encoding="utf-8")
+    r = sentinel(tmp_path, "doctor", str(clean_file))
+    assert r.returncode == 0
+    assert "no instruction hygiene issues found" in r.stdout
+
 
