@@ -1,3 +1,7 @@
+## 0.8.8 — 2026-09-23 — load graph for agent files (Day 3 T1)
+- feat(doctor): `sentinel/doctor/graph.py` building agent file load graphs by following `@import` / `@include` directives and hierarchical nested `CLAUDE.md` files. Includes cycle detection (`CycleError`), max depth capping, missing import tracking, and token estimation.
+- test: `tests/v5/test_doctor_graph.py` covering multi-file import chains, cycle detection, missing import handling, and nested instruction discovery.
+
 ## 0.8.7 — 2026-09-22 — parallel runner, cost budget, record spec, ADR-0006 (Day 2 T6–T10)
 - feat(timewarp): parallel scenario runner using `ThreadPoolExecutor` (capped at max 4 workers), verified by concurrency test in `tests/v5/test_runner_parallel.py`.
 - feat(timewarp): upfront token and cost estimation via `sentinel/timewarp/cost.py`. Supported `--budget N` CLI parameter to drop scenarios exceeding dollar budget with printed `dropped: <name> (exceeds budget)` notice, verified in `tests/v5/test_cost_budget.py`.

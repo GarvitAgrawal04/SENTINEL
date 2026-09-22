@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 3 · T1 · feat(doctor): load graph for agent files; @import/@include and nested CLAUDE.md discovery with cycle detection · gate: not run (no rule change) · tests: 181
+
 - 2026-09-22 · Day 2 · T6–T10 · feat(timewarp): parallel runner (cap 4), upfront cost/budget control, record spec, README sleeper slice, ADR-0006 · gate: not run (no rule change) · tests: 175
 
 - 2026-09-22 · Day 2 · T5 · bench(timewarp): sleeper set 20 fixtures; single-moment 0/10 caught vs time-warp 10/10 caught, 0/10 false alarms · gate: not run (no rule change) · tests: 171
