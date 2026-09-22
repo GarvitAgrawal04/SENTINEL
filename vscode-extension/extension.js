@@ -4,6 +4,7 @@
 // Problems panel, a verdict in the status bar, and a readable report in the "Sentinel" output channel.
 // Text from the scanned file is only ever shown as plain text.
 const vscode = require('vscode');
+const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const path = require('path');
@@ -75,6 +76,118 @@ function report(result) {
     return lines.join('\n');
 }
 
+const ANSI_RE = /\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~]|\].*?(?:\x07|\x1b\\))/;
+
+function runDoctor(document) {
+    if (!document) return [];
+    const text = document.getText();
+    const lines = text.split('\n');
+    const diags = [];
+    const seenRules = new Map();
+    const dir = document.fileName ? path.dirname(document.fileName) : '';
+
+    for (let idx = 0; idx < lines.length; idx++) {
+        const line = lines[idx];
+        const stripped = line.trim();
+        if (!stripped) continue;
+
+        // D001: broken @include / @import
+        const m = line.match(/^\s*@(?:include|import)\s+["']?([^"'\s>]+)["']?/i);
+        if (m) {
+            const relTarget = m[1];
+            let exists = false;
+            try {
+                if (dir && fs.existsSync(path.resolve(dir, relTarget))) exists = true;
+            } catch (e) {}
+            if (!exists) {
+                const range = document.lineAt(idx).range;
+                const d = new vscode.Diagnostic(range, `Broken @include / @import: '${relTarget}' does not exist on disk`, vscode.DiagnosticSeverity.Warning);
+                d.source = 'Sentinel Doctor';
+                d.code = 'D001';
+                diags.push(d);
+            }
+        }
+
+        // D004: duplicate rule
+        const isBullet = /^\s*(?:[-*+]|\d+\.)\s+/.test(line);
+        if (isBullet || (!stripped.startsWith('#') && !stripped.startsWith('```'))) {
+            const norm = stripped.replace(/^\s*(?:[-*+]|\d+\.)\s+/, '').toLowerCase().replace(/[.;,!?]+$/, '').replace(/\s+/g, ' ');
+            if (norm.length >= 6) {
+                if (seenRules.has(norm)) {
+                    const firstLine = seenRules.get(norm) + 1;
+                    const range = document.lineAt(idx).range;
+                    const d = new vscode.Diagnostic(range, `Duplicate rule: '${stripped}' (first defined on line ${firstLine})`, vscode.DiagnosticSeverity.Information);
+                    d.source = 'Sentinel Doctor';
+                    d.code = 'D004';
+                    diags.push(d);
+                } else {
+                    seenRules.set(norm, idx);
+                }
+            }
+        }
+
+        // D008: ANSI escape sequence
+        if (ANSI_RE.test(line)) {
+            const range = document.lineAt(idx).range;
+            const d = new vscode.Diagnostic(range, 'ANSI/terminal escape code detected in instruction text', vscode.DiagnosticSeverity.Warning);
+            d.source = 'Sentinel Doctor';
+            d.code = 'D008';
+            diags.push(d);
+        }
+    }
+
+    return diags;
+}
+
+class SentinelCodeActionProvider {
+    provideCodeActions(document, range, context) {
+        const actions = [];
+        for (const diagnostic of (context && context.diagnostics) || []) {
+            const code = String(diagnostic.code || '');
+            if (code === 'D001') {
+                const fix = new vscode.CodeAction('Sentinel: Remove broken include', (vscode.CodeActionKind && vscode.CodeActionKind.QuickFix) || 'quickfix');
+                fix.diagnostics = [diagnostic];
+                fix.isPreferred = true;
+                const edit = new vscode.WorkspaceEdit();
+                const lineNo = diagnostic.range.start ? diagnostic.range.start.line : diagnostic.range.sl;
+                const endLine = document.lineCount > lineNo + 1 ? lineNo + 1 : lineNo;
+                const deleteRange = document.lineCount > lineNo + 1
+                    ? new vscode.Range(lineNo, 0, endLine, 0)
+                    : document.lineAt(lineNo).range;
+                edit.delete(document.uri, deleteRange);
+                fix.edit = edit;
+                actions.push(fix);
+            } else if (code === 'D004') {
+                const fix = new vscode.CodeAction('Sentinel: Remove duplicate rule', (vscode.CodeActionKind && vscode.CodeActionKind.QuickFix) || 'quickfix');
+                fix.diagnostics = [diagnostic];
+                fix.isPreferred = true;
+                const edit = new vscode.WorkspaceEdit();
+                const lineNo = diagnostic.range.start ? diagnostic.range.start.line : diagnostic.range.sl;
+                const endLine = document.lineCount > lineNo + 1 ? lineNo + 1 : lineNo;
+                const deleteRange = document.lineCount > lineNo + 1
+                    ? new vscode.Range(lineNo, 0, endLine, 0)
+                    : document.lineAt(lineNo).range;
+                edit.delete(document.uri, deleteRange);
+                fix.edit = edit;
+                actions.push(fix);
+            } else if (code === 'D008') {
+                const fix = new vscode.CodeAction('Sentinel: Strip ANSI escape sequences', (vscode.CodeActionKind && vscode.CodeActionKind.QuickFix) || 'quickfix');
+                fix.diagnostics = [diagnostic];
+                fix.isPreferred = true;
+                const edit = new vscode.WorkspaceEdit();
+                const lineNo = diagnostic.range.start ? diagnostic.range.start.line : diagnostic.range.sl;
+                const line = document.lineAt(lineNo);
+                const text = line.text || '';
+                const stripped = text.replace(/\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~]|\].*?(?:\x07|\x1b\\))/g, '');
+                edit.replace(document.uri, line.range, stripped);
+                fix.edit = edit;
+                actions.push(fix);
+            }
+        }
+        return actions;
+    }
+}
+
 function activate(context) {
     const out = vscode.window.createOutputChannel('Sentinel');
     const problems = vscode.languages.createDiagnosticCollection('sentinel');
@@ -131,11 +244,13 @@ function activate(context) {
             const result = await postJson(apiUrl() + '/scan/text', { filename: path.basename(document.fileName), text: document.getText() }, useHosted ? 25000 : 8000);
             offline = false;
             last.set(document.uri.toString(), result);
-            problems.set(document.uri, (result.findings || []).map((f) => toDiagnostic(document, f)));
+            const apiDiags = (result.findings || []).map((f) => toDiagnostic(document, f));
+            const doctorDiags = runDoctor(document);
+            problems.set(document.uri, apiDiags.concat(doctorDiags));
             out.appendLine('\n' + report(result));
             paintStatus(active());
             if (!announce) return;
-            const n = (result.findings || []).length;
+            const n = (result.findings || []).length + doctorDiags.length;
             const text = `Sentinel: ${result.filename} is ${(WORD[result.verdict] || result.verdict).toLowerCase()}, ${result.trust_score}/100` + (n ? ` (${n} finding${n === 1 ? '' : 's'})` : '');
             const show = result.verdict === 'COMPROMISED' ? vscode.window.showErrorMessage : result.verdict === 'SUSPICIOUS' ? vscode.window.showWarningMessage : vscode.window.showInformationMessage;
             const choice = await show(text, ...(n ? ['Show problems'] : []));
@@ -164,9 +279,28 @@ function activate(context) {
             const ed = vscode.window.activeTextEditor;
             return ed ? scan(ed.document, true) : vscode.window.showInformationMessage('Sentinel: open a file first.');
         }),
+        vscode.commands.registerCommand('sentinel.doctor', async () => {
+            const ed = vscode.window.activeTextEditor;
+            if (!ed) return vscode.window.showInformationMessage('Sentinel: open a file first.');
+            const doc = ed.document;
+            const doctorDiags = runDoctor(doc);
+            const existing = problems.get(doc.uri) || [];
+            const merged = existing.filter((d) => !d.code || !String(d.code).startsWith('D00')).concat(doctorDiags);
+            problems.set(doc.uri, merged);
+            const n = doctorDiags.length;
+            if (n === 0) {
+                vscode.window.showInformationMessage(`Sentinel Doctor: ${path.basename(doc.fileName)} is clean. No hygiene issues.`);
+            } else {
+                const choice = await vscode.window.showWarningMessage(`Sentinel Doctor: found ${n} hygiene issue(s) in ${path.basename(doc.fileName)}.`, 'Show problems');
+                if (choice === 'Show problems') vscode.commands.executeCommand('workbench.actions.view.problems');
+            }
+        }),
+        vscode.languages.registerCodeActionsProvider({ scheme: 'file' }, new SentinelCodeActionProvider(), {
+            providedCodeActionKinds: [(vscode.CodeActionKind && vscode.CodeActionKind.QuickFix) || 'quickfix'],
+        }),
         vscode.commands.registerCommand('sentinel.showReport', () => out.show(true)));
 
-    out.appendLine('Sentinel 0.2.4 is active and watching agent instruction and config files. Scanner: ' + apiUrl());
+    out.appendLine('Sentinel 0.3.0 is active and watching agent instruction and config files. Scanner: ' + apiUrl());
     // First run: say hello once, with a way to see it work in ten seconds.
     try {
         if (context.globalState && !context.globalState.get('sentinel.welcomed')) {
@@ -181,4 +315,5 @@ function activate(context) {
 
 function deactivate() {}
 
-module.exports = { activate, deactivate, toDiagnostic, report, isWatched };
+module.exports = { activate, deactivate, toDiagnostic, report, isWatched, runDoctor, SentinelCodeActionProvider };
+

@@ -1,3 +1,10 @@
+## 0.9.0 — 2026-09-23 — VS Code: Doctor quick-fixes for safe deterministic checks (Day 3 T4)
+- feat(vscode): added `SentinelCodeActionProvider` providing Quick Fixes for deterministic checks D001 (remove broken include), D004 (remove duplicate rule), and D008 (strip ANSI escape sequences).
+- feat(vscode): registered `sentinel.doctor` command ("Sentinel: Doctor — check this file") for direct manual triggering of hygiene audits.
+- feat(vscode): integrated Doctor diagnostic reports alongside security findings in the Problems panel and status bar.
+- test: updated `vscode-extension/test/smoke.js` with end-to-end assertions for code action registration, quick-fix application, and document mutation.
+- feat: rebuilt and synchronized `frontend/sentinel-md.vsix` with package version 0.3.0.
+
 ## 0.8.10 — 2026-09-23 — D005–D008 + honest hit-rate across public repos (Day 3 T3)
 - feat(doctor): added checks D005–D008 to `sentinel/doctor/lints.py`:
   - D005: rule contradicts a guardrail in the same load graph (flag, 4.6% baseline rate).

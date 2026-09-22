@@ -2,7 +2,7 @@
   "name": "sentinel-md",
   "displayName": "Sentinel",
   "description": "Shows what a file would make your AI coding agent do. Underlines dangerous lines in CLAUDE.md, AGENTS.md, .cursorrules, settings.json and MCP configs, and explains them in plain English.",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "publisher": "sentinel",
   "license": "Apache-2.0",
   "repository": {
@@ -28,6 +28,10 @@
       {
         "command": "sentinel.scanFile",
         "title": "Sentinel: Scan this file"
+      },
+      {
+        "command": "sentinel.doctor",
+        "title": "Sentinel: Doctor — check this file"
       },
       {
         "command": "sentinel.showReport",
