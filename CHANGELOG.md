@@ -1,3 +1,6 @@
+## 0.8.2 — 2026-09-22 — cassette record and replay (Day 2 T1)
+- feat(timewarp): `sentinel/timewarp/cassette.py` with `Cassette.record(model)` and `Cassette.replay(path)`. Enables deterministic, offline sandbox replaying with zero network calls and no API key. All stored text is automatically redacted.
+
 ## 0.8.1 — 2026-09-22 — linear prose scan + perf guardrail (Day 1)
 - perf: `prose.findings()` precomputes the prohibiting-lead-in map once per file (O(lines)) instead of re-splitting the full text on every regex match (was O(matches × file_size)).
 - perf: `scan_repo` short-circuits files with no letters or under 4 bytes — they cannot match any rule pattern.

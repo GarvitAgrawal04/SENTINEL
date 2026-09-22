@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sentinel-md"
-version = "0.8.1"
+version = "0.8.2"
 description = "What do the files your AI coding agent obeys make it do? Static rules, sandbox detonation, a gate and a signed AGENTS.lock."
 readme = "README.md"
 license = { text = "Apache-2.0" }
