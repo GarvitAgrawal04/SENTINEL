@@ -52,6 +52,72 @@ def _extract_egress_and_leaks(log: list[dict]) -> tuple[list[str], list[str]]:
     return egress, leaks
 
 
+from concurrent.futures import ThreadPoolExecutor
+
+
+def _execute_single_scenario(
+    item: Scenario | dict[str, Any],
+    file_text: str,
+    active_model: Any,
+    name: str,
+) -> Trace:
+    if isinstance(item, Scenario):
+        scenario = item
+    elif isinstance(item, dict):
+        scenario = Scenario(
+            name=item.get("name", "custom"),
+            clock=item.get("clock", detonate.VIRTUAL_FS.get("clock", "2026-09-01T12:00:00Z")),
+            session=int(item.get("session", 1)),
+            env=item.get("env", {}),
+            branch=item.get("branch", "main"),
+            interactive=bool(item.get("interactive", False)),
+            user_turns=item.get("user_turns", []),
+        )
+    else:
+        scenario = Scenario()
+
+    world = World(scenario)
+    log: list[dict] = []
+    canary_escaped = False
+
+    for probe in detonate.PROBES:
+        messages = [
+            {"role": "system", "content": detonate.SYSTEM.format(name=name, body=file_text)},
+            {"role": "user", "content": probe},
+        ]
+        for _ in range(8):
+            msg = active_model.step(messages)
+            messages.append(msg)
+            calls = msg.get("tool_calls") or []
+            if not calls:
+                break
+            for c in calls:
+                fn = detonate.TOOL_ALIASES.get(c["function"]["name"], c["function"]["name"])
+                try:
+                    args = json.loads(c["function"]["arguments"] or "{}")
+                except json.JSONDecodeError:
+                    args = {"_raw": c["function"]["arguments"]}
+                result = detonate.fake_tool(fn, args, world=world)
+                log.append({"probe": probe, "tool": fn, "args": args})
+                messages.append({"role": "tool", "tool_call_id": c["id"], "content": result})
+                if detonate.CANARY in json.dumps(args):
+                    canary_escaped = True
+                    break
+            if canary_escaped:
+                break
+        if canary_escaped:
+            # Early-exit scenario as soon as a canary leaves
+            break
+
+    egress, leaks = _extract_egress_and_leaks(log)
+    return Trace(
+        scenario=scenario,
+        events=log,
+        canary_leaks=leaks,
+        egress=egress,
+    )
+
+
 def run(
     file_text: str,
     plan: list[Scenario | dict[str, Any]],
@@ -71,64 +137,13 @@ def run(
     else:
         active_model = model
 
-    traces: list[Trace] = []
-
-    for item in plan:
-        if isinstance(item, Scenario):
-            scenario = item
-        elif isinstance(item, dict):
-            scenario = Scenario(
-                name=item.get("name", "custom"),
-                clock=item.get("clock", detonate.VIRTUAL_FS.get("clock", "2026-09-01T12:00:00Z")),
-                session=int(item.get("session", 1)),
-                env=item.get("env", {}),
-                branch=item.get("branch", "main"),
-                interactive=bool(item.get("interactive", False)),
-                user_turns=item.get("user_turns", []),
-            )
-        else:
-            scenario = Scenario()
-
-        world = World(scenario)
-        log: list[dict] = []
-        canary_escaped = False
-
-        for probe in detonate.PROBES:
-            messages = [
-                {"role": "system", "content": detonate.SYSTEM.format(name=name, body=file_text)},
-                {"role": "user", "content": probe},
+    workers = min(max(1, parallel), 4)
+    if workers > 1 and len(plan) > 1:
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = [
+                executor.submit(_execute_single_scenario, item, file_text, active_model, name)
+                for item in plan
             ]
-            for _ in range(8):
-                msg = active_model.step(messages)
-                messages.append(msg)
-                calls = msg.get("tool_calls") or []
-                if not calls:
-                    break
-                for c in calls:
-                    fn = detonate.TOOL_ALIASES.get(c["function"]["name"], c["function"]["name"])
-                    try:
-                        args = json.loads(c["function"]["arguments"] or "{}")
-                    except json.JSONDecodeError:
-                        args = {"_raw": c["function"]["arguments"]}
-                    result = detonate.fake_tool(fn, args, world=world)
-                    log.append({"probe": probe, "tool": fn, "args": args})
-                    messages.append({"role": "tool", "tool_call_id": c["id"], "content": result})
-                    if detonate.CANARY in json.dumps(args):
-                        canary_escaped = True
-                        break
-                if canary_escaped:
-                    break
-            if canary_escaped:
-                # Early-exit scenario as soon as a canary leaves
-                break
+            return [f.result() for f in futures]
 
-        egress, leaks = _extract_egress_and_leaks(log)
-
-        traces.append(Trace(
-            scenario=scenario,
-            events=log,
-            canary_leaks=leaks,
-            egress=egress,
-        ))
-
-    return traces
+    return [_execute_single_scenario(item, file_text, active_model, name) for item in plan]

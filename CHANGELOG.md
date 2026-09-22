@@ -1,3 +1,10 @@
+## 0.8.7 — 2026-09-22 — parallel runner, cost budget, record spec, ADR-0006 (Day 2 T6–T10)
+- feat(timewarp): parallel scenario runner using `ThreadPoolExecutor` (capped at max 4 workers), verified by concurrency test in `tests/v5/test_runner_parallel.py`.
+- feat(timewarp): upfront token and cost estimation via `sentinel/timewarp/cost.py`. Supported `--budget N` CLI parameter to drop scenarios exceeding dollar budget with printed `dropped: <name> (exceeds budget)` notice, verified in `tests/v5/test_cost_budget.py`.
+- docs(specs): created `docs/specs/timewarp_record.md` design specification for `sentinel timewarp run --record`.
+- docs: added Time-Warp dormant sleeper slice example to README under "See it in 60 seconds".
+- docs(adr): added `docs/adr/ADR-0006-timewarp-evaluation.md` documenting the go/no-go milestone M0 decision with empirical benchmark results (10/10 caught, 0 false alarms, single-moment 0/10).
+
 ## 0.8.6 — 2026-09-22 — sleeper set and time-warp evaluation (Day 2 T5)
 - bench(timewarp): `bench/timewarp_eval.py` benchmarking 10 sleeper attacks and 10 benign twins in `tests/fixtures/sleeper_set/`. Time-Warp catches 10/10 (100%) sleeper attacks while single-moment sandbox catches 0/10 (0%), with 0/10 false alarms across both.
 

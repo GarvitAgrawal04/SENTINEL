@@ -244,7 +244,7 @@ def cmd_timewarp(a) -> int:
 
 
 def cmd_timewarp_run(a) -> int:
-    from .timewarp import runner, diff, clock, cassette
+    from .timewarp import runner, diff, clock, cassette, cost
     file_path = Path(a.file)
     if not file_path.is_file():
         print(f"error: file not found: {file_path}", file=sys.stderr)
@@ -264,6 +264,16 @@ def cmd_timewarp_run(a) -> int:
         clock.Scenario(name="session_3", session=3),
     ]
 
+    budget_val = getattr(a, "budget", None)
+    if budget_val is not None:
+        plan, dropped = cost.apply_budget(plan, file_text, budget=budget_val)
+        for d in dropped:
+            print(f"dropped: {d} (exceeds budget)")
+
+    total_tokens, total_cost = cost.estimate_plan_cost(file_text, len(plan))
+    if not a.json:
+        print(f"estimate: {len(plan)} scenario(s) · ~{total_tokens:,} tokens · ~${total_cost:.4f} USD")
+
     replayer = cassette.Cassette.replay(replay_path)
     traces = runner.run(file_text, plan, cassette=replayer, name=file_path.name)
     findings = diff.compare(traces)
@@ -273,6 +283,7 @@ def cmd_timewarp_run(a) -> int:
             "file": str(file_path),
             "findings": findings,
             "verdict": "SUSPICIOUS" if findings else "CLEAN",
+            "estimate": {"scenarios": len(plan), "tokens": total_tokens, "cost_usd": total_cost},
             "traces": [t.to_dict() for t in traces],
         }
         print(json.dumps(out, indent=2))
@@ -426,6 +437,7 @@ def main(argv: list[str] | None = None) -> int:
     tw_run = tw_sub.add_parser("run", help="run a file across time-warp scenarios")
     tw_run.add_argument("file", help="path to instruction file")
     tw_run.add_argument("--replay", required=True, help="cassette file or directory containing cassette.json")
+    tw_run.add_argument("--budget", type=float, default=None, help="max scenario budget limit")
     tw_run.add_argument("--json", action="store_true")
 
     a = p.parse_args(argv)
