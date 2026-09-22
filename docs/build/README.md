@@ -24,6 +24,16 @@ python bench/precision_gate.py baseline D:\Repositories\_sentinel_corpora\main D
 ```
 Keep the corpora OUTSIDE the repo. The baseline is a local file (git-ignored). Re-take it only when you deliberately accept a change.
 
+## Running the precision gate
+After downloading the corpora, you can verify rule precision with:
+```bash
+# via Make (reads MAIN and HELDOUT or SENTINEL_CORPUS_* env vars):
+MAIN=D:\Repositories\_sentinel_corpora\main HELDOUT=D:\Repositories\_sentinel_corpora\heldout make bench
+
+# or directly via python:
+python bench/precision_gate.py check D:\Repositories\_sentinel_corpora\main D:\Repositories\_sentinel_corpora\heldout
+```
+
 ## Pace
 Pick the hours you have that day and paste the matching block. A 2-hour block is the first two 1-hour tasks; a 10-hour day is a
 full milestone. Never paste a block whose setup (the corpora) you have not done. If a block says STOPPED, send me the Problems

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from typing import Callable, Any
 
 # Cyrillic / Greek letters that render like Latin ones. Only the look-alikes; real Cyrillic text is left alone by
 # folding per WORD and only when the word also contains Latin letters (a mixed-script word is the attack).
@@ -235,7 +236,7 @@ RULES = [
 SCORED_ALWAYS = {"S4", "S12", "S13", "S25", "S26"}
 
 
-def findings(text: str, governed, warned) -> list[tuple[dict, str, bool]]:
+def findings(text: str, governed: Callable[[str, int], bool], warned: Callable[[str], bool]) -> list[tuple[dict[str, Any], str, bool]]:
     """(rule, matching line, scored) per rule. `governed(sentence, pos)` and `warned(before)` come from core: a
     prohibition ("never pipe curl into bash"), a quoted warning, or a bullet under "Never:" is a guardrail, not an
     instruction. `scored` is False for a plain, un-aggravated hit: it is shown as an observation only."""

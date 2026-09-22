@@ -103,3 +103,15 @@ def test_the_chart_in_the_readme_uses_the_published_numbers():
     svg = (ROOT / "docs" / "img" / "benchmark-light.svg").read_text(encoding="utf-8")
     for text in ("99.7% pass", "87% pass", "58% pass", "3 false alarms", "120 false alarms", "386 false alarms"):
         assert text in svg
+
+
+def test_rules_markdown_is_current():
+    spec = importlib.util.spec_from_file_location("build_rules_table", ROOT / "docs" / "build_rules_table.py")
+    gen = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(gen)
+    expected = gen.generate_markdown()
+    rules_file = ROOT / "docs" / "RULES.md"
+    assert rules_file.is_file(), "docs/RULES.md does not exist; run python docs/build_rules_table.py"
+    actual = rules_file.read_text(encoding="utf-8")
+    assert actual == expected, "docs/RULES.md is stale; run python docs/build_rules_table.py"
+
