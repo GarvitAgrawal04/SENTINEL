@@ -107,7 +107,17 @@ def generate_sbom(wheel_path: Path | None = None, output_path: Path | None = Non
 
 
 if __name__ == "__main__":
-    out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "dist" / "sentinel-md.sbom.json"
-    wheel = Path(sys.argv[2]) if len(sys.argv) > 2 else None
+    target = None
+    wheel = None
+    args = sys.argv[1:]
+    if "--output" in args:
+        idx = args.index("--output")
+        if idx + 1 < len(args):
+            target = Path(args[idx + 1])
+    elif args and not args[0].startswith("-"):
+        target = Path(args[0])
+        if len(args) > 1 and not args[1].startswith("-"):
+            wheel = Path(args[1])
+    out = target or (ROOT / "dist" / "sentinel-md.sbom.json")
     generate_sbom(wheel, out)
     print(f"Wrote SBOM to {out}")
