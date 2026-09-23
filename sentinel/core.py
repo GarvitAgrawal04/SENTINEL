@@ -505,7 +505,10 @@ TEXT_SURFACES = ("CLAUDE.md", "AGENTS.md", "GEMINI.md", ".cursorrules", ".github
 def text_surfaces(root: Path) -> list[Path]:
     files = [root / r for r in TEXT_SURFACES if (root / r).is_file()]
     files += sorted((root / ".cursor/rules").glob("*.mdc")) if (root / ".cursor/rules").is_dir() else []
-    files += sorted(root.glob("**/SKILL.md"))
+    files += [
+        p for p in sorted(root.glob("**/SKILL.md"))
+        if not any(part in (".venv", "venv", "env", "node_modules", ".git") for part in p.parts)
+    ]
     return files
 
 

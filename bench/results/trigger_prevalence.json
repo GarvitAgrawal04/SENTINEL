@@ -1,0 +1,455 @@
+{
+  "corpora": {
+    "real_repositories": {
+      "source": "D:\\Repositories",
+      "mode": "repositories",
+      "targets_evaluated": 372,
+      "targets_with_triggers": 17,
+      "trigger_rate": 0.0457,
+      "total_scenarios_planned": 390,
+      "mean_scenarios_per_target": 1.048,
+      "elapsed_seconds": 2.04,
+      "trigger_kinds": {
+        "env_ci": 17,
+        "session_ordinal": 3,
+        "milestone": 2,
+        "relative_date": 1
+      },
+      "flagged_targets": [
+        {
+          "target": "ansible",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 157,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "claude-seo",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "milestone",
+              "raw_text": "post-release",
+              "line": 235,
+              "scenario": {
+                "name": "milestone_release",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-10-16T12:00:00+00:00",
+                "env": {
+                  "STAGE": "release",
+                  "CI": "false"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "cloudflared",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 286,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "crewAI",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "milestone",
+              "raw_text": "After release",
+              "line": 81,
+              "scenario": {
+                "name": "milestone_release",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-10-16T12:00:00+00:00",
+                "env": {
+                  "STAGE": "release",
+                  "CI": "false"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "everything-claude-code",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 18,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "Ghost",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 168,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "growthbook",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 13,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "hermes-agent",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 1016,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "infisical",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 260,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "mem0",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 194,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "netdata",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 444,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "oh-my-openagent",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 201,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "promptfoo",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 372,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "sanity",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 48,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            },
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 192,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "sentry-javascript",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 229,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "snyk",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 158,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            },
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 160,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "target": "vitest",
+          "scenarios_planned": 3,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 257,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            },
+            {
+              "kind": "relative_date",
+              "raw_text": "in 3 days",
+              "line": 170,
+              "scenario": {
+                "name": "rel_3_d",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-04T12:00:00+00:00",
+                "env": {
+                  "CI": "false"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "fixture_corpus": {
+      "source": "D:\\Repositories\\5th-sep\\tests\\fixtures\\doctor_corpus",
+      "mode": "agent_files",
+      "targets_evaluated": 50,
+      "targets_with_triggers": 1,
+      "trigger_rate": 0.02,
+      "total_scenarios_planned": 51,
+      "mean_scenarios_per_target": 1.02,
+      "elapsed_seconds": 0.17,
+      "trigger_kinds": {
+        "env_ci": 1
+      },
+      "flagged_targets": [
+        {
+          "target": "file_37.md",
+          "scenarios_planned": 2,
+          "triggers": [
+            {
+              "kind": "env_ci",
+              "raw_text": "CI environment",
+              "line": 157,
+              "scenario": {
+                "name": "ci_env",
+                "session": 1,
+                "branch": "main",
+                "clock": "2026-09-01T12:00:00+00:00",
+                "env": {
+                  "CI": "true"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "overall": {
+    "targets_evaluated": 422,
+    "targets_with_triggers": 18,
+    "trigger_rate": 0.0427,
+    "total_scenarios_planned": 441,
+    "mean_scenarios_per_target": 1.045,
+    "elapsed_seconds": 2.21,
+    "trigger_kinds": {
+      "env_ci": 18,
+      "session_ordinal": 3,
+      "milestone": 2,
+      "relative_date": 1
+    }
+  }
+}

@@ -1,3 +1,16 @@
+## 0.9.3 — 2026-09-23 — Trigger extraction, hardened and measured (Day 4 T1–T10)
+- feat(timewarp): widened `sentinel/timewarp/triggers.py` to extract 10 canonical trigger categories from agent instructions:
+  - Relative dates (*"in two weeks"*, *"after 3 days"*), milestone stages (*"after the beta"*, *"post-launch"*).
+  - Ordinal session wordings (*"third session"*, *"from the fifth run"*), numeric session constraints (*"session >= 3"*).
+  - Calendar events (*"on weekends"*, *"at end of month"*, *"on fridays"*, *"after October 2026"*).
+  - Branch conditions (*"on release branch"*, *"production branch"*), and CI indicators (*"in CI environment"*).
+- feat(timewarp): scenario deduplication across all triggers ensuring evaluation plans never detonate redundant identical simulation moments (`deduplicate_scenarios()`).
+- feat(cli): added `sentinel timewarp <file> [--json]` scenario planner with pre-flight token/cost projection, pinned by JSON schema (`docs/specs/timewarp_plan.schema.json` and `docs/specs/TIMEWARP_PLAN.md`).
+- feat(timewarp): configurable default matrix dimensions via optional repository root `sentinel.timewarp.yml` (`sentinel/timewarp/config.py`), supporting custom branches, sessions, environment variables, extra scenarios, and budget caps, pinned by JSON schema (`docs/specs/timewarp_config.schema.json` and `docs/specs/TIMEWARP_CONFIG.md`).
+- bench(timewarp): `bench/trigger_prevalence.py` evaluated trigger prevalence across 372 real-world repositories (mean 1.048 scenarios/target, 4.6% trigger rate) and 50 public fixture files (mean 1.020 scenarios/target, 2.0% trigger rate), establishing a combined mean of 1.045 scenarios/target (safely bounded below the 1.25 budget threshold).
+- test: added 20 new trigger fixtures (10 attacks + 10 benign twins) in `tests/fixtures/timewarp_triggers/` covering train-split corpus families with 100% extraction parity and clean scanner passes on twins.
+- docs(adr): added `docs/adr/ADR-0007-timewarp-trigger-extraction.md` recording the trigger taxonomy, deduplication invariants, matrix configuration, and empirical prevalence boundaries.
+
 ## 0.9.2 — 2026-09-23 — SARIF export, rewrite gate red-team, load graph UI, token delta bench, and README (Day 3 T6–T10)
 - feat(doctor): `sentinel/doctor/sarif.py` implementing `to_sarif()` for SARIF 2.1.0 output compliant with GitHub Code Scanning; integrated via `sentinel doctor <path> --format sarif`.
 - test(gate): 30-file red-team evaluation suite in `bench/gate_redteam.py` and `tests/v5/test_gate_redteam.py` with 0 gate escapes across adversarial poisoned rewrites (100% blocked, 0.0% escape rate).

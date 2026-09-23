@@ -237,10 +237,73 @@ def cmd_detonate(a) -> int:
 
 
 def cmd_timewarp(a) -> int:
-    if getattr(a, "timewarp_action", None) == "run":
+    action = getattr(a, "timewarp_action", None)
+    if action == "run":
         return cmd_timewarp_run(a)
-    print("usage: sentinel timewarp run <file> --replay <dir>")
+    elif action == "plan" or hasattr(a, "file"):
+        return cmd_timewarp_plan(a)
+    print("usage: sentinel timewarp <file> [--json] | sentinel timewarp run <file> --replay <dir>")
     return 1
+
+
+def cmd_timewarp_plan(a) -> int:
+    import datetime
+    from .timewarp import triggers, cost, config
+    file_path = Path(a.file)
+    if not file_path.is_file():
+        print(f"error: file not found: {file_path}", file=sys.stderr)
+        return 1
+
+    file_text = file_path.read_text(encoding="utf-8", errors="replace")
+
+    cfg = None
+    config_path = getattr(a, "config", None)
+    try:
+        cfg = config.load_config(config_path)
+    except Exception as exc:
+        print(f"error: invalid timewarp config: {exc}", file=sys.stderr)
+        return 1
+
+    extracted = triggers.extract_triggers(file_text)
+    plan = triggers.plan_scenarios(file_text, config=cfg)
+    total_tokens, total_cost = cost.estimate_plan_cost(file_text, len(plan))
+
+    if getattr(a, "json", False):
+        out = {
+            "version": "1.0.0",
+            "file": str(file_path),
+            "triggers_count": len(extracted),
+            "scenarios_count": len(plan),
+            "triggers": [t.to_dict() for t in extracted],
+            "plan": [
+                {
+                    "name": s.name,
+                    "session": s.session,
+                    "branch": s.branch,
+                    "clock": (
+                        s.clock.isoformat()
+                        if isinstance(s.clock, datetime.datetime)
+                        else str(s.clock)
+                    ),
+                    "env": s.env,
+                }
+                for s in plan
+            ],
+            "estimate": {
+                "scenarios": len(plan),
+                "tokens": total_tokens,
+                "cost_usd": total_cost,
+            },
+        }
+        print(json.dumps(out, indent=2))
+        return 0
+
+    print(f"sentinel timewarp  plan for {file_path.name}: {len(plan)} scenario(s) from {len(extracted)} trigger(s)")
+    for i, s in enumerate(plan, 1):
+        env_str = f"env={s.env}" if s.env else ""
+        print(f"  {i}. [{s.name:18s}] session={s.session:<2} branch={s.branch:<10} clock={s.clock}  {env_str}")
+    print(f"estimate: {len(plan)} scenario(s) · ~{total_tokens:,} tokens · ~${total_cost:.4f} USD")
+    return 0
 
 
 def cmd_timewarp_run(a) -> int:
@@ -468,6 +531,8 @@ def main(argv: list[str] | None = None) -> int:
     if "--" in argv:                                   # everything after -- is the agent command for `run`
         i = argv.index("--")
         argv, cmd_tail = argv[:i], argv[i + 1:]
+    if len(argv) >= 2 and argv[0] == "timewarp" and argv[1] not in ("run", "plan", "-h", "--help"):
+        argv = [argv[0], "plan"] + argv[1:]
     p = argparse.ArgumentParser(prog="sentinel", description="What do the files your AI coding agent obeys make it do?")
     p.add_argument("--version", action="version", version=f"sentinel {__version__} (formula v{core.FORMULA_VERSION})")
     sub = p.add_subparsers(dest="command")
@@ -531,6 +596,11 @@ def main(argv: list[str] | None = None) -> int:
 
     tw = add("timewarp", cmd_timewarp, help="sandbox scenario planning and behavioural diffing")
     tw_sub = tw.add_subparsers(dest="timewarp_action")
+    tw_plan = tw_sub.add_parser("plan", help="plan evaluation scenarios for an instruction file")
+    tw_plan.add_argument("file", help="path to instruction file")
+    tw_plan.add_argument("--config", default=None, help="path to custom sentinel.timewarp.yml")
+    tw_plan.add_argument("--json", action="store_true")
+
     tw_run = tw_sub.add_parser("run", help="run a file across time-warp scenarios")
     tw_run.add_argument("file", help="path to instruction file")
     tw_run.add_argument("--replay", required=True, help="cassette file or directory containing cassette.json")

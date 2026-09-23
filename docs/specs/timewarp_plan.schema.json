@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SentinelTimewarpPlan",
+  "description": "Output schema for `sentinel timewarp <file> --json` scenario planning.",
+  "type": "object",
+  "required": [
+    "version",
+    "file",
+    "triggers_count",
+    "scenarios_count",
+    "triggers",
+    "plan",
+    "estimate"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version."
+    },
+    "file": {
+      "type": "string",
+      "description": "Path to the evaluated instruction file."
+    },
+    "triggers_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of conditional triggers extracted."
+    },
+    "scenarios_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total number of concrete deduplicated scenarios in the plan."
+    },
+    "triggers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Trigger"
+      },
+      "description": "List of triggers extracted from instruction text."
+    },
+    "plan": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Scenario"
+      },
+      "description": "Deduplicated execution plan across time, session, branch, and environment."
+    },
+    "estimate": {
+      "type": "object",
+      "required": ["scenarios", "tokens", "cost_usd"],
+      "properties": {
+        "scenarios": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0.0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Scenario": {
+      "type": "object",
+      "required": ["name", "session", "branch", "clock", "env"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "clock": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Trigger": {
+      "type": "object",
+      "required": ["kind", "raw_text", "line", "scenario"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "session_ordinal",
+            "session_numeric",
+            "relative_date",
+            "milestone",
+            "calendar_weekend",
+            "calendar_month_end",
+            "calendar_friday",
+            "calendar_future_date",
+            "branch",
+            "env_ci"
+          ]
+        },
+        "raw_text": {
+          "type": "string"
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scenario": {
+          "$ref": "#/definitions/Scenario"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SentinelTimewarpConfig",
+  "description": "Schema for sentinel.timewarp.yml matrix configuration.",
+  "type": "object",
+  "required": ["version"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)?$",
+      "description": "Configuration version."
+    },
+    "matrix": {
+      "type": "object",
+      "properties": {
+        "base_date": {
+          "type": "string",
+          "description": "ISO-8601 base datetime for relative calculations."
+        },
+        "include_baseline": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to always include the baseline 'now' moment."
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "List of default sessions to evaluate."
+        },
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "List of default git branches to simulate."
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "Matrix of environment variables to test."
+        },
+        "extra_scenarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomScenario"
+          },
+          "description": "Explicit scenarios to append to the evaluation plan."
+        }
+      },
+      "additionalProperties": false
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "max_scenarios": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_cost_usd": {
+          "type": "number",
+          "minimum": 0.0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "CustomScenario": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "branch": {
+          "type": "string",
+          "default": "main"
+        },
+        "clock": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
