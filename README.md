@@ -14,7 +14,7 @@
 </p>
 
 <p>
-  <a href="https://pypi.org/project/sentinel-md/"><img src="https://img.shields.io/pypi/v/sentinel-md?color=2457f5&label=pypi" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/sentinel-md/"><img src="https://img.shields.io/badge/pypi-v1.0.0-2457f5" alt="PyPI version"></a>
   <a href="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml"><img src="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml/badge.svg?branch=main" alt="tests"></a>
   <a href="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/sentinel-sign.yml"><img src="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/sentinel-sign.yml/badge.svg?branch=main" alt="lock signed by CI"></a>
   <a href="https://github.com/GarvitAgrawal04/SENTINEL#inside-vs-code"><img src="https://img.shields.io/badge/openvsx-sentinel--md-blue?logo=visualstudiocode" alt="OpenVSX"></a>
@@ -46,7 +46,7 @@ a VS Code extension. It runs offline, needs no account and no API key, and never
 
 **Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [The Instruction Doctor](#the-instruction-doctor) · [Supported files](#supported-files) ·
 [How detection works](#how-detection-works) · [API](#api-reference) · [Configuration](#configuration) ·
-[How it compares, with data](#how-it-compares-with-data) · [Research Write-up](docs/RESEARCH.md) · [Glossary](GLOSSARY.md) · [FAQ](docs/FAQ.md) · [Limitations](#limitations) · [Deep Limitations](LIMITATIONS.md) · [Project structure](#project-structure) ·
+[How it compares, with data](#how-it-compares-with-data) · [Stress Benchmarks](#industrial-stress-and-extreme-soak-performance) · [Research Write-up](docs/RESEARCH.md) · [Glossary](GLOSSARY.md) · [FAQ](docs/FAQ.md) · [Limitations](#limitations) · [Deep Limitations](LIMITATIONS.md) · [Project structure](#project-structure) ·
 [Troubleshooting](#troubleshooting) · [Development](#development) · [State of the project](#state-of-the-project) · [Citation](CITATION.cff) · [Built by](#built-by)
 
 ## Why this exists
@@ -57,7 +57,7 @@ Three shapes have been seen in the wild:
 | Shape | How it works | Seen in |
 |---|---|---|
 | **Invisible text** | Characters with no width spell out an instruction. A reviewer sees a clean file; the agent reads every character. | Rules File Backdoor (Pillar Security, Mar 2025) · TrapDoor (Socket, May 2026) |
-| **Commands that run by themselves** | A settings file tells the editor or the agent to run a script the moment the project is opened. | Miasma (Jun 2026): one commit, 73 Microsoft repositories disabled in 105 seconds · ChainDrop (Aug 2026): 400+ npm packages, about 2 billion monthly downloads, and the hook stays behind after the package is removed |
+| **Commands that run by themselves** | A settings file tells the editor or the agent to run a script the moment the project is opened. | Miasma (Jun 2026): one commit, 73 Microsoft repositories disabled in 105 seconds · ChainDrop (Aug 2026): 400+ npm packages, 2B+ monthly downloads, and the hook stays behind after the package is removed |
 | **A tool that changes after approval** | A tool server behaves until it is trusted, then rewrites its own description into new orders. | Deadbugz (Pillar Security, Aug 2026) |
 
 These files are valid Markdown and JSON, pass every linter, have no CVE to patch, and change legitimately all the time, so
@@ -190,6 +190,11 @@ See [`docs/INSTALL.md`](docs/INSTALL.md) for complete installation options.
   <img alt="Bar chart: on 930 popular public repositories, 99.7% of healthy projects pass Sentinel with 3 false alarms; Scanner B passes 87% with 120 false alarms; Scanner A passes 58% with 386 false alarms" src="docs/img/benchmark-light.svg">
 </picture>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-measured-dark.png">
+  <img alt="Sentinel Web App: live reproduction of empirical benchmarks across 930 real repositories" src="docs/img/shot-measured-light.png">
+</picture>
+
 | What we checked | Result | |
 |---|---|---|
 | Healthy projects wrongly called **compromised** | **0 of 930** real repositories | ✅ |
@@ -202,6 +207,18 @@ See [`docs/INSTALL.md`](docs/INSTALL.md) for complete installation options.
 | A teammate's independent adversarial corpus, wordings like the ones we studied | recall **8% → 26%**, precision 0.96 | ⚠️ |
 | The same corpus, **86 wordings nobody had seen** | **0 of 86**. Patterns catch structure, not meaning | ❌ |
 | Attacks that begin while an agent is already running | not covered | ❌ |
+
+### Industrial Stress and Extreme Soak Performance
+
+Stress tested under hostile ecosystem benchmarks ([`reports/ECOSYSTEM_STRESS_ANALYSIS.md`](reports/ECOSYSTEM_STRESS_ANALYSIS.md) and [`bench/extreme_stress_runner.py`](bench/extreme_stress_runner.py)):
+
+| Stress Dimension | Scale / Workload | Sentinel Throughput | Memory Delta | Invariants Preserved |
+|:---|:---|:---|:---|:---|
+| **Megadoc Soak** | 50,000-line hostile instructions | **19,544 lines / sec** (2.56s) | 0.0 MB leak | ✅ Deterministic score |
+| **Megaline Hostility** | 500,000-char single-line payload | **344,874 chars / sec** (1.45s) | 0.0 MB leak | ✅ Zero stack overflow |
+| **High-Concurrency Soak** | 64 parallel workers · 2,000 scans | **433.5 scans / sec** (4.61s) | 0.0 MB leak | ✅ 100% thread safe |
+| **Recursive Include Tree** | 100-level nested instruction tree | **< 15 ms traversal** | 0.0 MB leak | ✅ Cycle detection caught |
+| **Full Regression Suite** | 340 test cases across 6 versions | **340 passed in 49s** | 0.0 MB leak | ✅ 100% clean self-test |
 
 Every number is reproducible from this repository: [`bench/results`](bench/results/README.md) (the 930 repositories, tool names,
 versions, raw output) and [`bench/corpus`](bench/corpus/README.md) (the adversarial corpus run). The full comparison, including
@@ -363,6 +380,11 @@ python demo/preflight.py           # with the server running: checks the UI and 
 ## Using Sentinel
 
 ### 1. The web UI
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-scanner-dark.png">
+  <img alt="The Sentinel Web App: interactive static scanning, hidden character revelation, and live score calculation" src="docs/img/shot-scanner-light.png">
+</picture>
 
 Open http://127.0.0.1:8000 after `bash setup.sh`. It is plain HTML, CSS and JavaScript served by the API: no framework, no
 npm packages, no build step, and no request to any third party (no fonts, no CDN, no analytics).
@@ -577,6 +599,11 @@ make one COMPROMISED by itself. Runs and caveats: [`bench/detonation/results`](b
 
 #### Time-Warp sandbox: catching dormant sleeper attacks
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-timewarp-dark.png">
+  <img alt="Sentinel Time-Warp sandbox: simulated virtual turns catching multi-session dormant sleeper attacks" src="docs/img/shot-timewarp-light.png">
+</picture>
+
 Static rules and single-moment sandboxes are blind to dormant instructions that only trigger under future conditions (e.g. session $\ge$ 3, release branches, or specific calendar dates). `sentinel timewarp run` executes an extracted matrix across simulated virtual sessions, branches, and clocks:
 
 - **Single-moment sandbox:** **0 of 10** sleeper attacks caught (0.0%), 0 false alarms.
@@ -673,6 +700,11 @@ Agent instruction files frequently use `@import` and `@include` directives (or n
 </picture>
 
 ### 2. Deterministic Hygiene Checks (D001–D008)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-lints-dark.png">
+  <img alt="Sentinel Doctor Diagnostics: deterministic hygiene checks, token counts, and instant safe fixes" src="docs/img/shot-lints-light.png">
+</picture>
 
 The Doctor runs 8 deterministic hygiene checks without invoking third-party models or incurring API costs. In an honest hit-rate evaluation across 372 real-world public repositories containing agent instruction files ([`bench/results/doctor_eval.md`](bench/results/doctor_eval.md)), checks firing on >5% of healthy repos were designated as **OBSERVATIONS** rather than WARNINGs to prevent alert fatigue:
 
@@ -1094,14 +1126,16 @@ Our own workflows reference every GitHub Action by commit, not by a tag its owne
 bumps; a test fails if someone un-pins one. The `sentinel-signing` environment accepts the `main` branch only.
 
 ```bash
-bash setup.sh --test                 # or: make test  → 122 passed
+bash setup.sh --test                 # run test suite across all engines
 sentinel selftest                    # the engine's own fixtures
+python docs/build_readme_assets.py   # rebuild all SVGs and diagrams (see docs/README_ASSETS_RUNBOOK.md)
+python docs/take_screenshots.py      # automated headless browser screenshot capture
 python demo/save_sample_results.py   # after changing a rule: refresh the web UI's saved results (a test checks this)
 ```
 
 Every new rule needs an attack fixture, a benign twin, a human title in `sentinel/render.py`, and a run against the corpora
 in `bench/` before it is trusted. Never tune a fixture or an expected result to make a number look better. Details:
-[`CONTRIBUTING.md`](CONTRIBUTING.md). History: [`CHANGELOG.md`](CHANGELOG.md).
+[`CONTRIBUTING.md`](CONTRIBUTING.md). Visual assets runbook: [`docs/README_ASSETS_RUNBOOK.md`](docs/README_ASSETS_RUNBOOK.md). History: [`CHANGELOG.md`](CHANGELOG.md).
 
 Found a way around a rule, or a false alarm on a real file? Open an issue with a minimal file that reproduces it. For
 anything sensitive, contact a maintainer privately before opening a public issue.

@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-09-23 23:36:47",
+  "formula_version": "0.1",
+  "megadoc_50k_lines": {
+    "elapsed_seconds": 2.5583,
+    "throughput_lines_per_sec": 19544.4
+  },
+  "megaline_500k_chars": {
+    "elapsed_seconds": 1.453,
+    "throughput_chars_per_sec": 344103.9
+  },
+  "dag_bomb": {
+    "elapsed_seconds": 0.6506,
+    "nodes_resolved": 39,
+    "cycles_detected": 1,
+    "throughput_nodes_per_sec": 59.9
+  },
+  "concurrency_soak": {
+    "workers": 64,
+    "total_scans": 200,
+    "elapsed_seconds": 0.4614,
+    "throughput_scans_per_sec": 433.5,
+    "determinism": "100% verified (0 races, 0 state leakage)"
+  },
+  "memory_drift": {
+    "iterations": 250,
+    "drift_kb": 0.0,
+    "verdict": "STABLE (Zero Leakage)"
+  },
+  "invariants": {
+    "zero_network": "VERIFIED (0 sockets opened)",
+    "zero_execution": "VERIFIED (0 subprocesses spawned)",
+    "zero_disk_mutation": "VERIFIED (read-only audit)"
+  }
+}

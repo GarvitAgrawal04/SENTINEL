@@ -114,6 +114,7 @@ def main():
         # one palette per frame: a shared palette taken from the first (green) frame turned every red into brown
         quantised = [f.quantize(colors=160, method=Image.MEDIANCUT, dither=Image.NONE) for f, _ in frames]
         quantised[0].save(OUT / "demo.gif", save_all=True, append_images=quantised[1:], duration=[ms for _, ms in frames], loop=0, optimize=True)
+        quantised[0].save(OUT / "browser-demo.gif", save_all=True, append_images=quantised[1:], duration=[ms for _, ms in frames], loop=0, optimize=True)
     finally:
         api.terminate()
     for f in sorted(OUT.glob("shot-*.png")) + [OUT / "demo.gif"]:

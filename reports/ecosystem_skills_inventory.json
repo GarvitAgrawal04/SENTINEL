@@ -1,0 +1,921 @@
+{
+  "total_repos": 388,
+  "sovereign_executive_skills": [
+    {
+      "rel": "everything-claude-code\\skills\\executive-board\\SKILL.md",
+      "name": "executive-board"
+    },
+    {
+      "rel": "gstack\\office-hours\\SKILL.md",
+      "name": "office-hours"
+    }
+  ],
+  "stress_skills": [
+    {
+      "rel": "academic-research-skills\\academic-paper\\SKILL.md",
+      "name": "academic-paper"
+    },
+    {
+      "rel": "activepieces\\.agents\\skills\\grill-with-docs\\SKILL.md",
+      "name": "grill-with-docs"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\implementing-api-rate-limiting-and-throttling\\SKILL.md",
+      "name": "implementing-api-rate-limiting-and-throttling"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\implementing-security-chaos-engineering\\SKILL.md",
+      "name": "implementing-security-chaos-engineering"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\application-performance-performance-optimization\\SKILL.md",
+      "name": "application-performance-performance-optimization"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\axiom\\SKILL.md",
+      "name": "axiom"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\backend-architect\\SKILL.md",
+      "name": "backend-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\cloud-architect\\SKILL.md",
+      "name": "cloud-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\database-admin\\SKILL.md",
+      "name": "database-admin"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\debugging-toolkit-smart-debug\\SKILL.md",
+      "name": "debugging-toolkit-smart-debug"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\deployment-engineer\\SKILL.md",
+      "name": "deployment-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\devops-deploy\\SKILL.md",
+      "name": "devops-deploy"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\devops-troubleshooter\\SKILL.md",
+      "name": "devops-troubleshooter"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\error-diagnostics-smart-debug\\SKILL.md",
+      "name": "error-diagnostics-smart-debug"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\full-stack-orchestration-full-stack-feature\\SKILL.md",
+      "name": "full-stack-orchestration-full-stack-feature"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\graphql-architect\\SKILL.md",
+      "name": "graphql-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\incident-responder\\SKILL.md",
+      "name": "incident-responder"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\incident-response-incident-response\\SKILL.md",
+      "name": "incident-response-incident-response"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\incident-runbook-templates\\SKILL.md",
+      "name": "incident-runbook-templates"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\istio-traffic-management\\SKILL.md",
+      "name": "istio-traffic-management"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\k6-load-testing\\SKILL.md",
+      "name": "k6-load-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\kubernetes-architect\\SKILL.md",
+      "name": "kubernetes-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\leiloeiro-risco\\SKILL.md",
+      "name": "leiloeiro-risco"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\multi-agent-brainstorming\\SKILL.md",
+      "name": "multi-agent-brainstorming"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\observability-engineer\\SKILL.md",
+      "name": "observability-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\performance-engineer\\SKILL.md",
+      "name": "performance-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\postmortem-writing\\SKILL.md",
+      "name": "postmortem-writing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\security-auditor\\SKILL.md",
+      "name": "security-auditor"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\tdd-orchestrator\\SKILL.md",
+      "name": "tdd-orchestrator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\tdd-workflows-tdd-refactor\\SKILL.md",
+      "name": "tdd-workflows-tdd-refactor"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\test-automator\\SKILL.md",
+      "name": "test-automator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\application-performance-performance-optimization\\SKILL.md",
+      "name": "application-performance-performance-optimization"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\axiom\\SKILL.md",
+      "name": "axiom"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\backend-architect\\SKILL.md",
+      "name": "backend-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\cloud-architect\\SKILL.md",
+      "name": "cloud-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\database-admin\\SKILL.md",
+      "name": "database-admin"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\debugging-toolkit-smart-debug\\SKILL.md",
+      "name": "debugging-toolkit-smart-debug"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\deployment-engineer\\SKILL.md",
+      "name": "deployment-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\devops-deploy\\SKILL.md",
+      "name": "devops-deploy"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\devops-troubleshooter\\SKILL.md",
+      "name": "devops-troubleshooter"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\error-diagnostics-smart-debug\\SKILL.md",
+      "name": "error-diagnostics-smart-debug"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\full-stack-orchestration-full-stack-feature\\SKILL.md",
+      "name": "full-stack-orchestration-full-stack-feature"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\graphql-architect\\SKILL.md",
+      "name": "graphql-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\incident-responder\\SKILL.md",
+      "name": "incident-responder"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\incident-response-incident-response\\SKILL.md",
+      "name": "incident-response-incident-response"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\incident-runbook-templates\\SKILL.md",
+      "name": "incident-runbook-templates"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\istio-traffic-management\\SKILL.md",
+      "name": "istio-traffic-management"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\k6-load-testing\\SKILL.md",
+      "name": "k6-load-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\kubernetes-architect\\SKILL.md",
+      "name": "kubernetes-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\leiloeiro-risco\\SKILL.md",
+      "name": "leiloeiro-risco"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\multi-agent-brainstorming\\SKILL.md",
+      "name": "multi-agent-brainstorming"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\observability-engineer\\SKILL.md",
+      "name": "observability-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\performance-engineer\\SKILL.md",
+      "name": "performance-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\postmortem-writing\\SKILL.md",
+      "name": "postmortem-writing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\security-auditor\\SKILL.md",
+      "name": "security-auditor"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\tdd-orchestrator\\SKILL.md",
+      "name": "tdd-orchestrator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\tdd-workflows-tdd-refactor\\SKILL.md",
+      "name": "tdd-workflows-tdd-refactor"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\test-automator\\SKILL.md",
+      "name": "test-automator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-bundle-devops-cloud\\skills\\kubernetes-architect\\SKILL.md",
+      "name": "kubernetes-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-bundle-observability-monitoring\\skills\\incident-responder\\SKILL.md",
+      "name": "incident-responder"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-bundle-observability-monitoring\\skills\\observability-engineer\\SKILL.md",
+      "name": "observability-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-bundle-observability-monitoring\\skills\\performance-engineer\\SKILL.md",
+      "name": "performance-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-bundle-observability-monitoring\\skills\\postmortem-writing\\SKILL.md",
+      "name": "postmortem-writing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-bundle-security-engineer\\skills\\security-auditor\\SKILL.md",
+      "name": "security-auditor"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\application-performance-performance-optimization\\SKILL.md",
+      "name": "application-performance-performance-optimization"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\axiom\\SKILL.md",
+      "name": "axiom"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\backend-architect\\SKILL.md",
+      "name": "backend-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\cloud-architect\\SKILL.md",
+      "name": "cloud-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\database-admin\\SKILL.md",
+      "name": "database-admin"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\debugging-toolkit-smart-debug\\SKILL.md",
+      "name": "debugging-toolkit-smart-debug"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\deployment-engineer\\SKILL.md",
+      "name": "deployment-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\devops-deploy\\SKILL.md",
+      "name": "devops-deploy"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\devops-troubleshooter\\SKILL.md",
+      "name": "devops-troubleshooter"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\error-diagnostics-smart-debug\\SKILL.md",
+      "name": "error-diagnostics-smart-debug"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\full-stack-orchestration-full-stack-feature\\SKILL.md",
+      "name": "full-stack-orchestration-full-stack-feature"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\graphql-architect\\SKILL.md",
+      "name": "graphql-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\incident-responder\\SKILL.md",
+      "name": "incident-responder"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\incident-response-incident-response\\SKILL.md",
+      "name": "incident-response-incident-response"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\incident-runbook-templates\\SKILL.md",
+      "name": "incident-runbook-templates"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\istio-traffic-management\\SKILL.md",
+      "name": "istio-traffic-management"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\k6-load-testing\\SKILL.md",
+      "name": "k6-load-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\kubernetes-architect\\SKILL.md",
+      "name": "kubernetes-architect"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\leiloeiro-risco\\SKILL.md",
+      "name": "leiloeiro-risco"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\multi-agent-brainstorming\\SKILL.md",
+      "name": "multi-agent-brainstorming"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\observability-engineer\\SKILL.md",
+      "name": "observability-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\performance-engineer\\SKILL.md",
+      "name": "performance-engineer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\postmortem-writing\\SKILL.md",
+      "name": "postmortem-writing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\security-auditor\\SKILL.md",
+      "name": "security-auditor"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\tdd-orchestrator\\SKILL.md",
+      "name": "tdd-orchestrator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\tdd-workflows-tdd-refactor\\SKILL.md",
+      "name": "tdd-workflows-tdd-refactor"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\test-automator\\SKILL.md",
+      "name": "test-automator"
+    },
+    {
+      "rel": "awesome-claude-code-toolkit\\skills\\testing-strategies\\SKILL.md",
+      "name": "testing-strategies"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\hunt-race-condition\\SKILL.md",
+      "name": "hunt-race-condition"
+    },
+    {
+      "rel": "claude-code-game-studios\\.claude\\skills\\launch-checklist\\SKILL.md",
+      "name": "launch-checklist"
+    },
+    {
+      "rel": "claude-code-game-studios\\.claude\\skills\\team-polish\\SKILL.md",
+      "name": "team-polish"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\ai-research\\inference-serving-vllm\\SKILL.md",
+      "name": "inference-serving-vllm"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\backend-architect\\SKILL.md",
+      "name": "backend-architect"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\cloud-architect\\SKILL.md",
+      "name": "cloud-architect"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\google-cloud-waf-reliability\\SKILL.md",
+      "name": "google-cloud-waf-reliability"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\graphql-architect\\SKILL.md",
+      "name": "graphql-architect"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\incident-responder\\SKILL.md",
+      "name": "incident-responder"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\k6-load-testing\\SKILL.md",
+      "name": "k6-load-testing"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\kubernetes-architect\\SKILL.md",
+      "name": "kubernetes-architect"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\observability-engineer\\SKILL.md",
+      "name": "observability-engineer"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\development\\tdd-orchestrator\\SKILL.md",
+      "name": "tdd-orchestrator"
+    },
+    {
+      "rel": "everything-claude-code\\docs\\ja-JP\\skills\\quarkus-verification\\SKILL.md",
+      "name": "quarkus-verification"
+    },
+    {
+      "rel": "everything-claude-code\\docs\\tr\\skills\\quarkus-verification\\SKILL.md",
+      "name": "quarkus-verification"
+    },
+    {
+      "rel": "everything-claude-code\\skills\\quarkus-verification\\SKILL.md",
+      "name": "quarkus-verification"
+    },
+    {
+      "rel": "Front-End-Checklist\\skills\\mutation-testing\\SKILL.md",
+      "name": "mutation-testing"
+    },
+    {
+      "rel": "gstack\\plan-ceo-review\\SKILL.md",
+      "name": "plan-ceo-review"
+    },
+    {
+      "rel": "gstack\\plan-eng-review\\SKILL.md",
+      "name": "plan-eng-review"
+    },
+    {
+      "rel": "hermes-agent\\optional-skills\\communication\\one-three-one-rule\\SKILL.md",
+      "name": "one-three-one-rule"
+    },
+    {
+      "rel": "hermes-agent\\optional-skills\\finance\\dcf-model\\SKILL.md",
+      "name": "dcf-model"
+    },
+    {
+      "rel": "hermes-agent\\skills\\mlops\\inference\\vllm\\SKILL.md",
+      "name": "vllm"
+    },
+    {
+      "rel": "knowledge-work-plugins\\engineering\\skills\\testing-strategy\\SKILL.md",
+      "name": "testing-strategy"
+    },
+    {
+      "rel": "knowledge-work-plugins\\product-management\\skills\\product-brainstorming\\SKILL.md",
+      "name": "product-brainstorming"
+    },
+    {
+      "rel": "metabase\\.claude\\skills\\e2e-test\\SKILL.md",
+      "name": "e2e-test"
+    },
+    {
+      "rel": "metabase\\.claude\\skills\\mutation-testing\\SKILL.md",
+      "name": "mutation-testing"
+    },
+    {
+      "rel": "ruflo\\.agents\\skills\\agent-code-review-swarm\\SKILL.md",
+      "name": "agent-code-review-swarm"
+    },
+    {
+      "rel": "ruflo\\.agents\\skills\\agent-trading-predictor\\SKILL.md",
+      "name": "agent-trading-predictor"
+    },
+    {
+      "rel": "ruflo\\.agents\\skills\\agent-v3-performance-engineer\\SKILL.md",
+      "name": "agent-v3-performance-engineer"
+    },
+    {
+      "rel": "ruflo\\.agents\\skills\\github-code-review\\SKILL.md",
+      "name": "github-code-review"
+    },
+    {
+      "rel": "ruflo\\.claude\\skills\\github-code-review\\SKILL.md",
+      "name": "github-code-review"
+    },
+    {
+      "rel": "ruflo\\.claude\\skills\\sparc-methodology\\SKILL.md",
+      "name": "sparc-methodology"
+    },
+    {
+      "rel": "sanity\\.agents\\skills\\grill-me\\SKILL.md",
+      "name": "grill-me"
+    }
+  ],
+  "testing_framework_repos": [
+    "k6",
+    "promptfoo",
+    "sentinel-vscode-test",
+    "snyk",
+    "stryker-js",
+    "vitest"
+  ],
+  "security_fuzzing_skills": [
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\analyzing-typosquatting-domains-with-dnstwist\\SKILL.md",
+      "name": "analyzing-typosquatting-domains-with-dnstwist"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\bypassing-authentication-with-forced-browsing\\SKILL.md",
+      "name": "bypassing-authentication-with-forced-browsing"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\detecting-modbus-protocol-anomalies\\SKILL.md",
+      "name": "detecting-modbus-protocol-anomalies"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\exploiting-idor-vulnerabilities\\SKILL.md",
+      "name": "exploiting-idor-vulnerabilities"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\exploiting-prototype-pollution-in-javascript\\SKILL.md",
+      "name": "exploiting-prototype-pollution-in-javascript"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\exploiting-template-injection-vulnerabilities\\SKILL.md",
+      "name": "exploiting-template-injection-vulnerabilities"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\exploiting-vulnerabilities-with-metasploit-framework\\SKILL.md",
+      "name": "exploiting-vulnerabilities-with-metasploit-framework"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\implementing-fuzz-testing-in-cicd-with-aflplusplus\\SKILL.md",
+      "name": "implementing-fuzz-testing-in-cicd-with-aflplusplus"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\monitoring-scada-modbus-traffic-anomalies\\SKILL.md",
+      "name": "monitoring-scada-modbus-traffic-anomalies"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-api-fuzzing-with-restler\\SKILL.md",
+      "name": "performing-api-fuzzing-with-restler"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-api-rate-limiting-bypass\\SKILL.md",
+      "name": "performing-api-rate-limiting-bypass"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-brand-monitoring-for-impersonation\\SKILL.md",
+      "name": "performing-brand-monitoring-for-impersonation"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-directory-traversal-testing\\SKILL.md",
+      "name": "performing-directory-traversal-testing"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-firmware-malware-analysis\\SKILL.md",
+      "name": "performing-firmware-malware-analysis"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-fuzzing-with-aflplusplus\\SKILL.md",
+      "name": "performing-fuzzing-with-aflplusplus"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-http-parameter-pollution-attack\\SKILL.md",
+      "name": "performing-http-parameter-pollution-attack"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-iot-security-assessment\\SKILL.md",
+      "name": "performing-iot-security-assessment"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-ot-network-security-assessment\\SKILL.md",
+      "name": "performing-ot-network-security-assessment"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\performing-web-application-penetration-test\\SKILL.md",
+      "name": "performing-web-application-penetration-test"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\reverse-engineering-rust-malware\\SKILL.md",
+      "name": "reverse-engineering-rust-malware"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\testing-android-intents-for-vulnerabilities\\SKILL.md",
+      "name": "testing-android-intents-for-vulnerabilities"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\testing-api-for-broken-object-level-authorization\\SKILL.md",
+      "name": "testing-api-for-broken-object-level-authorization"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\testing-api-for-mass-assignment-vulnerability\\SKILL.md",
+      "name": "testing-api-for-mass-assignment-vulnerability"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\testing-api-security-with-owasp-top-10\\SKILL.md",
+      "name": "testing-api-security-with-owasp-top-10"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\testing-for-open-redirect-vulnerabilities\\SKILL.md",
+      "name": "testing-for-open-redirect-vulnerabilities"
+    },
+    {
+      "rel": "Anthropic-Cybersecurity-Skills\\skills\\testing-websocket-api-security\\SKILL.md",
+      "name": "testing-websocket-api-security"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\api-fuzzing-bug-bounty\\SKILL.md",
+      "name": "api-fuzzing-bug-bounty"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\api-security-testing\\SKILL.md",
+      "name": "api-security-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\blockchain-developer\\SKILL.md",
+      "name": "blockchain-developer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\burp-suite-testing\\SKILL.md",
+      "name": "burp-suite-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\debug-buttercup\\SKILL.md",
+      "name": "debug-buttercup"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\defi-protocol-templates\\SKILL.md",
+      "name": "defi-protocol-templates"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\ffuf-claude-skill\\SKILL.md",
+      "name": "ffuf-claude-skill"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\ffuf-web-fuzzing\\SKILL.md",
+      "name": "ffuf-web-fuzzing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\file-path-traversal\\SKILL.md",
+      "name": "file-path-traversal"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\html-injection-testing\\SKILL.md",
+      "name": "html-injection-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\metasploit-framework\\SKILL.md",
+      "name": "metasploit-framework"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\red-team-tools\\SKILL.md",
+      "name": "red-team-tools"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\scanning-tools\\SKILL.md",
+      "name": "scanning-tools"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\security-audit\\SKILL.md",
+      "name": "security-audit"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\test-automator\\SKILL.md",
+      "name": "test-automator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills\\skills\\web3-testing\\SKILL.md",
+      "name": "web3-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\api-fuzzing-bug-bounty\\SKILL.md",
+      "name": "api-fuzzing-bug-bounty"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\api-security-testing\\SKILL.md",
+      "name": "api-security-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\blockchain-developer\\SKILL.md",
+      "name": "blockchain-developer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\burp-suite-testing\\SKILL.md",
+      "name": "burp-suite-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\debug-buttercup\\SKILL.md",
+      "name": "debug-buttercup"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\defi-protocol-templates\\SKILL.md",
+      "name": "defi-protocol-templates"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\ffuf-claude-skill\\SKILL.md",
+      "name": "ffuf-claude-skill"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\ffuf-web-fuzzing\\SKILL.md",
+      "name": "ffuf-web-fuzzing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\file-path-traversal\\SKILL.md",
+      "name": "file-path-traversal"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\html-injection-testing\\SKILL.md",
+      "name": "html-injection-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\metasploit-framework\\SKILL.md",
+      "name": "metasploit-framework"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\red-team-tools\\SKILL.md",
+      "name": "red-team-tools"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\scanning-tools\\SKILL.md",
+      "name": "scanning-tools"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\security-audit\\SKILL.md",
+      "name": "security-audit"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\test-automator\\SKILL.md",
+      "name": "test-automator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-awesome-skills-claude\\skills\\web3-testing\\SKILL.md",
+      "name": "web3-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\plugins\\antigravity-bundle-security-engineer\\skills\\burp-suite-testing\\SKILL.md",
+      "name": "burp-suite-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\api-fuzzing-bug-bounty\\SKILL.md",
+      "name": "api-fuzzing-bug-bounty"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\api-security-testing\\SKILL.md",
+      "name": "api-security-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\blockchain-developer\\SKILL.md",
+      "name": "blockchain-developer"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\burp-suite-testing\\SKILL.md",
+      "name": "burp-suite-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\debug-buttercup\\SKILL.md",
+      "name": "debug-buttercup"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\defi-protocol-templates\\SKILL.md",
+      "name": "defi-protocol-templates"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\ffuf-claude-skill\\SKILL.md",
+      "name": "ffuf-claude-skill"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\ffuf-web-fuzzing\\SKILL.md",
+      "name": "ffuf-web-fuzzing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\file-path-traversal\\SKILL.md",
+      "name": "file-path-traversal"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\html-injection-testing\\SKILL.md",
+      "name": "html-injection-testing"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\metasploit-framework\\SKILL.md",
+      "name": "metasploit-framework"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\red-team-tools\\SKILL.md",
+      "name": "red-team-tools"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\scanning-tools\\SKILL.md",
+      "name": "scanning-tools"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\security-audit\\SKILL.md",
+      "name": "security-audit"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\test-automator\\SKILL.md",
+      "name": "test-automator"
+    },
+    {
+      "rel": "antigravity-awesome-skills\\skills\\web3-testing\\SKILL.md",
+      "name": "web3-testing"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\bb-local-toolkit\\SKILL.md",
+      "name": "bb-local-toolkit"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\bug-bounty\\SKILL.md",
+      "name": "bug-bounty"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\hunt-cache-poison\\SKILL.md",
+      "name": "hunt-cache-poison"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\hunt-misc\\SKILL.md",
+      "name": "hunt-misc"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\osint-methodology\\SKILL.md",
+      "name": "osint-methodology"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\security-arsenal\\SKILL.md",
+      "name": "security-arsenal"
+    },
+    {
+      "rel": "claude-bughunter\\skills\\web2-recon\\SKILL.md",
+      "name": "web2-recon"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\api-fuzzing-bug-bounty\\SKILL.md",
+      "name": "api-fuzzing-bug-bounty"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\api-security-testing\\SKILL.md",
+      "name": "api-security-testing"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\burp-suite-testing\\SKILL.md",
+      "name": "burp-suite-testing"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\file-path-traversal\\SKILL.md",
+      "name": "file-path-traversal"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\html-injection-testing\\SKILL.md",
+      "name": "html-injection-testing"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\metasploit-framework\\SKILL.md",
+      "name": "metasploit-framework"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\red-team-tools\\SKILL.md",
+      "name": "red-team-tools"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\scanning-tools\\SKILL.md",
+      "name": "scanning-tools"
+    },
+    {
+      "rel": "claude-code-templates\\claude-code-templates-main\\cli-tool\\components\\skills\\security\\security-audit\\SKILL.md",
+      "name": "security-audit"
+    },
+    {
+      "rel": "everything-claude-code\\docs\\ko-KR\\skills\\golang-testing\\SKILL.md",
+      "name": "golang-testing"
+    },
+    {
+      "rel": "everything-claude-code\\docs\\tr\\skills\\golang-testing\\SKILL.md",
+      "name": "golang-testing"
+    },
+    {
+      "rel": "everything-claude-code\\docs\\zh-CN\\skills\\golang-testing\\SKILL.md",
+      "name": "golang-testing"
+    },
+    {
+      "rel": "everything-claude-code\\docs\\zh-TW\\skills\\golang-testing\\SKILL.md",
+      "name": "golang-testing"
+    },
+    {
+      "rel": "everything-claude-code\\skills\\configure-ecc\\SKILL.md",
+      "name": "configure-ecc"
+    },
+    {
+      "rel": "everything-claude-code\\skills\\cpp-testing\\SKILL.md",
+      "name": "cpp-testing"
+    },
+    {
+      "rel": "everything-claude-code\\skills\\defi-amm-security\\SKILL.md",
+      "name": "defi-amm-security"
+    },
+    {
+      "rel": "everything-claude-code\\skills\\golang-testing\\SKILL.md",
+      "name": "golang-testing"
+    }
+  ]
+}

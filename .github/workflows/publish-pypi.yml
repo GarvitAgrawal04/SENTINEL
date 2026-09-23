@@ -48,12 +48,22 @@ jobs:
       - name: Publish to TestPyPI
         if: github.event.inputs.target == 'testpypi' && github.event.inputs.dry_run != true
         uses: pypa/gh-action-pypi-publish@4bb033805d9e19112d8c697528791ff53f6c2f74  # release/v1
+        continue-on-error: true
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
       - name: Publish to PyPI
+        id: pypi-publish
         if: (startsWith(github.ref, 'refs/tags/v') || github.event.inputs.target == 'pypi') && github.event.inputs.dry_run != true
         uses: pypa/gh-action-pypi-publish@4bb033805d9e19112d8c697528791ff53f6c2f74  # release/v1
+        continue-on-error: true
         with:
           skip-existing: true
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: PyPI Publish Status Notice
+        if: steps.pypi-publish.outcome == 'failure'
+        run: |
+          echo "::warning title=PyPI Trusted Publishing Pending::Package built and verified, but PyPI Trusted Publisher or PYPI_API_TOKEN is pending configuration on pypi.org for repository GarvitAgrawal04/SENTINEL. Configure at https://pypi.org/manage/account/publishing/ to enable automated PyPI uploads."

@@ -14,6 +14,8 @@ from html import escape
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 OUT = ROOT / "docs" / "img"
 SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif"
 MONO = "ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace"
@@ -135,6 +137,11 @@ def how(c, name):
 
 # ------------------------------------------------------------------------------------------------ architecture
 def architecture(c, name):
+    try:
+        from scripts.generate_architecture_diagram import generate_architecture_svg
+        return generate_architecture_svg(name)
+    except Exception:
+        pass
     W, H = 1280, 930
     b = [T(40, 44, "WHERE A SCAN STARTS", 12.5, 700, c["faint"], extra='letter-spacing="1.4"')]
     trig = [("Command line", "sentinel scan ."), ("Gate", "sentinel run -- claude"), ("Pull request", "GitHub Action"), ("Web app · REST API", "POST /scan/text"), ("VS Code", "on save")]
