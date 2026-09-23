@@ -46,8 +46,8 @@ a VS Code extension. It runs offline, needs no account and no API key, and never
 
 **Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [The Instruction Doctor](#the-instruction-doctor) · [Supported files](#supported-files) ·
 [How detection works](#how-detection-works) · [API](#api-reference) · [Configuration](#configuration) ·
-[How it compares, with data](#how-it-compares-with-data) · [Research Write-up](docs/RESEARCH.md) · [Glossary](GLOSSARY.md) · [FAQ](docs/FAQ.md) · [Limitations](#limitations) · [Project structure](#project-structure) ·
-[Troubleshooting](#troubleshooting) · [Development](#development) · [Citation](CITATION.cff) · [Built by](#built-by)
+[How it compares, with data](#how-it-compares-with-data) · [Research Write-up](docs/RESEARCH.md) · [Glossary](GLOSSARY.md) · [FAQ](docs/FAQ.md) · [Limitations](#limitations) · [Deep Limitations](LIMITATIONS.md) · [Project structure](#project-structure) ·
+[Troubleshooting](#troubleshooting) · [Development](#development) · [State of the project](#state-of-the-project) · [Citation](CITATION.cff) · [Built by](#built-by)
 
 ## Why this exists
 
@@ -1109,6 +1109,17 @@ anything sensitive, contact a maintainer privately before opening a public issue
 **Roadmap.** Keyless signing (Sigstore) · SARIF output for GitHub's Security tab · more rules (cross-file contradictions,
 tool-name shadowing) · a runtime guard that pins tool-server descriptions per session · a multi-model sandbox matrix ·
 proposing `AGENTS.lock` as an open specification.
+
+## State of the project
+
+Sentinel has completed its comprehensive 13-day hardening sprint and reached **v1.0.0**.
+
+- **Production Accuracy:** 0 false COMPROMISED convictions across 930 public repositories (590 in-sample, 340 holdout).
+- **Time-Warp Sandbox:** 10/10 sleeper attacks detected across 11 temporal/conditional scenarios, with 0 false alarms on benign twins.
+- **Instruction Doctor:** D001–D008 deterministic hygiene checks, context window reduction (median −20 tokens), and a Rewrite Gate that blocked 30/30 poisoned injection attempts (0 escapes).
+- **Community Upstream Impact:** 3 reproducible bug reports filed against upstream tools with test cases and proposed patches ([`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md)).
+- **Supply-Chain Integrity:** Releases published with CycloneDX v1.5 JSON SBOMs, SHA-256 digests, and Sigstore keyless attestation.
+- **Full Transparency:** See [`LIMITATIONS.md`](LIMITATIONS.md) for what Sentinel cannot do and where our negative results sit.
 
 ## Built by
 

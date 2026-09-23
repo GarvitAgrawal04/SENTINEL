@@ -129,7 +129,8 @@ def strip_jsonc(s: str) -> str:
 
 def load_json(p: Path) -> dict:
     try:
-        return json.loads(strip_jsonc(p.read_text(encoding="utf-8", errors="replace")))
+        val = json.loads(strip_jsonc(p.read_text(encoding="utf-8", errors="replace")))
+        return val if isinstance(val, dict) else {}
     except Exception:
         return {}
 
@@ -150,6 +151,8 @@ def _resolve(root: Path, ae: AutoExec) -> AutoExec:
 def iter_hook_commands(settings: dict):
     """Claude Code / Gemini CLI schema is three levels deep: event -> [matcher group] -> hooks[] -> command.
     A flat parser silently returns nothing on real attacks."""
+    if not isinstance(settings, dict):
+        return
     hooks = settings.get("hooks")
     if not isinstance(hooks, dict):
         return

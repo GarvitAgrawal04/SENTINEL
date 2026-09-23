@@ -23,6 +23,8 @@ for name, text in cases.items():
 
 ## 1 · runningoffcode/agent-wormhole — legitimate Unicode
 
+**Filed:** https://github.com/runningoffcode/agent-wormhole/issues/5
+
 **Title:** `WORM-005 / WORM-006 fire on legitimate Unicode: emoji ZWJ sequences, UTF-8 BOM, Hindi/Persian joiners, subdivision-flag emoji`
 
 Thanks for wormhole-guard. `AUTOSTART-002/003/004` caught every hook fixture we built (Miasma- and ChainDrop-shaped), which is
@@ -56,6 +58,8 @@ Happy to send a PR.
 
 ## 2 · runningoffcode/agent-wormhole — WORM-007
 
+**Filed:** https://github.com/runningoffcode/agent-wormhole/issues/6
+
 **Title:** `WORM-007 "Concealment directive" fires on ordinary engineering prose: "silently" near a verb such as fetch / send / execute`
 
 **Version:** 0.2.0, defaults. Reproductions (each is the whole `AGENTS.md`):
@@ -78,6 +82,8 @@ the same repositories) and this is how we fixed it.
 ---
 
 ## 3 · sattyamjjain/agent-audit-kit — AAK-AGENT-002
+
+**Filed:** https://github.com/sattyamjjain/agent-audit-kit/issues/771
 
 **Title:** `AAK-AGENT-002 (HIGH) fires on any URL in an instruction file: 303 of 930 popular public repositories`
 

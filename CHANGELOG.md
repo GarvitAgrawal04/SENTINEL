@@ -1,3 +1,11 @@
+## 1.0.0 — 2026-09-23 — Red-team hardening, negative results, and production release (Day 13 T1–T10)
+- feat(redteam): verified Rewrite Gate against 30 poisoned injection files (`tests/v5/test_redteam.py`), achieving 0 escapes (100% blocked).
+- feat(stress): added comprehensive stress test suite (`tests/v5/test_stress.py`) testing 15,000-line markdown parsing, 100,000-char single lines, circular import DAG handling, corrupted JSON resilience, and 0-exec invariant.
+- docs: added top-level `LIMITATIONS.md` documenting the paraphrase gap (15.12% evasion on holdout set), sandbox anti-analysis limits, runtime tool poisoning bounds, and corpus health assumptions.
+- docs: added `docs/SANDBOX_FIDELITY.md` and fixture `tests/fixtures/clock_probe/attack_clock_probe.md` detailing red-team attempts to make the Time-Warp virtual clock lie.
+- community: opened 3 upstream issues against `runningoffcode/agent-wormhole` (#5, #6) and `sattyamjjain/agent-audit-kit` (#771) with verified reproductions and proposed precision patches (`docs/UPSTREAM_ISSUES.md`).
+- meta: bumped project to v1.0.0, added "State of the project" section in README, updated CycloneDX v1.5 JSON SBOM and PyPI metadata.
+
 ## 0.9.11 — 2026-09-23 — The portfolio finish (Day 12 T1–T10)
 - docs: added `docs/DEMO.md` — 5-minute hands-on walkthrough covering zero-install scanning, TrapDoor Unicode detection, Time-Warp sandbox sleeper catches, Instruction Doctor token optimization, and execution gate.
 - docs: added top-level `ARCHITECTURE.md` detailing multi-layer architecture (L0–L5), system data flow, trust score formulation, and module responsibilities matrix.
