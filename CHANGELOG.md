@@ -1,3 +1,13 @@
+## 0.9.11 — 2026-09-23 — The portfolio finish (Day 12 T1–T10)
+- docs: added `docs/DEMO.md` — 5-minute hands-on walkthrough covering zero-install scanning, TrapDoor Unicode detection, Time-Warp sandbox sleeper catches, Instruction Doctor token optimization, and execution gate.
+- docs: added top-level `ARCHITECTURE.md` detailing multi-layer architecture (L0–L5), system data flow, trust score formulation, and module responsibilities matrix.
+- docs: added top-level `GLOSSARY.md` defining definitive agent security terminology (tool poisoning, Deadbugz rug pull, sleeper triggers, canary secrets, rewrite gate, AGENTS.lock, precision gate).
+- docs: added `docs/FAQ.md` answering 20 questions across threat models, offline operation, scoring calibration, sandboxing, and CI/CD supply-chain integration.
+- meta: added `CITATION.cff` for academic and industry citations; added `AUTHORS` and `CONTRIBUTORS` files recognizing maintainers and research community.
+- meta: added `docs/GITHUB_SETUP.md` with recommended repository topics, description, and created 1280x640 OpenGraph card `docs/img/social-preview.png`.
+- media: built `scripts/build_demo_gif.py` and generated 4-stage portfolio animated demo `docs/img/demo.gif` (Static Clean -> Time-Warp Sleeper -> Doctor Token Trimming -> Rewrite Gate Interception).
+- test: added `tests/v5/test_portfolio.py` verifying presence, formatting, links, and schema of all Day 12 deliverables.
+
 ## 0.9.10 — 2026-09-23 — Evidence, reproducibility, and the research write-up (Day 11 T1–T10)
 - feat(evidence): created `bench/evidence.py` — one command reproduces every published number (semantic harness, trigger prevalence, time-warp detonation). Writes `bench/results/evidence_latest.md` and a dated snapshot.
 - feat(makefile): added `make evidence` target wired to `bench/evidence.py`.

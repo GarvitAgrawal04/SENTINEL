@@ -1,0 +1,17 @@
+# Contributors to Sentinel
+
+Thank you to everyone who has contributed ideas, code, bug reports, and benchmark datasets to Sentinel:
+
+- **Mayan Kamboj** ([@kambojmayan-png](https://github.com/kambojmayan-png)) — Co-creator, Detection Engine & Rules
+- **Garvit Agrawal** ([@GarvitAgrawal04](https://github.com/GarvitAgrawal04)) — Co-creator, Sandbox & Systems Architecture
+
+## Community & Research Acknowledgements
+
+Sentinel builds on findings and threat intelligence from the broader security research community:
+- **Pillar Security** (Rules File Backdoor, Deadbugz tool-poisoning research)
+- **Socket Research Team** (TrapDoor vector disclosure)
+- **Trail of Bits** (ANSI escape sequence protection, `context-protector`)
+- **StepSecurity** (GitHub Actions supply-chain hardening)
+- **Simon Willison** (Prompt injection taxonomies)
+
+For contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).

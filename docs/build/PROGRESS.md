@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 12 · T1–T10 · feat(portfolio): demo.gif 4-phase animation, CITATION.cff, AUTHORS, CONTRIBUTORS, docs/GITHUB_SETUP.md + social-preview.png, docs/DEMO.md 5-min runbook, ARCHITECTURE.md, GLOSSARY.md, docs/FAQ.md · gate: PASS (0 COMPROMISED) · tests: 330
+
 - 2026-09-23 · Day 11 · T1–T10 · feat(evidence): bench/evidence.py reproduces all numbers (semantic 84.88%/0.00%FP, timewarp 10/10, trigger 1.045 mean); docs/RESEARCH.md (landscape, failures, threats, citations); bench/results/README.md index; make evidence · gate: PASS (0 COMPROMISED) · tests: 298
 
 - 2026-09-23 · Day 10 · T1–T10 · feat(packaging): PyPI trusted publishing (OIDC), sdist/wheel builds, OpenVSX guide, CycloneDX SBOM + Sigstore, SUPPORT.md, install matrix · gate: PASS (wheel installs, entrypoints valid) · tests: 283

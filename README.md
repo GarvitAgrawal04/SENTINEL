@@ -35,19 +35,19 @@ gate that refuses to start an agent in a compromised project, a pull-request che
 a VS Code extension. It runs offline, needs no account and no API key, and never executes anything from the project it scans.
 
 <div align="center">
-  <img src="docs/img/demo.gif" alt="The web app: a healthy file scores 100; a file with invisible characters is revealed and scores 39; a pasted instruction to send an SSH key away scores 15" width="860">
-  <br><sub>The real web app, captured by <a href="docs/take_screenshots.py"><code>docs/take_screenshots.py</code></a>. Nothing in this README is a mock-up unless it says so.</sub>
+  <img src="docs/img/demo.gif" alt="Sentinel in 60 seconds: static clean scan, time-warp catches session-3 sleeper attack, Instruction Doctor trims 247 tokens, and Rewrite Gate blocks poisoned suggestion" width="860">
+  <br><sub>The real Sentinel engine across 4 key milestones: static scan, Time-Warp sandbox, Instruction Doctor, and Rewrite Gate. Nothing in this README is a mock-up unless it says so.</sub>
 </div>
 
 ## Contents
 
-**Start here:** [Why this exists](#why-this-exists) · [See it in 60 seconds](#see-it-in-60-seconds) · [Quick start](#quick-start) ·
-[How it works](#how-it-works) · [Where it runs](#where-it-runs) · [Measured, not claimed](#measured-not-claimed) · [Architecture](#architecture)
+**Start here:** [Why this exists](#why-this-exists) · [See it in 60 seconds](#see-it-in-60-seconds) · [5-Minute Demo](docs/DEMO.md) · [Quick start](#quick-start) ·
+[How it works](#how-it-works) · [Where it runs](#where-it-runs) · [Measured, not claimed](#measured-not-claimed) · [Architecture](#architecture) · [Deep Architecture](ARCHITECTURE.md)
 
 **Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [The Instruction Doctor](#the-instruction-doctor) · [Supported files](#supported-files) ·
 [How detection works](#how-detection-works) · [API](#api-reference) · [Configuration](#configuration) ·
-[How it compares, with data](#how-it-compares-with-data) · [Limitations](#limitations) · [Project structure](#project-structure) ·
-[Troubleshooting](#troubleshooting) · [Development](#development) · [Built by](#built-by)
+[How it compares, with data](#how-it-compares-with-data) · [Research Write-up](docs/RESEARCH.md) · [Glossary](GLOSSARY.md) · [FAQ](docs/FAQ.md) · [Limitations](#limitations) · [Project structure](#project-structure) ·
+[Troubleshooting](#troubleshooting) · [Development](#development) · [Citation](CITATION.cff) · [Built by](#built-by)
 
 ## Why this exists
 
@@ -1120,7 +1120,7 @@ proposing `AGENTS.lock` as an open specification.
 </table>
 
 **License.** [Apache-2.0](LICENSE). Copyright 2026 [Mayan Kamboj](https://github.com/kambojmayan-png) and
-[Garvit Agrawal](https://github.com/GarvitAgrawal04); see [`NOTICE`](NOTICE). Security reports: [`SECURITY.md`](SECURITY.md).
+[Garvit Agrawal](https://github.com/GarvitAgrawal04); see [`NOTICE`](NOTICE), [`AUTHORS`](AUTHORS), and [`CONTRIBUTORS`](CONTRIBUTORS). Security reports: [`SECURITY.md`](SECURITY.md).
 
 **Acknowledgements.** The benign-twin testing idea is borrowed from wormhole-guard. Incident research by Pillar Security,
 Socket, StepSecurity, OpenSourceMalware, Datadog Security Labs, Elastic Security Labs, Microsoft Threat Intelligence, Snyk,
