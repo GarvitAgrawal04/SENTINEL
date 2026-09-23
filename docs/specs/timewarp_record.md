@@ -1,6 +1,7 @@
 # Specification: `sentinel timewarp run --record`
 
-**Status:** Draft (Scheduled for Day 5 implementation)  
+**Status:** Approved  
+**Version:** 1.0.0  
 **Authors:** Mayan Kamboj, Garvit Agrawal  
 **Relates to:** Time-Warp sandbox, `sentinel.timewarp.cassette`, ADR-0002, ADR-0006  
 

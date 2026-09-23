@@ -11,3 +11,9 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install --quiet ".[sign]"
       - run: sentinel verify --no-pin && sentinel scan .
+      - name: Verify sleeper replay and recording slice
+        run: |
+          sentinel timewarp run tests/fixtures/sleeper/AGENTS.md --replay tests/fixtures/sleeper || [ $? -eq 1 ]
+          mkdir -p /tmp/nightly_cassette
+          sentinel timewarp run tests/fixtures/sleeper/AGENTS.md --record /tmp/nightly_cassette --mock --trace
+          sentinel timewarp run tests/fixtures/sleeper/AGENTS.md --replay /tmp/nightly_cassette

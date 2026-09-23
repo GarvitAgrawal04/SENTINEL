@@ -198,10 +198,10 @@ def cmd_verify(a) -> int:
         print(json.dumps(res, indent=2))
     else:
         print(f"signature : {res['signature'].upper() if res['signature'] != 'valid' else 'valid'}   key: {pin}")
-        for label in ("changed", "new", "missing", "stale_approvals"):
+        for label in ("changed", "new", "missing", "stale_approvals", "tampered_cassettes", "missing_cassettes"):
             for item in res.get(label, []):
                 print(f"  {label.upper().replace('_', ' '):16} {item}")
-        drift = any(res.get(k) for k in ("changed", "new", "missing", "stale_approvals"))
+        drift = any(res.get(k) for k in ("changed", "new", "missing", "stale_approvals", "tampered_cassettes", "missing_cassettes"))
         if res["ok"]:
             print("OK - every agent-config file is covered by the signed lock.")
         elif res["signature"] == "INVALID":
@@ -307,25 +307,46 @@ def cmd_timewarp_plan(a) -> int:
 
 
 def cmd_timewarp_run(a) -> int:
-    from .timewarp import runner, diff, clock, cassette, cost
+    from .timewarp import runner, diff, clock, cassette, cost, triggers, config
     file_path = Path(a.file)
     if not file_path.is_file():
         print(f"error: file not found: {file_path}", file=sys.stderr)
         return 1
 
-    replay_path = Path(a.replay)
-    if replay_path.is_dir():
-        replay_path = replay_path / "cassette.json"
-    if not replay_path.is_file():
-        print(f"error: cassette not found at {replay_path}", file=sys.stderr)
+    replay_path = getattr(a, "replay", None)
+    record_dir = getattr(a, "record", None)
+    is_trace = getattr(a, "trace", False)
+    parallel = getattr(a, "parallel", 1) or 1
+    parallel_workers = min(max(1, parallel), 4)
+
+    if not replay_path and not record_dir:
+        print("error: either --replay <dir> or --record <dir> is required", file=sys.stderr)
+        return 1
+    if replay_path and record_dir:
+        print("error: cannot specify both --replay and --record", file=sys.stderr)
         return 1
 
     file_text = file_path.read_text(encoding="utf-8", errors="replace")
-    plan = [
-        clock.Scenario(name="now", session=1),
-        clock.Scenario(name="session_2", session=2),
-        clock.Scenario(name="session_3", session=3),
-    ]
+
+    cfg = None
+    config_path = getattr(a, "config", None)
+    if config_path or Path("sentinel.timewarp.yml").is_file():
+        try:
+            cfg = config.load_config(config_path)
+        except Exception as exc:
+            print(f"error: invalid timewarp config: {exc}", file=sys.stderr)
+            return 1
+
+    # Extract scenario plan, falling back to 3-moment matrix if only baseline exists
+    extracted_plan = triggers.plan_scenarios(file_text, config=cfg)
+    if len(extracted_plan) > 1:
+        plan = extracted_plan
+    else:
+        plan = [
+            clock.Scenario(name="now", session=1),
+            clock.Scenario(name="session_2", session=2),
+            clock.Scenario(name="session_3", session=3),
+        ]
 
     budget_val = getattr(a, "budget", None)
     if budget_val is not None:
@@ -337,9 +358,73 @@ def cmd_timewarp_run(a) -> int:
     if not a.json:
         print(f"estimate: {len(plan)} scenario(s) · ~{total_tokens:,} tokens · ~${total_cost:.4f} USD")
 
-    replayer = cassette.Cassette.replay(replay_path)
-    traces = runner.run(file_text, plan, cassette=replayer, name=file_path.name)
+    if is_trace and not a.json:
+        print(f"[trace] Scenario plan ({len(plan)} moments):")
+        for i, sc in enumerate(plan, 1):
+            env_s = f"env={sc.env}" if sc.env else ""
+            print(f"  {i}. [{sc.name:16s}] session={sc.session:<2} branch={sc.branch:<10} clock={sc.clock}  {env_s}")
+
+    # Set up model or replay cassette
+    active_recorder = None
+    if record_dir:
+        rec_p = Path(record_dir)
+        rec_p.mkdir(parents=True, exist_ok=True)
+        cassette_target = rec_p / "cassette.json" if rec_p.is_dir() else rec_p
+
+        if getattr(a, "mock", False):
+            from sentinel import detonate
+            base_model = detonate.MockObedientModel()
+        else:
+            from sentinel import detonate
+            try:
+                base_model = detonate.model_from_env()
+            except Exception as exc:
+                print(f"error: provider unavailable or unconfigured: {exc}", file=sys.stderr)
+                return 1
+
+        active_recorder = cassette.Cassette.record(base_model, path=cassette_target)
+        try:
+            traces = runner.run(file_text, plan, model=active_recorder, parallel=parallel_workers, name=file_path.name)
+        except Exception as exc:
+            print(f"error: detonation execution failed: {exc}", file=sys.stderr)
+            return 1
+        active_recorder.save(cassette_target)
+        if not a.json:
+            print(f"recorded: {len(active_recorder.cassette.entries)} turn(s) saved to {cassette_target}")
+    else:
+        rep_p = Path(replay_path)
+        if rep_p.is_dir():
+            rep_p = rep_p / "cassette.json"
+        if not rep_p.is_file():
+            print(f"error: cassette not found at {rep_p}", file=sys.stderr)
+            return 1
+        replayer = cassette.Cassette.replay(rep_p)
+        try:
+            traces = runner.run(file_text, plan, cassette=replayer, parallel=parallel_workers, name=file_path.name)
+        except Exception as exc:
+            print(f"error: replay execution failed: {exc}", file=sys.stderr)
+            return 1
+
     findings = diff.compare(traces)
+
+    per_scenario_spend = []
+    for t in traces:
+        scen_toks = cost.estimate_scenario_tokens(file_text)
+        scen_cost = round((scen_toks / 1_000_000) * cost.COST_PER_MILLION_TOKENS, 6)
+        spend_entry = {
+            "scenario": t.scenario.name if hasattr(t.scenario, "name") else str(t.scenario),
+            "tokens": scen_toks,
+            "cost_usd": scen_cost,
+            "events_count": len(t.events),
+            "canary_leaks": t.canary_leaks,
+            "egress": t.egress,
+        }
+        per_scenario_spend.append(spend_entry)
+
+    if is_trace and not a.json:
+        print("[trace] Per-scenario spend:")
+        for sp in per_scenario_spend:
+            print(f"  - [{sp['scenario']:16s}] {sp['events_count']} event(s) · ~{sp['tokens']:,} tokens · ~${sp['cost_usd']:.4f} USD")
 
     if a.json:
         out = {
@@ -349,6 +434,10 @@ def cmd_timewarp_run(a) -> int:
             "estimate": {"scenarios": len(plan), "tokens": total_tokens, "cost_usd": total_cost},
             "traces": [t.to_dict() for t in traces],
         }
+        if is_trace:
+            out["trace"] = {
+                "per_scenario_spend": per_scenario_spend,
+            }
         print(json.dumps(out, indent=2))
         return 1 if findings else 0
 
@@ -603,8 +692,13 @@ def main(argv: list[str] | None = None) -> int:
 
     tw_run = tw_sub.add_parser("run", help="run a file across time-warp scenarios")
     tw_run.add_argument("file", help="path to instruction file")
-    tw_run.add_argument("--replay", required=True, help="cassette file or directory containing cassette.json")
+    tw_run.add_argument("--replay", default=None, help="cassette file or directory containing cassette.json to replay")
+    tw_run.add_argument("--record", default=None, help="directory to record new cassette using live model")
     tw_run.add_argument("--budget", type=float, default=None, help="max scenario budget limit")
+    tw_run.add_argument("--parallel", type=int, default=1, help="concurrent scenarios worker cap (1-4)")
+    tw_run.add_argument("--trace", action="store_true", help="print detailed scenario plan and per-scenario spend")
+    tw_run.add_argument("--config", default=None, help="path to custom sentinel.timewarp.yml")
+    tw_run.add_argument("--mock", action="store_true", help="use mock model (for offline test/plumbing)")
     tw_run.add_argument("--json", action="store_true")
 
     doc = add("doctor", cmd_doctor, help="instruction file hygiene checks and safe auto-fixes")

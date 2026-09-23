@@ -49,6 +49,19 @@
         },
         "mcp": { "type": "array", "items": { "type": "string", "pattern": "^.+#.+=.+$", "description": "<config file>#<server name>=<url or command>" } }
       }
+    },
+    "cassettes": {
+      "type": "object",
+      "description": "Deterministic simulation cassettes pinned to their sha256 hashes.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "size_bytes": { "type": "integer", "minimum": 0 }
+        }
+      }
     }
   }
 }

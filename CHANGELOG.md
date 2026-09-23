@@ -1,3 +1,14 @@
+## 0.9.4 — 2026-09-23 — Real detonation with record, and cost control (Day 5 T1–T10)
+- feat(timewarp): implemented `sentinel timewarp run <file> --record <dir>` allowing live model execution with automatic cassette serialization and secret redaction (`CassetteRecorder`). The recorded cassette replays forever offline via `--replay <dir>`.
+- feat(timewarp): upfront token and USD cost estimation calculated and displayed before any API spend, with `--budget N` enforcing hard scenario limits by dropping low-priority scenarios with a printed `dropped: <name> (exceeds budget)` line.
+- feat(timewarp): concurrent scenario execution via `--parallel N` (worker pool capped at 4) respecting provider `Retry-After` rate-limiting headers.
+- feat(lock): pinned test cassettes by SHA256 in `AGENTS.lock` with schema extension in `spec/agents-lock.schema.json` and verification enforcement in `sentinel.lock.verify()`. Modifying or deleting a pinned cassette fails verification outside the gate.
+- feat(cli): added `--trace` flag to `sentinel timewarp run` outputting the scenario plan before execution and per-scenario spend/event metrics.
+- test: integration tests in `tests/v5/test_timewarp_record.py` with stand-in OpenAI provider, offline replay, budget scenario dropping, parallel execution, and "provider down -> not run, never clean" failure enforcement.
+- test: unit and schema tests in `tests/v5/test_lock_cassettes.py` verifying cassette discovery, SHA256 pinning, schema conformance, and tamper detection.
+- docs: added `docs/specs/TIMEWARP_RUN.md`, updated `docs/specs/timewarp_record.md` to Approved, and authored `docs/adr/ADR-0008-cassette-pinning-in-lock.md`.
+- ci: updated `.github/workflows/sentinel-nightly.yml` to verify offline sleeper replay and recording slices.
+
 ## 0.9.3 — 2026-09-23 — Trigger extraction, hardened and measured (Day 4 T1–T10)
 - feat(timewarp): widened `sentinel/timewarp/triggers.py` to extract 10 canonical trigger categories from agent instructions:
   - Relative dates (*"in two weeks"*, *"after 3 days"*), milestone stages (*"after the beta"*, *"post-launch"*).

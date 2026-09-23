@@ -57,7 +57,19 @@ def pending(root: Path, approvals: dict) -> dict:
     return {"autoexec": autoexec, "mcp": mcp}
 
 
-def build_lock(root: Path, report: dict, approvals: dict) -> dict:
+def discover_test_cassettes(root: Path) -> list[Path]:
+    """Find all recorded test cassettes used by deterministic replay tests."""
+    fixture_dir = root / "tests" / "fixtures"
+    if not fixture_dir.is_dir():
+        return []
+    cassettes: list[Path] = []
+    for p in sorted(fixture_dir.glob("**/*.json")):
+        if p.name == "cassette.json" or p.name.endswith(".cassette.json"):
+            cassettes.append(p)
+    return cassettes
+
+
+def build_lock(root: Path, report: dict, approvals: dict, pin_cassettes: bool = True) -> dict:
     if report["verdict"] == "COMPROMISED":
         raise LockRefused("refusing to write a lock while anything is COMPROMISED - fix or remove it first")
     files = {}
@@ -72,9 +84,26 @@ def build_lock(root: Path, report: dict, approvals: dict) -> dict:
             if g:
                 entry["guardrails"] = g
         files[r] = entry
-    return {"version": 1, "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "generator": f"sentinel/{__version__}", "formula_version": core.FORMULA_VERSION,
-            "files": files, "approvals": approvals_of({"approvals": approvals})}
+
+    lock_dict = {
+        "version": 1,
+        "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "generator": f"sentinel/{__version__}",
+        "formula_version": core.FORMULA_VERSION,
+        "files": files,
+        "approvals": approvals_of({"approvals": approvals}),
+    }
+    if pin_cassettes:
+        cassettes_map = {}
+        for cp in discover_test_cassettes(root):
+            cassettes_map[rel(root, cp)] = {
+                "sha256": core.sha256_file(cp),
+                "size_bytes": cp.stat().st_size,
+            }
+        if cassettes_map:
+            lock_dict["cassettes"] = cassettes_map
+
+    return lock_dict
 
 
 def write_lock(root: Path, lock: dict, private_pem: bytes | None = None) -> None:
@@ -192,5 +221,26 @@ def verify(root: Path, public_pem: bytes | None = None, lock: dict | None = None
     stale = sorted(f"{a['file']} [{a['event']}] {a['command']}" for a in approvals_of(lock)["autoexec"]
                    if (a["file"], a["event"], a["command"]) in live
                    and a.get("script_sha256") != live[(a["file"], a["event"], a["command"])])
-    ok = signature == "valid" and not (changed or new or missing or stale)
-    return {"ok": ok, "signature": signature, "changed": changed, "new": new, "missing": missing, "stale_approvals": stale}
+
+    # pinned test cassettes: a tampered or missing cassette fails verification
+    locked_cassettes = lock.get("cassettes", {})
+    tampered_cassettes = []
+    missing_cassettes = []
+    for r, info in locked_cassettes.items():
+        cp = root / r
+        if not cp.is_file():
+            missing_cassettes.append(r)
+        elif core.sha256_file(cp) != info.get("sha256"):
+            tampered_cassettes.append(r)
+
+    ok = signature == "valid" and not (changed or new or missing or stale or tampered_cassettes or missing_cassettes)
+    return {
+        "ok": ok,
+        "signature": signature,
+        "changed": changed,
+        "new": new,
+        "missing": missing,
+        "stale_approvals": stale,
+        "tampered_cassettes": sorted(tampered_cassettes),
+        "missing_cassettes": sorted(missing_cassettes),
+    }
