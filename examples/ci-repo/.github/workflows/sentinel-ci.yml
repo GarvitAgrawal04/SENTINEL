@@ -1,0 +1,62 @@
+name: Sentinel Agent Security Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  sentinel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Sentinel
+        run: pip install sentinel-md
+
+      - name: Sentinel PR Diff Check
+        id: sentinel-pr
+        if: github.event_name == 'pull_request'
+        run: |
+          sentinel pr --base "origin/${{ github.base_ref }}" \
+            --out sentinel-comment.md \
+            --format sarif > sentinel.sarif || true
+          cat sentinel-comment.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sentinel Repo Scan
+        id: sentinel-scan
+        if: github.event_name == 'push'
+        run: |
+          sentinel scan . --format sarif > sentinel.sarif || true
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: sentinel.sarif
+          category: sentinel-agent-security
+
+      - name: Comment on Pull Request
+        if: github.event_name == 'pull_request' && failure() == false
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --edit-last \
+            --body-file sentinel-comment.md || \
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body-file sentinel-comment.md

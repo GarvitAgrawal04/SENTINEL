@@ -45,6 +45,32 @@ def _filter(report: dict, keep) -> dict:
 
 
 def cmd_scan(a) -> int:
+    fmt = getattr(a, "format", None) or ("json" if getattr(a, "json", False) else "text")
+
+    if getattr(a, "machine", False):
+        from . import machine, sarif
+        if not machine.prompt_consent(auto_yes=getattr(a, "yes", False)):
+            return 1
+        targets = machine.discover_machine_targets()
+        machine_rep = machine.scan_machine(targets, semantic=getattr(a, "semantic", False))
+        if fmt == "sarif":
+            print(json.dumps(sarif.scan_report_to_sarif(machine_rep, version=__version__), indent=2))
+        elif fmt == "json":
+            print(json.dumps(machine_rep, indent=2, ensure_ascii=False))
+        else:
+            print(f"sentinel machine scan  {machine_rep['verdict']}  score {machine_rep['trust_score']}")
+            print(f"  discovered {len(targets)} user-level agent configuration surface(s)\n")
+            if not machine_rep["files"]:
+                print("  No agent configurations discovered on this machine.")
+            else:
+                for path_str, fdata in machine_rep["files"].items():
+                    print(f"  {fdata.get('description', path_str)}: {fdata['verdict']} (score {fdata['score']})")
+                    for f in fdata["findings"]:
+                        rule = f.get("rule") or f.get("rule_id")
+                        print(f"    [{rule}] {f['evidence']}\n      what happens: {f['impact']}\n      what to do  : {f['fix']}")
+                    print()
+        return EXIT[machine_rep["verdict"]]
+
     target = Path(a.path).expanduser()
     if a.glob:                                          # ~/.claude/settings.json and friends
         target = Path.home()
@@ -90,7 +116,10 @@ def cmd_scan(a) -> int:
                         "fix": "Review this instruction with repository owners to verify its intent.",
                     })
 
-        if a.json:
+        if fmt == "sarif":
+            from . import sarif
+            print(json.dumps(sarif.scan_report_to_sarif(out, version=__version__), indent=2))
+        elif fmt == "json":
             print(json.dumps(out, indent=2, ensure_ascii=False))
         else:
             print(f"sentinel  {out['verdict']}  score {out['trust_score']}  {a.path}")
@@ -101,7 +130,13 @@ def cmd_scan(a) -> int:
     rep = core.scan_repo(target, core.load_approvals(target), baseline)
     if a.hooks_only or a.glob:
         rep = _filter(rep, lambda name, f: f["rule"].startswith(HOOK_RULES))
-    print(json.dumps(rep, indent=2, ensure_ascii=False) if a.json else core.render(rep))
+    if fmt == "sarif":
+        from . import sarif
+        print(json.dumps(sarif.scan_report_to_sarif(rep, version=__version__), indent=2))
+    elif fmt == "json":
+        print(json.dumps(rep, indent=2, ensure_ascii=False))
+    else:
+        print(core.render(rep))
     return EXIT[rep["verdict"]]
 
 
@@ -153,7 +188,14 @@ def cmd_pr(a) -> int:
     comment = render.pr_comment(rep, ctx)
     if a.out:
         Path(a.out).write_text(comment, encoding="utf-8")
-    print(json.dumps({"report": rep, "context": ctx}, indent=2, ensure_ascii=False) if a.json else comment)
+    fmt = getattr(a, "format", None) or ("json" if getattr(a, "json", False) else "text")
+    if fmt == "sarif":
+        from . import sarif
+        print(json.dumps(sarif.pr_report_to_sarif(rep, ctx, version=__version__), indent=2))
+    elif fmt == "json":
+        print(json.dumps({"report": rep, "context": ctx}, indent=2, ensure_ascii=False))
+    else:
+        print(comment)
     limit = {"never": 99, "compromised": 2, "suspicious": 1}[a.fail_on]
     return EXIT[rep["verdict"]] if {"CLEAN": 0, "SUSPICIOUS": 1, "COMPROMISED": 2}[rep["verdict"]] >= limit else 0
 
@@ -666,8 +708,11 @@ def main(argv: list[str] | None = None) -> int:
     s = add("scan", cmd_scan, help="scan a repository, or one file")
     s.add_argument("path", nargs="?", default=".")
     s.add_argument("--json", action="store_true")
+    s.add_argument("--format", choices=("text", "json", "sarif"), default=None, help="output format (text, json, sarif)")
     s.add_argument("--hooks-only", action="store_true", help="only things that run or connect automatically")
     s.add_argument("--global", dest="glob", action="store_true", help="scan ~/.claude, ~/.gemini instead of a repository")
+    s.add_argument("--machine", action="store_true", help="discover and scan user-level agent configs (~/.claude, ~/.cursor, VS Code, ~/.gemini)")
+    s.add_argument("--yes", "--consent", dest="yes", action="store_true", help="grant consent to scan user-level configs outside repository")
     s.add_argument("--base", help="git ref to diff against (enables guardrail-weakening detection)")
     s.add_argument("--semantic", action="store_true", help="enable Layer 3 advisory semantic check on unseen phrasing")
     s = add("run", cmd_run, help="the gate: start the agent only if this repository passes")
@@ -678,6 +723,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--base", required=True)
     s.add_argument("--out", help="write the Markdown comment here")
     s.add_argument("--json", action="store_true")
+    s.add_argument("--format", choices=("text", "json", "sarif"), default=None, help="output format (text, json, sarif)")
     s.add_argument("--detonate", action="store_true", help="sandbox changed instruction files (needs SENTINEL_LLM_URL / _MODEL)")
     s.add_argument("--detonate-mock", action="store_true", help=argparse.SUPPRESS)
     s.add_argument("--fail-on", choices=("compromised", "suspicious", "never"), default="compromised")

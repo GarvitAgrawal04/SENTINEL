@@ -1,10 +1,18 @@
-name: "Sentinel - agent behaviour diff"
-description: "Comments on a pull request with what the change makes AI coding agents do, and fails the check when it is COMPROMISED."
+name: "Sentinel - agent behaviour diff & SARIF security scanning"
+description: "Scans pull requests for what AI coding agents will do, uploads SARIF findings, and gates on COMPROMISED."
 branding: { icon: shield, color: red }
 inputs:
   fail-on:  { description: "compromised | suspicious | never", default: "compromised" }
   detonate: { description: "sandbox changed instruction files with a model (needs SENTINEL_LLM_URL / SENTINEL_LLM_MODEL)", default: "false" }
   comment:  { description: "post or update the PR comment", default: "true" }
+  sarif:    { description: "generate SARIF 2.1.0 output at $RUNNER_TEMP/sentinel.sarif", default: "true" }
+outputs:
+  code:
+    description: "Sentinel exit code"
+    value: ${{ steps.scan.outputs.code }}
+  sarif-file:
+    description: "Path to generated SARIF file"
+    value: ${{ steps.scan.outputs.sarif-file }}
 runs:
   using: composite
   steps:
@@ -18,8 +26,13 @@ runs:
         set +e
         extra=""; [ "${{ inputs.detonate }}" = "true" ] && extra="--detonate"
         sentinel pr --base "origin/${{ github.base_ref }}" --out "$RUNNER_TEMP/sentinel.md" --fail-on "${{ inputs.fail-on }}" $extra > /dev/null
-        echo "code=$?" >> "$GITHUB_OUTPUT"
+        exit_code=$?
+        echo "code=$exit_code" >> "$GITHUB_OUTPUT"
         cat "$RUNNER_TEMP/sentinel.md" >> "$GITHUB_STEP_SUMMARY"
+        if [ "${{ inputs.sarif }}" = "true" ]; then
+          sentinel pr --base "origin/${{ github.base_ref }}" --format sarif $extra > "$RUNNER_TEMP/sentinel.sarif" 2>/dev/null || true
+          echo "sarif-file=$RUNNER_TEMP/sentinel.sarif" >> "$GITHUB_OUTPUT"
+        fi
     - if: inputs.comment == 'true' && github.event_name == 'pull_request'
       shell: bash
       env: { GH_TOKEN: "${{ github.token }}" }

@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 9 · T1–T10 · feat(sarif/ci): SARIF 2.1.0 export (scan/pr), machine config scan with consent gate, 0-exec invariant, action.yml SARIF upload, pre-commit hooks, exit codes spec, ci-repo example · gate: PASS (0 exec leaks, schema valid) · tests: 279
+
 - 2026-09-23 · Day 8 · T1–T10 · feat(semantic): advisory semantic check (capped <=20, floor 40), 86 holdout / 300 benign eval (84.88% recall, 0.00% FP), VS Code Information diagnostic, ADR-0010 · gate: PASS (0 false alarms, budget met) · tests: 261
 
 - 2026-09-23 · Day 7 · T1–T10 · feat(web): offline timewarp plan and doctor lint endpoints, key-free moments/lints/graph panels, dark mode/a11y, 0-key assertions, screenshots · gate: PASS (clean, 0 key fields) · tests: 252

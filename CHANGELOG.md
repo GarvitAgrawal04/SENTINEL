@@ -1,3 +1,14 @@
+## 0.9.8 — 2026-09-23 — SARIF, machine scan, and CI integration (Day 9 T1–T10)
+- feat(sarif): unified SARIF 2.1.0 exporter in `sentinel/sarif.py` supporting `sentinel scan` (repository and single file) and `sentinel pr` diff reports, compliant with OASIS SARIF 2.1.0 schema and GitHub Security tab Code Scanning.
+- feat(cli): added `--format {text,json,sarif}` argument to `sentinel scan` and `sentinel pr`.
+- feat(machine): added `sentinel scan --machine` in `sentinel/machine.py` discovering user-level agent configs (`~/.claude`, `~/.cursor`, VS Code user settings, `~/.gemini`) across Windows, macOS, and Linux with interactive consent prompting and headless `--yes`/`--consent` gating.
+- security: enforced zero-execution invariant during machine configuration scans (pure static analysis, 0 subprocess or code executions).
+- feat(action): updated `action/action.yml` to support SARIF output generation (`$RUNNER_TEMP/sentinel.sarif`) and code scanning uploads.
+- feat(precommit): added `.pre-commit-hooks.yaml` with `sentinel-scan` and `sentinel-doctor` hooks.
+- docs(specs): authored `docs/specs/EXIT_CODES.md`, `docs/specs/SARIF.md`, `docs/specs/MACHINE_SCAN.md`, and `docs/adr/ADR-0011-sarif-and-machine-scan.md`.
+- examples: created complete reference CI repository in `examples/ci-repo/` demonstrating PR diff checks, PR comments, and SARIF upload to GitHub Code Scanning.
+- test: added comprehensive unit and integration tests across `tests/v5/test_sarif.py`, `tests/v5/test_machine_scan.py`, `tests/v5/test_action.py`, `tests/v5/test_precommit.py`, and `tests/v5/test_exit_codes.py`.
+
 ## 0.9.7 — 2026-09-23 — The advisory semantic check (Day 8 T1–T10)
 - feat(semantic): implemented Layer 3 advisory semantic check in `sentinel.semantic`:
   - `judge_sentence()`: evaluates unmatched instruction sentences using structured data-delimited queries, credential redaction (`sentinel.core.redact()`), and prompt-injection defense.

@@ -1,0 +1,15 @@
+- id: sentinel-scan
+  name: Sentinel Agent Security Scan
+  description: Scan AI agent configuration files for prompt injection, backdoors, and unapproved hooks.
+  entry: sentinel scan
+  language: python
+  types_or: [markdown, json, yaml]
+  pass_filenames: false
+
+- id: sentinel-doctor
+  name: Sentinel Instruction Doctor
+  description: Check agent instruction files for broken imports, contradictions, and context bloat.
+  entry: sentinel doctor
+  language: python
+  types_or: [markdown]
+  pass_filenames: true

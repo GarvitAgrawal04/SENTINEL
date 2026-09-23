@@ -400,7 +400,9 @@ sentinel  verdict: COMPROMISED   (formula v0.1)
 Useful variants:
 
 ```bash
+sentinel scan . --format sarif      # SARIF 2.1.0 output for GitHub Security tab (Code Scanning)
 sentinel scan . --json              # machine-readable report
+sentinel scan --machine --yes       # discover & scan user-level configs (~/.claude, ~/.cursor, VS Code, ~/.gemini)
 sentinel scan . --hooks-only        # only things that run or connect by themselves ("I removed the package. Am I clean?")
 sentinel scan --global              # your own ~/.claude and ~/.gemini settings
 sentinel scan . --base main         # also compare with a git ref: catches deleted or flipped guardrails
@@ -449,6 +451,47 @@ the tool: [`docs/SAMPLE_PR_COMMENT.md`](docs/SAMPLE_PR_COMMENT.md). Locally, the
 
 In pull-request mode Sentinel also flags **undeclared changes**: agent-config files touched by a pull request whose commit
 messages mention none of them (Miasma's commit claimed to be a code change).
+
+#### SARIF & GitHub Code Scanning Integration
+
+Upload findings directly to your repository's GitHub **Security** tab:
+
+```yaml
+- name: Sentinel SARIF Scan
+  run: sentinel scan . --format sarif > sentinel.sarif
+
+- name: Upload SARIF to GitHub Code Scanning
+  if: always()
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: sentinel.sarif
+    category: sentinel-agent-security
+```
+
+See [`examples/ci-repo/`](examples/ci-repo/) for a complete working CI workflow, and [`docs/specs/SARIF.md`](docs/specs/SARIF.md) for the SARIF specification.
+
+#### Pre-commit Hook
+
+Audit agent configs locally before every commit by adding Sentinel to `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/GarvitAgrawal04/SENTINEL
+    rev: v0.9.8
+    hooks:
+      - id: sentinel-scan
+      - id: sentinel-doctor
+```
+
+#### Machine-Level Configuration Audit (`--machine`)
+
+Audit user-level agent configs across your machine (`~/.claude`, `~/.cursor`, VS Code user settings, `~/.gemini`):
+
+```bash
+sentinel scan --machine --yes
+```
+
+Requires consent before inspecting directories outside the current workspace. See [`docs/specs/MACHINE_SCAN.md`](docs/specs/MACHINE_SCAN.md) and [`docs/specs/EXIT_CODES.md`](docs/specs/EXIT_CODES.md).
 
 ### 5. `AGENTS.lock`: a signed record of what was approved
 
