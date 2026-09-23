@@ -14,8 +14,8 @@ Verifies that:
 from __future__ import annotations
 
 import re
+import struct
 from pathlib import Path
-from PIL import Image
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -60,17 +60,21 @@ class TestPortfolioAssets:
 
         preview = ROOT / "docs" / "img" / "social-preview.png"
         assert preview.is_file(), "docs/img/social-preview.png is missing"
-        with Image.open(preview) as img:
-            assert img.size == (1280, 640), f"Social preview image must be 1280x640, got {img.size}"
+        data = preview.read_bytes()
+        assert data[:8] == b"\x89PNG\r\n\x1a\n", "social-preview.png must be a valid PNG"
+        w, h = struct.unpack(">II", data[16:24])
+        assert (w, h) == (1280, 640), f"Social preview image must be 1280x640, got ({w}, {h})"
 
     def test_demo_gif_animation(self):
         """docs/img/demo.gif must exist, be an animated GIF, and contain >= 10 frames."""
         gif_path = ROOT / "docs" / "img" / "demo.gif"
         assert gif_path.is_file(), "docs/img/demo.gif is missing"
-        with Image.open(gif_path) as img:
-            assert img.format == "GIF", "demo.gif must be in GIF format"
-            assert getattr(img, "is_animated", False), "demo.gif must be an animated GIF"
-            assert img.n_frames >= 10, f"demo.gif must have >= 10 frames, got {img.n_frames}"
+        data = gif_path.read_bytes()
+        assert data[:6] in (b"GIF89a", b"GIF87a"), "demo.gif must be a valid GIF"
+        w, h = struct.unpack("<HH", data[6:10])
+        assert (w, h) == (960, 560), f"demo.gif canvas size must be 960x560, got ({w}, {h})"
+        frames = data.count(b"\x21\xf9\x04")
+        assert frames >= 10, f"demo.gif must have >= 10 frames, got {frames}"
 
     def test_demo_md_five_minute_tour(self):
         """docs/DEMO.md must provide a 5-minute hands-on walkthrough."""
