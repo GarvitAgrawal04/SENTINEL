@@ -524,6 +524,17 @@ Static rules and single-moment sandboxes are blind to dormant instructions that 
 - **Delta:** **+100.0% detection advantage** on dormant threats.
 - **Key-free replay in CI:** recorded turns serialize into `cassette.json` with secrets redacted; CI verifies pinned cassette SHA256 hashes in `AGENTS.lock` without external API spend.
 
+#### Layer 3 Advisory Semantic Check: catching unseen phrasing
+
+Pattern rules detect structure, syntax, and known wording patterns, but achieve 0 of 86 recall on unseen adversarial holdouts. Sentinel Layer 3 (`sentinel scan <file> --semantic`) provides an advisory semantic check for candidate sentences no pattern rule matched:
+
+- **Advisory only (never convict):** surfaces as a `WARNING` with an information diagnostic in VS Code, lowering trust score by at most $\le 20$ points (hard floor at 40, **never** `COMPROMISED`).
+- **Data-delimited & redacted:** candidate instructions are wrapped in strict delimiters with all tokens/secrets redacted via `sentinel.core.redact()` before model evaluation, defending against prompt injection.
+- **Empirical benchmark ([`bench/results/semantic_eval.md`](bench/results/semantic_eval.md)):**
+  - **Adversarial Holdout Recall:** **84.88%** (73 of 86 caught; prior pattern rules: 0 of 86, +84.88% gain).
+  - **Benign False-Warning Rate:** **0.00%** (0 of 300 on real developer repositories; strictly within the $\le 1.0\%$ budget).
+- **Opt-in discipline:** enabled via `--semantic` or `SENTINEL_ENABLE_SEMANTIC=true`. Details in [ADR-0010](docs/adr/ADR-0010-advisory-semantic-check.md).
+
 ### 8. Add your own API key (only for the optional sandbox)
 
 **You do not need a key** for the scanner, the website, the VS Code extension, the gate, the pull-request check or

@@ -60,6 +60,36 @@ def cmd_scan(a) -> int:
         else:
             out = contract.scan_text(target.name, target.read_text(encoding="utf-8", errors="replace"))
             out["filename"] = str(a.path)
+
+        if getattr(a, "semantic", False) or os.environ.get("SENTINEL_ENABLE_SEMANTIC", "").lower() in ("true", "1"):
+            from . import semantic
+            text_content = target.read_text(encoding="utf-8", errors="replace")
+            ev_list = [f["message"] for f in out.get("findings", [])]
+            sem_res = semantic.check_text(text_content, filename=str(a.path), static_evidence=ev_list, enabled=True)
+            if sem_res.flagged:
+                out["layer3_result"] = sem_res.to_dict()
+                new_score, new_verdict = semantic.apply_semantic_finding_to_score(out["trust_score"], sem_res)
+                out["trust_score"] = new_score
+                if out["verdict"] != "COMPROMISED":
+                    out["verdict"] = new_verdict
+                for sf in sem_res.findings:
+                    out["findings"].append({
+                        "rule_id": sf.rule,
+                        "rule_name": f"Advisory Check ({sf.label})",
+                        "severity": "low",
+                        "filename": str(a.path),
+                        "line": sf.line,
+                        "message": f'Advisory semantic check: "{sf.sentence}"',
+                        "snippet": sf.sentence[:240],
+                        "penalty": sf.penalty,
+                        "ceiling": 79 if sf.ceiling else None,
+                        "forces_compromised": False,
+                        "reconstruction": sf.rationale,
+                        "atr_id": None,
+                        "impact": f'Advisory check flagged this instruction as suspicious ({sf.label}): "{sf.sentence}". {sf.rationale}',
+                        "fix": "Review this instruction with repository owners to verify its intent.",
+                    })
+
         if a.json:
             print(json.dumps(out, indent=2, ensure_ascii=False))
         else:
@@ -639,6 +669,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--hooks-only", action="store_true", help="only things that run or connect automatically")
     s.add_argument("--global", dest="glob", action="store_true", help="scan ~/.claude, ~/.gemini instead of a repository")
     s.add_argument("--base", help="git ref to diff against (enables guardrail-weakening detection)")
+    s.add_argument("--semantic", action="store_true", help="enable Layer 3 advisory semantic check on unseen phrasing")
     s = add("run", cmd_run, help="the gate: start the agent only if this repository passes")
     s.add_argument("--path", default=".")
     s.add_argument("--strict", action="store_true", help="refuse on SUSPICIOUS as well")

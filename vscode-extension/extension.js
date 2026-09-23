@@ -59,7 +59,11 @@ function toDiagnostic(document, f) {
     const range = document.lineAt(lineNo).range;
     const decisive = f.forces_compromised || (f.penalty || 0) >= 35;
     const parts = [f.rule_name + '.', f.impact, f.fix ? 'What to do: ' + f.fix : ''].filter(Boolean);
-    const d = new vscode.Diagnostic(range, parts.join(' '), decisive ? vscode.DiagnosticSeverity.Error : vscode.DiagnosticSeverity.Warning);
+    let severity = decisive ? vscode.DiagnosticSeverity.Error : vscode.DiagnosticSeverity.Warning;
+    if (f.rule_id === 'SEM01' || (f.rule_id && f.rule_id.startsWith('SEM'))) {
+        severity = vscode.DiagnosticSeverity.Information;
+    }
+    const d = new vscode.Diagnostic(range, parts.join(' '), severity);
     d.source = 'Sentinel';
     d.code = f.rule_id;
     return d;

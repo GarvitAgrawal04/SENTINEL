@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 8 · T1–T10 · feat(semantic): advisory semantic check (capped <=20, floor 40), 86 holdout / 300 benign eval (84.88% recall, 0.00% FP), VS Code Information diagnostic, ADR-0010 · gate: PASS (0 false alarms, budget met) · tests: 261
+
 - 2026-09-23 · Day 7 · T1–T10 · feat(web): offline timewarp plan and doctor lint endpoints, key-free moments/lints/graph panels, dark mode/a11y, 0-key assertions, screenshots · gate: PASS (clean, 0 key fields) · tests: 252
 
 - 2026-09-23 · Day 6 · T1–T10 · feat(timewarp): deepened behaviour diff (new egress D2, guardrail break D2, moment A vs B plain-English diff, cap logic <=40), 4 fixtures/twins, ADR-0009, published headline sleeper delta · gate: PASS (twins clean, 0 escapes) · tests: 241

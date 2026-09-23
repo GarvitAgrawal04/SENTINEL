@@ -1,3 +1,18 @@
+## 0.9.7 — 2026-09-23 — The advisory semantic check (Day 8 T1–T10)
+- feat(semantic): implemented Layer 3 advisory semantic check in `sentinel.semantic`:
+  - `judge_sentence()`: evaluates unmatched instruction sentences using structured data-delimited queries, credential redaction (`sentinel.core.redact()`), and prompt-injection defense.
+  - Strict advisory scoring: penalties capped at $\le 20$ points total, hard score floor of 40 (score cannot fall below 40), never forces `COMPROMISED` (at worst `SUSPICIOUS`).
+  - Zero-credential leakage: secret tokens and API keys are redacted before any model prompt.
+- feat(cli): added `--semantic` flag to `sentinel scan <target>` to optionally run the advisory semantic check on sentences not matched by static rules.
+- bench(semantic): evaluation harness in `bench/semantic_eval.py` tested against 86 unseen attack wordings and 300 benign sentences from real-world repositories:
+  - Holdout recall: **84.88%** (73 of 86 caught vs 0 of 86 for static patterns, +84.88% net gain).
+  - Benign false-warning rate: **0.00%** (0 of 300 false alarms, cleanly satisfying the $\le 1.0\%$ budget constraint).
+  - Benchmark records saved to `bench/results/semantic_eval.json` and `bench/results/semantic_eval.md`.
+- feat(vscode): updated `vscode-extension/extension.js` to surface `SEM01` semantic findings strictly as `vscode.DiagnosticSeverity.Information` (never `Error`). Synchronized `frontend/sentinel-md.vsix`.
+- docs(adr): added `docs/adr/ADR-0010-advisory-semantic-check.md` documenting the 4 core invariants, measured recall, zero false-warning rate, and shipping decision.
+- test: added `tests/v5/test_semantic.py` verifying prompt-injection immunity, credential redaction, score caps and floor 40, budget thresholds, and CLI integration.
+- docs: added "Layer 3 Advisory Semantic Check" subsection to `README.md`.
+
 ## 0.9.6 — 2026-09-23 — The web app learns the new tricks (Day 7 T1–T10)
 - feat(api): added offline Time-Warp planning endpoint `POST /timewarp/plan` returning trigger taxonomy, scenario moments list, and upfront token/cost projections.
 - feat(api): added offline Instruction Doctor linting endpoint `POST /doctor/lint` returning deterministic hygiene checks (D001–D008) with safe auto-fix previews.
