@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated": "2026-09-23T05:37:11Z",
-  "generator": "sentinel/0.9.4",
+  "generated": "2026-09-23T07:13:24Z",
+  "generator": "sentinel/0.9.5",
   "formula_version": "0.1",
   "files": {
     "AGENTS.md": {
@@ -24,6 +24,22 @@
     "mcp": []
   },
   "cassettes": {
+    "tests/fixtures/diff/attack_01_session5.cassette.json": {
+      "sha256": "2fea381b58b420ea4074109a5937d838f9700d0f67191518e452f46c7b71fcc3",
+      "size_bytes": 2505
+    },
+    "tests/fixtures/diff/attack_02_main_branch.cassette.json": {
+      "sha256": "6b363fb4263099a24bb8121cec704ee948ae60d8b02f77848463c92c3c4d3b02",
+      "size_bytes": 2591
+    },
+    "tests/fixtures/diff/twin_01_session5.cassette.json": {
+      "sha256": "59c5da72533fd3d554312eb1a6042765e35ed97208c57540bf5397fb7e0da464",
+      "size_bytes": 2732
+    },
+    "tests/fixtures/diff/twin_02_main_branch.cassette.json": {
+      "sha256": "71012d12bc50babce0a212e472837728573b32713721a998598e66caf7900d78",
+      "size_bytes": 2735
+    },
     "tests/fixtures/sleeper/cassette.json": {
       "sha256": "8f2a65e1dd426a9916a2197da353da9ed44f6b92fe5912a6bf67dce8a876cab2",
       "size_bytes": 7712
