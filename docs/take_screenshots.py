@@ -71,6 +71,16 @@ def main():
                 page.click(".load-graph-details summary")
                 page.wait_for_timeout(800)
                 page.locator(".load-graph-details").screenshot(path=str(OUT / f"shot-doctor-{scheme}.png"))
+
+                # Time-Warp moments snapshot
+                page.click(".timewarp-details summary")
+                page.wait_for_timeout(600)
+                page.locator(".timewarp-details").screenshot(path=str(OUT / f"shot-timewarp-{scheme}.png"))
+
+                # Instruction Doctor lints snapshot
+                page.click(".doctor-lints-details summary")
+                page.wait_for_timeout(600)
+                page.locator(".doctor-lints-details").screenshot(path=str(OUT / f"shot-lints-{scheme}.png"))
                 ctx.close()
 
             # the demo animation: one viewport, a handful of real states

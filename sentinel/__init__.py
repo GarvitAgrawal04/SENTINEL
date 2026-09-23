@@ -8,4 +8,4 @@ sentinel.render    the pull-request comment
 sentinel.contract  the v1 JSON shape the frontend and the VS Code extension consume
 sentinel.cli / sentinel.api
 """
-__version__ = "0.9.5"
+__version__ = "0.9.6"

@@ -102,6 +102,81 @@ async def scan_demo(file: str) -> dict:
     return contract.scan_text(file, text)
 
 
+class TimewarpPlanIn(BaseModel):
+    filename: str = "CLAUDE.md"
+    text: str
+    config: str | None = None
+
+
+@app.post("/timewarp/plan")
+async def timewarp_plan(body: TimewarpPlanIn) -> dict:
+    if len(body.text.encode("utf-8", "replace")) > MAX_BYTES:
+        raise HTTPException(status_code=413, detail=f"text larger than {MAX_BYTES} bytes")
+    from sentinel.timewarp import triggers, cost, diff, config
+    cfg = None
+    if body.config:
+        try:
+            cfg = config.parse_config(body.config)
+        except Exception:
+            cfg = None
+    extracted = triggers.extract_triggers(body.text)
+    plan = triggers.plan_scenarios(body.text, config=cfg)
+    total_tokens, total_cost = cost.estimate_plan_cost(body.text, len(plan))
+
+    return {
+        "filename": body.filename,
+        "triggers_count": len(extracted),
+        "triggers": [
+            t.to_dict()
+            for t in extracted
+        ],
+        "moments_count": len(plan),
+        "moments": [
+            {
+                "name": s.name,
+                "session": s.session,
+                "branch": s.branch,
+                "clock": s.clock,
+                "env": s.env,
+                "description": diff.describe_moment(s),
+            }
+            for s in plan
+        ],
+        "estimate": {
+            "scenarios": len(plan),
+            "tokens": total_tokens,
+            "cost_usd": total_cost,
+        },
+    }
+
+
+@app.post("/doctor/lint")
+async def doctor_lint(body: TextIn) -> dict:
+    if len(body.text.encode("utf-8", "replace")) > MAX_BYTES:
+        raise HTTPException(status_code=413, detail=f"text larger than {MAX_BYTES} bytes")
+    from sentinel.doctor import lints
+    findings = lints.check_text(body.text, filename=body.filename)
+    fixed_text, fix_count = lints.apply_fixes(body.text, findings)
+
+    return {
+        "filename": body.filename,
+        "findings": [
+            {
+                "id": f.get("id"),
+                "line": f.get("line"),
+                "message": f.get("message"),
+                "fixable": f.get("fix") is not None,
+                "fix_description": (f.get("fix") or {}).get("description"),
+                "kind": f.get("kind", "warning"),
+            }
+            for f in findings
+        ],
+        "findings_count": len(findings),
+        "fixable_count": fix_count,
+        "fixed_text": fixed_text if fix_count > 0 else None,
+    }
+
+
 class GateCheckIn(BaseModel):
     proposed: str
     original: str = ""

@@ -1,3 +1,16 @@
+## 0.9.6 — 2026-09-23 — The web app learns the new tricks (Day 7 T1–T10)
+- feat(api): added offline Time-Warp planning endpoint `POST /timewarp/plan` returning trigger taxonomy, scenario moments list, and upfront token/cost projections.
+- feat(api): added offline Instruction Doctor linting endpoint `POST /doctor/lint` returning deterministic hygiene checks (D001–D008) with safe auto-fix previews.
+- feat(api): added load-graph analysis endpoint `GET /doctor/graph` for visualizing `@import`/`@include` edges and token counts per node.
+- feat(web): new responsive, key-free UI panels in the web app (`frontend/app.js`, `frontend/styles.css`):
+  - Read-only "Time-Warp Moments" panel detailing "moments this file is waiting for" with token/cost estimations.
+  - "Instruction Doctor Lints" panel with inline safe auto-fix toggle and diff preview.
+  - "Instruction Load Graph" panel with interactive SVG dependency topology.
+  - Guaranteed key-free interface: zero key/password fields anywhere on the page, with clear local CLI execution guidance (`sentinel timewarp run`, `sentinel doctor --fix`).
+  - Full accessibility and dark-mode compliance (`prefers-color-scheme: dark`, ARIA labels, focus-visible outlines).
+- test: added comprehensive unit and integration suite in `tests/v5/test_web_timewarp_doctor.py` validating offline operation, sub-100ms endpoint performance, zero key fields, and theme tokens.
+- docs: regenerated web app screenshot assets (`shot-timewarp-*.png`, `shot-lints-*.png`, `shot-doctor-*.png`, `demo.gif`) using `docs/take_screenshots.py` directly from the live web UI.
+
 ## 0.9.5 — 2026-09-23 — The behaviour diff, deepened (Day 6 T1–T10)
 - feat(timewarp): deepened behavioural diff in `sentinel.timewarp.diff`:
   - T1: Diff detects not just canary leaks (`D1`), but new external egress hosts (`D2`) that appear conditionally under simulated triggers.

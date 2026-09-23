@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 7 · T1–T10 · feat(web): offline timewarp plan and doctor lint endpoints, key-free moments/lints/graph panels, dark mode/a11y, 0-key assertions, screenshots · gate: PASS (clean, 0 key fields) · tests: 252
+
 - 2026-09-23 · Day 6 · T1–T10 · feat(timewarp): deepened behaviour diff (new egress D2, guardrail break D2, moment A vs B plain-English diff, cap logic <=40), 4 fixtures/twins, ADR-0009, published headline sleeper delta · gate: PASS (twins clean, 0 escapes) · tests: 241
 
 - 2026-09-23 · Day 5 · T1–T10 · feat(timewarp): run --record with live model, --budget N dropping, --parallel (cap 4), cassette pinning in lock, --trace spend, ADR-0008 · gate: PASS (0 escapes, tampered cassette rejected) · tests: 235

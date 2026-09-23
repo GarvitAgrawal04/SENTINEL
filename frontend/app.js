@@ -400,6 +400,9 @@ function showResult(result) {
     el("pre", { text: breakdown.join("\n") + "\n\n80 or more is clean, 40 to 79 is suspicious, 39 or less is compromised.\nA decisive finding makes the verdict compromised whatever the arithmetic says." })));
 
   const primaryFile = (files[0] && files[0].filename) || "CLAUDE.md";
+  const primaryText = (state.bundle && state.bundle.get(primaryFile)) || $("#text").value || "";
+  body.push(createTimewarpMomentsView(primaryFile, primaryText));
+  body.push(createDoctorLintsView(primaryFile, primaryText));
   body.push(createLoadGraphView(primaryFile));
 
   body.push(el("div", { class: "result-actions" },
@@ -409,6 +412,149 @@ function showResult(result) {
   pane.replaceChildren(...head, el("div", { class: "result-body" }, body));
   requestAnimationFrame(() => pin.style.setProperty("left", `${Math.min(Math.max(score, 1), 99)}%`));
   $("#where").textContent = state.offline ? "" : isLocal() ? "Scanned on this computer." : `Scanned by ${scannerHost()}. Nothing is stored.`;
+}
+
+function createTimewarpMomentsView(filename, text) {
+  const container = el("div", { class: "timewarp-container" }, el("span", { class: "hint", text: "Click to see moments this file is waiting for..." }));
+  const details = el("details", { class: "timewarp-details" },
+    el("summary", { text: "Time-Warp Moments (Triggers)" }),
+    container
+  );
+  details.addEventListener("toggle", async () => {
+    if (!details.open || container.dataset.loaded) return;
+    container.dataset.loaded = "true";
+    if (state.offline) {
+      container.replaceChildren(
+        el("p", { class: "hint", text: "Scanner offline. Run locally for the Time-Warp sandbox." }),
+        el("div", { class: "panel-footer-note" },
+          el("small", {}, "Run this locally for the sandbox: ", el("code", { text: "sentinel timewarp run" }))
+        )
+      );
+      return;
+    }
+    container.replaceChildren(el("span", { class: "hint", text: "Planning scenario moments..." }));
+    try {
+      const data = await getJSON(`${state.api}/timewarp/plan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename, text }),
+      });
+      const moments = data.moments || [];
+      if (!moments.length) {
+        container.replaceChildren(
+          el("p", { class: "hint", text: "This file does not wait for triggers (runs identically at all moments)." }),
+          el("div", { class: "panel-footer-note" },
+            el("small", {}, "Run this locally for the sandbox: ", el("code", { text: "sentinel timewarp run" }))
+          )
+        );
+        return;
+      }
+      const list = el("ul", { class: "moments-list", "aria-label": "Moments this file is waiting for" });
+      for (const m of moments) {
+        const cond = m.clock || (m.session ? `session ${m.session}` : "") || m.branch || (m.env ? `env: ${JSON.stringify(m.env)}` : "scenario");
+        list.append(
+          el("li", { class: "moment-item" },
+            el("div", { class: "moment-head" },
+              el("span", { class: "moment-name", text: m.name }),
+              el("span", { class: "moment-badge", text: cond })
+            ),
+            el("p", { class: "moment-desc", text: m.description || "" })
+          )
+        );
+      }
+      const est = data.estimate || {};
+      const estText = est.scenarios != null ? `Plan: ${est.scenarios} moment${est.scenarios === 1 ? "" : "s"}, ~${est.tokens || 0} tokens (est. $${(est.cost_usd || 0).toFixed(4)} USD)` : "";
+      container.replaceChildren(
+        list,
+        estText ? el("p", { class: "hint", text: estText }) : null,
+        el("div", { class: "panel-footer-note" },
+          el("small", {}, "Run this locally for the sandbox: ", el("code", { text: "sentinel timewarp run" }))
+        )
+      );
+    } catch (e) {
+      container.replaceChildren(el("p", { class: "hint", text: "Could not load time-warp plan: " + (e.message || e) }));
+    }
+  });
+  return details;
+}
+
+function createDoctorLintsView(filename, text) {
+  const container = el("div", { class: "doctor-lints-container" }, el("span", { class: "hint", text: "Click to check instruction hygiene..." }));
+  const details = el("details", { class: "doctor-lints-details" },
+    el("summary", { text: "Instruction Doctor Lints" }),
+    container
+  );
+  details.addEventListener("toggle", async () => {
+    if (!details.open || container.dataset.loaded) return;
+    container.dataset.loaded = "true";
+    if (state.offline) {
+      container.replaceChildren(
+        el("p", { class: "hint", text: "Scanner offline. Run locally to check instruction hygiene." }),
+        el("div", { class: "panel-footer-note" },
+          el("small", {}, "Run locally to apply safe rewrites: ", el("code", { text: "sentinel doctor --fix" }))
+        )
+      );
+      return;
+    }
+    container.replaceChildren(el("span", { class: "hint", text: "Running instruction hygiene checks..." }));
+    try {
+      const data = await getJSON(`${state.api}/doctor/lint`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename, text }),
+      });
+      const findings = data.findings || [];
+      if (!findings.length) {
+        container.replaceChildren(
+          el("p", { class: "clean-lints", text: "No instruction hygiene issues detected (clean)." }),
+          el("div", { class: "panel-footer-note" },
+            el("small", {}, "Run locally to verify or rewrite instructions: ", el("code", { text: "sentinel doctor" }))
+          )
+        );
+        return;
+      }
+      const list = el("ul", { class: "doctor-lints-list", "aria-label": "Instruction doctor findings" });
+      for (const f of findings) {
+        list.append(
+          el("li", { class: "lint-item" + (f.fixable ? " lint-fixable" : "") },
+            el("div", { class: "lint-top" },
+              el("span", { class: "lint-code", text: f.id }),
+              f.line ? el("span", { class: "lint-line", text: `line ${f.line}` }) : null,
+              f.fixable ? el("span", { class: "lint-fix-badge", text: "safe auto-fix" }) : null
+            ),
+            el("p", { class: "lint-msg", text: f.message }),
+            f.fix_description ? el("p", { class: "lint-fix-desc", text: `Fix: ${f.fix_description}` }) : null
+          )
+        );
+      }
+
+      const actions = [];
+      if (data.fixed_text) {
+        const previewPre = el("pre", { class: "fix-diff-preview", hidden: true, text: data.fixed_text });
+        const toggleBtn = el("button", {
+          class: "btn quiet",
+          type: "button",
+          text: "Preview safe auto-fix",
+          onclick: () => {
+            previewPre.hidden = !previewPre.hidden;
+            toggleBtn.textContent = previewPre.hidden ? "Preview safe auto-fix" : "Hide preview";
+          }
+        });
+        actions.push(el("div", { class: "fix-action-bar" }, toggleBtn, previewPre));
+      }
+
+      container.replaceChildren(
+        list,
+        ...actions,
+        el("div", { class: "panel-footer-note" },
+          el("small", {}, "Run locally to apply safe rewrites: ", el("code", { text: "sentinel doctor --fix" }))
+        )
+      );
+    } catch (e) {
+      container.replaceChildren(el("p", { class: "hint", text: "Could not run doctor checks: " + (e.message || e) }));
+    }
+  });
+  return details;
 }
 
 function createLoadGraphView(filename) {
@@ -604,4 +750,4 @@ function describeOff() {
 
 start();
 
-export { reveal, decodeRun };                                               // for tests
+export { reveal, decodeRun, createTimewarpMomentsView, createDoctorLintsView, createLoadGraphView }; // for tests

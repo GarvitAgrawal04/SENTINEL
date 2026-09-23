@@ -487,8 +487,42 @@ h3 { font-size: 17px; font-weight: 600; letter-spacing: -.008em; }
 .load-graph-details summary { cursor: pointer; font-weight: 500; font-size: 14px; }
 .graph-container { margin-top: 12px; overflow-x: auto; padding: 4px 0; }
 .graph-svg { display: block; max-width: 100%; height: auto; }
-.graph-node { fill: var(--bg, #f6f8fa); stroke: var(--hairline, #d0d7de); stroke-width: 1.5; }
-.graph-node-entry { stroke: #2da44e; stroke-width: 2; }
-.graph-node-missing { stroke: #cf222e; stroke-dasharray: 4; }
-.graph-text { font-family: monospace; font-size: 11px; fill: var(--ink, #1f2328); text-anchor: middle; dominant-baseline: middle; }
-.graph-edge { stroke: var(--hairline, #8c959f); stroke-width: 1.5; fill: none; }
+.graph-node { fill: var(--surface); stroke: var(--hairline); stroke-width: 1.5; }
+.graph-node-entry { stroke: var(--clean); stroke-width: 2; }
+.graph-node-missing { stroke: var(--compromised); stroke-dasharray: 4; }
+.graph-text { font-family: var(--mono); font-size: 11px; fill: var(--ink); text-anchor: middle; dominant-baseline: middle; }
+.graph-edge { stroke: var(--line); stroke-width: 1.5; fill: none; }
+
+/* ── Time-Warp moments panel ───────────────────────────────────────────── */
+.timewarp-details { margin-top: 14px; border: 1px solid var(--hairline); border-radius: 8px; padding: 8px 12px; }
+.timewarp-details summary { cursor: pointer; font-weight: 500; font-size: 14px; color: var(--ink); }
+.timewarp-details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.timewarp-container { margin-top: 10px; }
+.moments-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.moment-item { background: var(--surface); border: 1px solid var(--hairline); border-radius: 6px; padding: 8px 12px; }
+.moment-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.moment-name { font-weight: 600; font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.moment-badge { font-size: 11px; color: var(--graphite); background: var(--mist); padding: 2px 6px; border-radius: 4px; }
+.moment-desc { margin: 0; font-size: 12px; color: var(--graphite); }
+
+/* ── Doctor lints panel ────────────────────────────────────────────────── */
+.doctor-lints-details { margin-top: 14px; border: 1px solid var(--hairline); border-radius: 8px; padding: 8px 12px; }
+.doctor-lints-details summary { cursor: pointer; font-weight: 500; font-size: 14px; color: var(--ink); }
+.doctor-lints-details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.doctor-lints-container { margin-top: 10px; }
+.doctor-lints-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.lint-item { background: var(--surface); border: 1px solid var(--hairline); border-radius: 6px; padding: 8px 12px; }
+.lint-fixable { border-left: 3px solid var(--clean); }
+.lint-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 12px; }
+.lint-code { font-weight: 700; font-family: var(--mono); color: var(--ink); }
+.lint-line { color: var(--graphite); font-family: var(--mono); }
+.lint-fix-badge { margin-left: auto; font-size: 11px; background: var(--clean-tint); color: var(--clean); padding: 2px 6px; border-radius: 4px; }
+.lint-msg { margin: 0 0 4px; font-size: 13px; color: var(--ink); }
+.lint-fix-desc { margin: 0; font-size: 12px; color: var(--clean); font-style: italic; }
+.clean-lints { color: var(--clean) !important; font-weight: 500; }
+.panel-footer-note { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--hairline); font-size: 12px; color: var(--graphite); }
+.panel-footer-note code { background: var(--mist); color: var(--ink); padding: 2px 4px; border-radius: 4px; font-family: var(--mono); font-size: 11px; }
+.fix-action-bar { margin-top: 10px; }
+.fix-diff-preview { margin-top: 8px; max-height: 200px; overflow: auto; background: var(--mist); border: 1px solid var(--hairline); padding: 8px; border-radius: 4px; font-family: var(--mono); font-size: 11px; white-space: pre-wrap; color: var(--ink); }
+
+
