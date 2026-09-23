@@ -1,3 +1,11 @@
+## 0.9.10 — 2026-09-23 — Evidence, reproducibility, and the research write-up (Day 11 T1–T10)
+- feat(evidence): created `bench/evidence.py` — one command reproduces every published number (semantic harness, trigger prevalence, time-warp detonation). Writes `bench/results/evidence_latest.md` and a dated snapshot.
+- feat(makefile): added `make evidence` target wired to `bench/evidence.py`.
+- docs: authored `docs/RESEARCH.md` — full research write-up with landscape, competitive differentiation (vs wormhole-guard 0.2.0 and AgentAuditKit 0.6.6), failure analysis, threats to validity, reproduction instructions, and related work citations.
+- docs: updated `bench/results/README.md` into a comprehensive cross-linked index of all benchmark artifacts.
+- docs: updated README "Reproduce it" section to reference `bench/evidence.py` and `docs/RESEARCH.md`.
+- test: added `tests/v5/test_evidence.py` (15 tests) verifying evidence runner, stored results, RESEARCH.md content, Makefile target, and README cross-links.
+
 ## 0.9.9 — 2026-09-23 — Packaging: make it installable the way people expect (Day 10 T1–T10)
 - feat(packaging): expanded `pyproject.toml` with complete PEP 621 packaging metadata, classifiers, keywords, and project URLs. Built and validated sdist and wheel distributions (`dist/sentinel_md-0.9.9*`).
 - feat(pypi): created `.github/workflows/publish-pypi.yml` implementing PyPI Trusted Publishing via GitHub OIDC (`id-token: write`), with dry-run and TestPyPI verification without static tokens.

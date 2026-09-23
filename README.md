@@ -983,15 +983,24 @@ legitimate network use, plain URLs, secrets mentioned nearby):
 ### Reproduce it
 
 ```bash
-pip install wormhole-guard agent-audit-kit
-python bench/bench.py fixtures                       # table 3
-python bench/bench.py benign                         # table 2
-python bench/wildscan.py search corpus && python bench/wildscan.py fetch corpus     # rebuild the corpus (public data, read-only, no token needed)
-python bench/bench.py wild corpus                    # table 1
-python bench/detonation/run_detonation_eval.py --out results.json                   # table 4 (needs one provider key)
+# Run all benchmark harnesses in one command — no API key needed
+python bench/evidence.py
+# Report written to bench/results/evidence_latest.md
+
+# Or per-harness:
+python bench/semantic_eval.py                        # Layer 3 recall + FP rate
+python bench/trigger_prevalence.py                   # time-warp trigger prevalence
+python bench/timewarp_eval.py                        # sleeper attack vs single-moment
+python bench/bench.py fixtures                       # fixture comparison table
+python bench/bench.py benign                         # benign false-alarm table
+python bench/wildscan.py search corpus && python bench/wildscan.py fetch corpus   # rebuild corpus
+python bench/bench.py wild corpus                    # wild-repo precision table
 ```
 
-Both other tools ship frequently. If a number here is out of date, that is good news; please open an issue.
+Full methodology, failure analysis, and threats to validity: **[docs/RESEARCH.md](docs/RESEARCH.md)**  
+All stored results: **[bench/results/](bench/results/)**
+
+Both other tools ship frequently. If a number here is out of date, please open an issue.
 
 ---
 

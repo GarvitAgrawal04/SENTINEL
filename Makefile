@@ -4,7 +4,7 @@ HOST   ?= 127.0.0.1
 PORT   ?= 8000
 BIN    := .venv/bin
 
-.PHONY: run install test selftest scan bench clean help
+.PHONY: run install test selftest scan bench evidence clean help
 
 help:
 	@echo "make run       set up (first time) and start the API on http://$(HOST):$(PORT)"
@@ -12,6 +12,7 @@ help:
 	@echo "make test      run the test suite"
 	@echo "make scan      scan this repository with Sentinel"
 	@echo "make bench     run precision_gate check against MAIN and HELDOUT corpora"
+	@echo "make evidence  run all benchmark harnesses and write bench/results/evidence_latest.md"
 	@echo "make clean     remove .venv and caches (keeps .env)"
 
 .venv/.installed: requirements.txt requirements-dev.txt pyproject.toml
@@ -45,6 +46,9 @@ HELDOUT ?= $(SENTINEL_CORPUS_HELDOUT)
 bench: install
 	@test -n "$(MAIN)" -a -n "$(HELDOUT)" || (echo "error: set MAIN and HELDOUT (or SENTINEL_CORPUS_MAIN and SENTINEL_CORPUS_HELDOUT) environment variables" && exit 1)
 	$(BIN)/python bench/precision_gate.py check $(MAIN) $(HELDOUT)
+
+evidence: install
+	$(BIN)/python bench/evidence.py
 
 clean:
 	rm -rf .venv .pytest_cache build dist *.egg-info
