@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 import tomllib
 import zipfile
 from pathlib import Path
@@ -51,6 +53,10 @@ def test_pyproject_pep621_metadata(pyproject_data):
 
 def test_wheel_contains_all_modules_and_entry_point():
     wheels = list(DIST.glob("sentinel_md-*.whl"))
+    if not wheels:
+        DIST.mkdir(parents=True, exist_ok=True)
+        subprocess.run([sys.executable, "-m", "pip", "wheel", "--no-deps", "-w", str(DIST), str(ROOT)], check=True)
+        wheels = list(DIST.glob("sentinel_md-*.whl"))
     assert wheels, f"No wheel found in {DIST}. Run `python -m build` first."
     wheel_path = wheels[0]
 
@@ -75,6 +81,9 @@ def test_wheel_contains_all_modules_and_entry_point():
 
 def test_cyclonedx_sbom_structure():
     sbom_path = DIST / "sentinel-md.sbom.json"
+    if not sbom_path.is_file():
+        DIST.mkdir(parents=True, exist_ok=True)
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "generate_sbom.py"), "--output", str(sbom_path)], check=True)
     assert sbom_path.is_file(), f"Missing SBOM at {sbom_path}"
     data = json.loads(sbom_path.read_text(encoding="utf-8"))
 
