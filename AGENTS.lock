@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generated": "2026-09-18T07:19:51Z",
-  "generator": "sentinel/0.5.8",
+  "generated": "2026-09-23T05:37:11Z",
+  "generator": "sentinel/0.9.4",
   "formula_version": "0.1",
   "files": {
     "AGENTS.md": {
@@ -22,5 +22,91 @@
   "approvals": {
     "autoexec": [],
     "mcp": []
+  },
+  "cassettes": {
+    "tests/fixtures/sleeper/cassette.json": {
+      "sha256": "8f2a65e1dd426a9916a2197da353da9ed44f6b92fe5912a6bf67dce8a876cab2",
+      "size_bytes": 7712
+    },
+    "tests/fixtures/sleeper_set/attack_01_session3.cassette.json": {
+      "sha256": "ae27b0892a9d994945aebc9443c5ad348910777865c9cb461014fc51924622cc",
+      "size_bytes": 17486
+    },
+    "tests/fixtures/sleeper_set/attack_02_session5.cassette.json": {
+      "sha256": "6b481affd10a0bb58538544bf8a480bc906e305cd57a6deeec0c5ec3ed4176ed",
+      "size_bytes": 17486
+    },
+    "tests/fixtures/sleeper_set/attack_03_branch_release.cassette.json": {
+      "sha256": "03afd185a05570824b02cc43cbefdec1a9d0ec3965e62d4f1bf33db95b9cc26b",
+      "size_bytes": 20294
+    },
+    "tests/fixtures/sleeper_set/attack_04_branch_prod.cassette.json": {
+      "sha256": "42aa8844ded2540e21a4e76f32cc2f94362f956c99fe4b4a3983b3f8d6d58fb7",
+      "size_bytes": 20288
+    },
+    "tests/fixtures/sleeper_set/attack_05_ci_env.cassette.json": {
+      "sha256": "7661a2de3849c6b47860f44dbb62e661b9dd90d79f9cf14ff1925e7e32a735d1",
+      "size_bytes": 14758
+    },
+    "tests/fixtures/sleeper_set/attack_06_weekend.cassette.json": {
+      "sha256": "6c5a4f4c4df2cd2a400af38dc53b5b52ab1465356a801c24ffe92b81641ccef8",
+      "size_bytes": 20154
+    },
+    "tests/fixtures/sleeper_set/attack_07_month_end.cassette.json": {
+      "sha256": "138ede30dc11553b785897a517610378b8443f02544c4fe17a2e51c0cb1d7bbb",
+      "size_bytes": 20158
+    },
+    "tests/fixtures/sleeper_set/attack_08_branch_dev.cassette.json": {
+      "sha256": "02496e164f009bb8264d88e331ee5c8f3d935693e2b0b94ceba5f1756f91b439",
+      "size_bytes": 20286
+    },
+    "tests/fixtures/sleeper_set/attack_09_future_date.cassette.json": {
+      "sha256": "f201292b57ffa888158fddfbdd804a5bb06bb477dc99cb7aa045d8e1fe15d60b",
+      "size_bytes": 20162
+    },
+    "tests/fixtures/sleeper_set/attack_10_session4.cassette.json": {
+      "sha256": "28cb0e2f1081e4f91e7a87adcf3fa7348bd1fadb40e1ff66eecfd35c6974dee5",
+      "size_bytes": 19262
+    },
+    "tests/fixtures/sleeper_set/twin_01_ci_skip_slow.cassette.json": {
+      "sha256": "32c6c419b2ae67225eb9db9affafde9ae66978a521ba5321d23b790023f73f60",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_02_friday_full_suite.cassette.json": {
+      "sha256": "329db79e9a6fbe12cbb720050151161bcbcfb0bd8cd9441eef74cce74a772bd3",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_03_release_branch_docs.cassette.json": {
+      "sha256": "8a67b9a6927591e9de2c19c53299a378babd9f1120ece9118e73cfb196aa21de",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_04_weekend_maintenance.cassette.json": {
+      "sha256": "20952f38ec96344e341c1ff848ce94bdf6bd0d03f489cf1ae4f5cf0b363d529e",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_05_session_reconnect.cassette.json": {
+      "sha256": "854bf439b27ce429c4f8e10914d1a820de45c9b97e269578b709e9b45fe3d1f7",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_06_dev_env_mock.cassette.json": {
+      "sha256": "0703a88aba879158c1e0f4ae7d4b11b0d80074c84f1940ac683ee36bed1ef8dc",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_07_staging_deploy.cassette.json": {
+      "sha256": "88d530c51ee01783f1182ff88f19b953e350e5a4d82dfb766f92ab2633cc5907",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_08_clean_build.cassette.json": {
+      "sha256": "a4aecaff8fbe89a8163721d715a2c76d02876aa4789248a58e58f4c89d2559c7",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_09_branch_lint.cassette.json": {
+      "sha256": "5aa3e6b96d76e5c160f2f868685728a55eea1971b44f383012a4478b3e785c3e",
+      "size_bytes": 5528
+    },
+    "tests/fixtures/sleeper_set/twin_10_daily_standup_notes.cassette.json": {
+      "sha256": "b95a2d6490c59c7eabd06c2a9760949c3af3c5b9dbe9e941b7f1120dfa19d361",
+      "size_bytes": 5528
+    }
   }
 }
