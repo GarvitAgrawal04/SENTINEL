@@ -1,0 +1,46 @@
+name: Publish Extension (Marketplace & OpenVSX)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
+        with:
+          node-version: "20"
+
+      - name: Install packaging tools
+        run: npm install -g @vscode/vsce ovsx
+
+      - name: Package extension
+        run: |
+          cd vscode-extension
+          vsce package --no-dependencies --out sentinel-md.vsix
+
+      - name: Publish to OpenVSX (Cursor & Windsurf)
+        if: env.OVSX_TOKEN != ''
+        env:
+          OVSX_TOKEN: ${{ secrets.OPENVSX_TOKEN }}
+        run: |
+          cd vscode-extension
+          ovsx publish sentinel-md.vsix -p "$OVSX_TOKEN" || echo "OpenVSX publish skipped or token pending"
+
+      - name: Publish to VS Code Marketplace
+        if: env.VSCE_PAT != ''
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          cd vscode-extension
+          vsce publish -p "$VSCE_PAT" || echo "VSCE publish skipped or token pending"

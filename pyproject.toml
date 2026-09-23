@@ -4,18 +4,41 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sentinel-md"
-version = "0.9.8"
+version = "0.9.9"
 description = "What do the files your AI coding agent obeys make it do? Static rules, sandbox detonation, a gate and a signed AGENTS.lock."
 readme = "README.md"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Mayan Kamboj" }, { name = "Garvit Agrawal" }]
 requires-python = ">=3.10"
+keywords = ["ai-agent", "security", "prompt-injection", "claude", "cursor", "gemini", "sarif", "mcp"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: OS Independent",
+]
 dependencies = ["fastapi==0.141.1", "python-multipart==0.0.32", "pydantic==2.13.5", "pyyaml>=6.0"]
+
 [project.optional-dependencies]
 # Exact, tested versions live in requirements.txt / requirements-dev.txt. These are the compatible ranges.
 sign = ["cryptography>=42"]
 api = ["fastapi>=0.111", "uvicorn>=0.29", "python-multipart>=0.0.9", "pydantic>=2", "cryptography>=42"]
-dev = ["pytest>=8", "httpx>=0.27", "jsonschema>=4", "pyyaml>=6.0", "fastapi>=0.111", "python-multipart>=0.0.9", "pydantic>=2", "cryptography>=42"]
+dev = ["pytest>=8", "httpx>=0.27", "jsonschema>=4", "pyyaml>=6.0", "fastapi>=0.111", "python-multipart>=0.0.9", "pydantic>=2", "cryptography>=42", "build>=1.0"]
+
+[project.urls]
+Homepage = "https://github.com/GarvitAgrawal04/SENTINEL"
+Repository = "https://github.com/GarvitAgrawal04/SENTINEL.git"
+Documentation = "https://github.com/GarvitAgrawal04/SENTINEL#readme"
+Issues = "https://github.com/GarvitAgrawal04/SENTINEL/issues"
+Changelog = "https://github.com/GarvitAgrawal04/SENTINEL/blob/main/CHANGELOG.md"
 
 [project.scripts]
 sentinel = "sentinel.cli:main"
@@ -23,6 +46,9 @@ sentinel = "sentinel.cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["sentinel*"]
+
+[tool.setuptools.package-data]
+"sentinel" = ["py.typed"]
 
 [tool.vercel]
 entrypoint = "sentinel.api:app"

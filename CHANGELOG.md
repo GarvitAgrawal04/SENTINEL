@@ -1,3 +1,13 @@
+## 0.9.9 — 2026-09-23 — Packaging: make it installable the way people expect (Day 10 T1–T10)
+- feat(packaging): expanded `pyproject.toml` with complete PEP 621 packaging metadata, classifiers, keywords, and project URLs. Built and validated sdist and wheel distributions (`dist/sentinel_md-0.9.9*`).
+- feat(pypi): created `.github/workflows/publish-pypi.yml` implementing PyPI Trusted Publishing via GitHub OIDC (`id-token: write`), with dry-run and TestPyPI verification without static tokens.
+- feat(openvsx): documented OpenVSX (Cursor / Windsurf) and VS Code Marketplace publishing in `vscode-extension/PUBLISHING.md` and automated via `.github/workflows/publish-extension.yml`.
+- feat(sbom): created `scripts/generate_sbom.py` and `.github/workflows/release-artifacts.yml` generating CycloneDX v1.5 JSON SBOM (`dist/sentinel-md.sbom.json`), SHA256 checksums (`dist/SHA256SUMS`), and Sigstore keyless signing.
+- docs: added `docs/INSTALL.md` with complete installation instructions for `pip`, `uvx`, `pipx`, Docker, pre-commit, Cursor, and VS Code.
+- docs: added `SUPPORT.md` detailing support channels, vulnerability disclosure policies, and platform support matrices.
+- docs: updated `README.md` with PyPI, OpenVSX, and CI badges, alongside an intuitive Installation Matrix table.
+- test: added `tests/v5/test_packaging.py` validating packaging metadata, wheel contents, entry points, and SBOM schema conformance.
+
 ## 0.9.8 — 2026-09-23 — SARIF, machine scan, and CI integration (Day 9 T1–T10)
 - feat(sarif): unified SARIF 2.1.0 exporter in `sentinel/sarif.py` supporting `sentinel scan` (repository and single file) and `sentinel pr` diff reports, compliant with OASIS SARIF 2.1.0 schema and GitHub Security tab Code Scanning.
 - feat(cli): added `--format {text,json,sarif}` argument to `sentinel scan` and `sentinel pr`.

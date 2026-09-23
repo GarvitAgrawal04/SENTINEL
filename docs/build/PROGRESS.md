@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 10 · T1–T10 · feat(packaging): PyPI trusted publishing (OIDC), sdist/wheel builds, OpenVSX guide, CycloneDX SBOM + Sigstore, SUPPORT.md, install matrix · gate: PASS (wheel installs, entrypoints valid) · tests: 283
+
 - 2026-09-23 · Day 9 · T1–T10 · feat(sarif/ci): SARIF 2.1.0 export (scan/pr), machine config scan with consent gate, 0-exec invariant, action.yml SARIF upload, pre-commit hooks, exit codes spec, ci-repo example · gate: PASS (0 exec leaks, schema valid) · tests: 279
 
 - 2026-09-23 · Day 8 · T1–T10 · feat(semantic): advisory semantic check (capped <=20, floor 40), 86 holdout / 300 benign eval (84.88% recall, 0.00% FP), VS Code Information diagnostic, ADR-0010 · gate: PASS (0 false alarms, budget met) · tests: 261

@@ -14,8 +14,10 @@
 </p>
 
 <p>
+  <a href="https://pypi.org/project/sentinel-md/"><img src="https://img.shields.io/pypi/v/sentinel-md?color=2457f5&label=pypi" alt="PyPI version"></a>
   <a href="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml"><img src="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/tests.yml/badge.svg?branch=main" alt="tests"></a>
   <a href="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/sentinel-sign.yml"><img src="https://github.com/GarvitAgrawal04/SENTINEL/actions/workflows/sentinel-sign.yml/badge.svg?branch=main" alt="lock signed by CI"></a>
+  <a href="https://github.com/GarvitAgrawal04/SENTINEL#inside-vs-code"><img src="https://img.shields.io/badge/openvsx-sentinel--md-blue?logo=visualstudiocode" alt="OpenVSX"></a>
   <a href="https://github.com/GarvitAgrawal04/SENTINEL/releases/latest"><img src="https://img.shields.io/github/v/release/GarvitAgrawal04/SENTINEL?label=release&color=2457f5" alt="latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2457f5" alt="Apache-2.0 licence"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-2457f5" alt="Python 3.10 or newer">
@@ -127,6 +129,21 @@ and switch them on (Windows: `.venv\Scripts\Activate.ps1` · others: `source .ve
 sentinel scan .                # what would the files in this project make an agent do?
 sentinel run -- claude         # start your agent only if the project is not compromised
 ```
+
+### Installation Matrix
+
+| Method | Command / Package | Best for |
+|:---|:---|:---|
+| **`pip`** | `pip install sentinel-md` | Standard Python environments & developer machines |
+| **`pipx`** | `pipx run sentinel-md scan .` | Zero-install isolated execution |
+| **`uvx`** | `uvx sentinel-md scan .` | Lightning-fast ephemeral execution with `uv` |
+| **Pre-commit** | `.pre-commit-config.yaml` (`sentinel-scan`, `sentinel-doctor`) | Automated local pre-commit verification |
+| **GitHub Actions** | `uses: GarvitAgrawal04/SENTINEL/action@main` | CI PR behavioral diffs & SARIF Code Scanning |
+| **Cursor / Windsurf** | OpenVSX: `sentinel-md` (or install `.vsix`) | In-editor underlining & safe rewrites |
+| **VS Code** | VS Code Marketplace: `sentinel-md` | In-editor underlining & safe rewrites |
+| **Local Clone** | `git clone https://github.com/GarvitAgrawal04/SENTINEL` | Full development, offline website, tests |
+
+See [`docs/INSTALL.md`](docs/INSTALL.md) for complete installation options.
 
 <p>
   <a href="#install-and-run"><img src="docs/img/btn-docs.svg" height="40" alt="Full reference"></a>&nbsp;
