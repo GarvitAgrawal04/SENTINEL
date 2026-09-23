@@ -405,7 +405,7 @@ def cmd_timewarp_run(a) -> int:
             print(f"error: replay execution failed: {exc}", file=sys.stderr)
             return 1
 
-    findings = diff.compare(traces)
+    findings = diff.compare(traces, file_text=file_text)
 
     per_scenario_spend = []
     for t in traces:
@@ -449,6 +449,8 @@ def cmd_timewarp_run(a) -> int:
     print()
     for i, f in enumerate(findings, 1):
         print(f"{i}. [{f['rule']}] {f['evidence']}")
+        if f.get("change"):
+            print(f"   > change: {f['change']}")
         print(f"   > {f['impact']}")
         print(f"   > fix: {f['fix']}")
     return 1

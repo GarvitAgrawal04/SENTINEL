@@ -69,6 +69,12 @@ def discover_test_cassettes(root: Path) -> list[Path]:
     return cassettes
 
 
+def sha256_cassette(p: Path) -> tuple[str, int]:
+    """Compute sha256 and size with normalized LF line endings for cross-platform parity."""
+    raw = p.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(raw).hexdigest(), len(raw)
+
+
 def build_lock(root: Path, report: dict, approvals: dict, pin_cassettes: bool = True) -> dict:
     if report["verdict"] == "COMPROMISED":
         raise LockRefused("refusing to write a lock while anything is COMPROMISED - fix or remove it first")
@@ -96,9 +102,10 @@ def build_lock(root: Path, report: dict, approvals: dict, pin_cassettes: bool = 
     if pin_cassettes:
         cassettes_map = {}
         for cp in discover_test_cassettes(root):
+            sha, size = sha256_cassette(cp)
             cassettes_map[rel(root, cp)] = {
-                "sha256": core.sha256_file(cp),
-                "size_bytes": cp.stat().st_size,
+                "sha256": sha,
+                "size_bytes": size,
             }
         if cassettes_map:
             lock_dict["cassettes"] = cassettes_map
@@ -230,8 +237,10 @@ def verify(root: Path, public_pem: bytes | None = None, lock: dict | None = None
         cp = root / r
         if not cp.is_file():
             missing_cassettes.append(r)
-        elif core.sha256_file(cp) != info.get("sha256"):
-            tampered_cassettes.append(r)
+        else:
+            raw_sha, _ = sha256_cassette(cp)
+            if raw_sha != info.get("sha256"):
+                tampered_cassettes.append(r)
 
     ok = signature == "valid" and not (changed or new or missing or stale or tampered_cassettes or missing_cassettes)
     return {

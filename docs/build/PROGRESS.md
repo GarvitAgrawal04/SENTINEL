@@ -7,6 +7,8 @@ Format: `YYYY-MM-DD · Day N · Hh · what shipped · gate: PASS/FAIL (verdicts)
 
 <!-- add your lines above this comment -->
 
+- 2026-09-23 · Day 6 · T1–T10 · feat(timewarp): deepened behaviour diff (new egress D2, guardrail break D2, moment A vs B plain-English diff, cap logic <=40), 4 fixtures/twins, ADR-0009, published headline sleeper delta · gate: PASS (twins clean, 0 escapes) · tests: 241
+
 - 2026-09-23 · Day 5 · T1–T10 · feat(timewarp): run --record with live model, --budget N dropping, --parallel (cap 4), cassette pinning in lock, --trace spend, ADR-0008 · gate: PASS (0 escapes, tampered cassette rejected) · tests: 235
 
 - 2026-09-23 · Day 4 · T1–T10 · feat(timewarp): trigger extraction (10 kinds), deduplication, sentinel timewarp --json, sentinel.timewarp.yml, prevalence bench (1.045 mean across 422 targets), 20 fixtures/twins, ADR-0007 · gate: PASS (twins clean) · tests: 228

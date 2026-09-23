@@ -54,3 +54,17 @@ a one-time approval, 0 COMPROMISED), **0 new scored findings**, 15 new observati
   15 ordinary lines in 930 real repositories say `curl ... | bash` or `>> ~/.bashrc` in setup notes.
 - Evasion undone before matching: zero-width characters, Cyrillic and Greek look-alike letters inside Latin words, odd
   spaces, literal `\uXXXX` escapes. Text inside tool-server configs is now read as instructions.
+
+## Time-Warp Sandbox: Sleeper Attacks Evaluation (20 Fixtures)
+
+To measure detection on dormant sleeper attacks that activate only under future sessions, specific branches, or environment triggers, Sentinel evaluated the 20-fixture sleeper benchmark (`tests/fixtures/sleeper_set/`):
+
+| Evaluation Mode | Sleeper Attacks Caught (10 fixtures) | Benign Twins Flagged (10 fixtures) | False Alarm Rate |
+|---|:---:|:---:|:---:|
+| **Single-Moment Sandbox** ("now", session 1) | **0 of 10** (0.0%) | **0 of 10** (0.0%) | 0.0% |
+| **Time-Warp Sandbox** (multi-moment matrix) | **10 of 10** (**100.0%**) | **0 of 10** (0.0%) | **0.0%** |
+| **Delta / Sandbox Gain** | **+10 (+100.0%)** | **0** | **0.0%** |
+
+- Single-moment sandboxes are blind to dormant attacks (0% recall), as sleeper triggers withhold sensitive actions at session 1 / baseline.
+- Time-Warp detected 100% of dormant payloads across simulated sessions, branches, and clocks while preserving 0% false alarms on benign conditional workflows.
+

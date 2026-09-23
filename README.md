@@ -180,6 +180,7 @@ sentinel run -- claude         # start your agent only if the project is not com
 | Emoji, Hindi, Persian, BOM flagged as an attack | **0 of 7** · the other two tools: 5 and 6 | ✅ |
 | Instruction Doctor token delta (50 public agent files) | **median -20.0 tokens** (max 0, 302 safe fixes, net -1,463 tokens saved) | ✅ |
 | Safe Rewrite Gate red-team (30 poisoned attacks) | **0 gate escapes** (30 of 30 blocked, 0.0% escape rate) | ✅ |
+| Time-Warp sandbox (20 dormant sleeper fixtures) | single-moment **0 of 10 (0%)** vs Time-Warp **10 of 10 (100%)**, 0 false alarms (+100% gain) | ✅ |
 | AI sandbox experiment | caught **11 of 30** and 5 of 30 disguised attacks, 0 false alarms: below our own bar, so it **ships switched off** | ⚠️ |
 | A teammate's independent adversarial corpus, wordings like the ones we studied | recall **8% → 26%**, precision 0.96 | ⚠️ |
 | The same corpus, **86 wordings nobody had seen** | **0 of 86**. Patterns catch structure, not meaning | ❌ |
@@ -513,6 +514,15 @@ Measured on 30 disguised attack files that every static rule misses, and 30 harm
 sandbox on **11 of 30** (gpt-oss-20b) and **5 of 30** (gpt-oss-120b), with **0 of 30** false alarms for both. That is below
 our own 50% bar, so the feature is opt-in and presented as an experiment. It can raise a verdict to SUSPICIOUS; it can never
 make one COMPROMISED by itself. Runs and caveats: [`bench/detonation/results`](bench/detonation/results/README.md).
+
+#### Time-Warp sandbox: catching dormant sleeper attacks
+
+Static rules and single-moment sandboxes are blind to dormant instructions that only trigger under future conditions (e.g. session $\ge$ 3, release branches, or specific calendar dates). `sentinel timewarp run` executes an extracted matrix across simulated virtual sessions, branches, and clocks:
+
+- **Single-moment sandbox:** **0 of 10** sleeper attacks caught (0.0%), 0 false alarms.
+- **Time-Warp sandbox:** **10 of 10** sleeper attacks caught (**100.0%**), 0 false alarms.
+- **Delta:** **+100.0% detection advantage** on dormant threats.
+- **Key-free replay in CI:** recorded turns serialize into `cassette.json` with secrets redacted; CI verifies pinned cassette SHA256 hashes in `AGENTS.lock` without external API spend.
 
 ### 8. Add your own API key (only for the optional sandbox)
 

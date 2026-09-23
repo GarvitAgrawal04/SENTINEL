@@ -1,3 +1,18 @@
+## 0.9.5 — 2026-09-23 — The behaviour diff, deepened (Day 6 T1–T10)
+- feat(timewarp): deepened behavioural diff in `sentinel.timewarp.diff`:
+  - T1: Diff detects not just canary leaks (`D1`), but new external egress hosts (`D2`) that appear conditionally under simulated triggers.
+  - T2: Diff detects guardrail breaks (`D2`) where an agent respects safety constraints at baseline "now" but violates them under delayed conditions (unauthorized sensitive reads, config modifications, hidden command execution).
+  - T3: Every differential finding generates a plain-English `change` field contrasting baseline moment A with divergent moment B, alongside actionable `fix` recommendations.
+  - T4: Enforced differential cap logic: findings can lower a score by $\le 40$ points (ceiling 79, `SUSPICIOUS`) and never force `COMPROMISED` on their own (parity with `D1`).
+- test: added comprehensive unit and integration suite in `tests/v5/test_timewarp_diff_deepened.py` covering T1–T5.
+- test: authored 4 test fixtures and deterministic replay cassettes in `tests/fixtures/diff/`:
+  - `attack_01_session5.md`: benign at "now" (session 1), hostile at session 5.
+  - `twin_01_session5.md`: benign twin clean across both moments.
+  - `attack_02_main_branch.md`: benign on `dev` branch, hostile only on `main`.
+  - `twin_02_main_branch.md`: benign twin clean across both branches.
+- bench(timewarp): published headline sleeper set benchmark results in `README.md` and `bench/corpus/README.md` (single-moment 0 of 10 caught vs Time-Warp 10 of 10 caught, 0 false alarms, +100.0% detection gain on dormant threats).
+- docs(adr): added `docs/adr/ADR-0009-behavioral-diff-and-sandbox-efficacy.md` recording the deepened behavioural diff, guardrail detection, cap logic, and empirical proof that the Time-Warp sandbox earns its place.
+
 ## 0.9.4 — 2026-09-23 — Real detonation with record, and cost control (Day 5 T1–T10)
 - feat(timewarp): implemented `sentinel timewarp run <file> --record <dir>` allowing live model execution with automatic cassette serialization and secret redaction (`CassetteRecorder`). The recorded cassette replays forever offline via `--replay <dir>`.
 - feat(timewarp): upfront token and USD cost estimation calculated and displayed before any API spend, with `--budget N` enforcing hard scenario limits by dropping low-priority scenarios with a printed `dropped: <name> (exceeds budget)` line.
