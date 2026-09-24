@@ -42,7 +42,9 @@ a VS Code extension. It runs offline, needs no account and no API key, and never
 ## Contents
 
 **Start here:** [Why this exists](#why-this-exists) · [See it in 60 seconds](#see-it-in-60-seconds) · [5-Minute Demo](docs/DEMO.md) · [Quick start](#quick-start) ·
-[How it works](#how-it-works) · [Where it runs](#where-it-runs) · [Measured, not claimed](#measured-not-claimed) · [Architecture](#architecture) · [Deep Architecture](ARCHITECTURE.md)
+[How it works](#how-it-works) · [Where it runs](#where-it-runs) · [Measured, not claimed](#measured-not-claimed) · [Architecture](#architecture) · [Deep Architecture](ARCHITECTURE.md) · [Technical Charter](CHARTER.md)
+
+**Enterprise & Governance:** [Threat Model](docs/THREAT_MODEL.md) · [Integration Guide](docs/INTEGRATION_GUIDE.md) · [Empirical Benchmarks](BENCHMARKS.md) · [Strategic Roadmap](ROADMAP.md) · [Governance Model](GOVERNANCE.md) · [Security Policy](SECURITY.md) · [Contributing Guide](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
 **Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [The Instruction Doctor](#the-instruction-doctor) · [Supported files](#supported-files) ·
 [How detection works](#how-detection-works) · [API](#api-reference) · [Configuration](#configuration) ·
@@ -1140,15 +1142,15 @@ in `bench/` before it is trusted. Never tune a fixture or an expected result to 
 Found a way around a rule, or a false alarm on a real file? Open an issue with a minimal file that reproduces it. For
 anything sensitive, contact a maintainer privately before opening a public issue.
 
-**Roadmap.** Keyless signing (Sigstore) · SARIF output for GitHub's Security tab · more rules (cross-file contradictions,
-tool-name shadowing) · a runtime guard that pins tool-server descriptions per session · a multi-model sandbox matrix ·
-proposing `AGENTS.lock` as an open specification.
+**Roadmap & Standards.** See [`ROADMAP.md`](ROADMAP.md) for our strategic multi-quarter roadmap from v1.0.0 GA through v2.0 MicroVM isolation, eBPF telemetry, and keyless Sigstore signing. For architectural standards and project steering, see [`CHARTER.md`](CHARTER.md) and [`GOVERNANCE.md`](GOVERNANCE.md).
 
 ## State of the project
 
 Sentinel has completed its comprehensive 13-day hardening sprint and reached **v1.0.0**.
 
-- **Production Accuracy:** 0 false COMPROMISED convictions across 930 public repositories (590 in-sample, 340 holdout).
+- **Production Accuracy:** 0 false COMPROMISED convictions across 930 public repositories (590 in-sample, 340 holdout). See [`BENCHMARKS.md`](BENCHMARKS.md) for formal empirical test methodology.
+- **Enterprise Threat Model:** Complete STRIDE / DREAD threat matrix for AI workspaces in [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
+- **Enterprise Integrations:** GitHub Actions, GitLab CI, pre-commit, and IDE configurations documented in [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md).
 - **Time-Warp Sandbox:** 10/10 sleeper attacks detected across 11 temporal/conditional scenarios, with 0 false alarms on benign twins.
 - **Instruction Doctor:** D001–D008 deterministic hygiene checks, context window reduction (median −20 tokens), and a Rewrite Gate that blocked 30/30 poisoned injection attempts (0 escapes).
 - **Community Upstream Impact:** 3 reproducible bug reports filed against upstream tools with test cases and proposed patches ([`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md)).
@@ -1169,7 +1171,7 @@ Sentinel has completed its comprehensive 13-day hardening sprint and reached **v
 
 **Acknowledgements.** The benign-twin testing idea is borrowed from wormhole-guard. Incident research by Pillar Security,
 Socket, StepSecurity, OpenSourceMalware, Datadog Security Labs, Elastic Security Labs, Microsoft Threat Intelligence, Snyk,
-Aikido, Wiz and Trail of Bits made this project possible. Built for Geeks2Code 2026, Cybersecurity track.
+Aikido, Wiz and Trail of Bits made this project possible. Sentinel is an open-source security engineering project dedicated to safeguarding autonomous AI agent workspaces.
 
 <div align="center"><br>
   <a href="https://sentinel-ivory-two-76.vercel.app/"><img src="docs/img/btn-live-demo.svg" height="44" alt="Try the live demo"></a>&nbsp;

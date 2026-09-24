@@ -1,6 +1,6 @@
 # Sentinel Layer 3 Semantic Judge Evaluation
 
-**Date**: 2026-09-23 07:52:20Z  
+**Date**: 2026-09-24 06:34:22Z  
 **Evaluation Target**: 86 unseen-wording adversarial holdouts & 300 benign real-world sentences.
 
 ## Results Summary

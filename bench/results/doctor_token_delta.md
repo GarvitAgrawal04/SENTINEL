@@ -9,8 +9,8 @@ strictly reduce or preserve context window consumption.
 - **Files Evaluated:** 50
 - **Files Requiring Fixes:** 35 (70.0%)
 - **Total Safe Fixes Applied:** 302
-- **Context Tokens Before:** 92,345
-- **Context Tokens After:** 90,882
+- **Context Tokens Before:** 92,343
+- **Context Tokens After:** 90,880
 - **Net Token Delta:** -1,463 tokens
 - **Median Token Delta:** **-20.0 tokens** (requirement: <= 0)
 - **Mean Token Delta:** **-29.26 tokens**
@@ -35,13 +35,13 @@ strictly reduce or preserve context window consumption.
 | `file_13.md` | agent-browser\CLAUDE.md | 1570 | 1552 | **-18** | 6 | 7 |
 | `file_14.md` | agent-browser\AGENTS.md | 2170 | 2170 | 0 | 0 | 25 |
 | `file_15.md` | agent-governance-toolkit\CLAUDE.md | 1592 | 1567 | **-25** | 8 | 9 |
-| `file_16.md` | agent-governance-toolkit\AGENTS.md | 1880 | 1880 | 0 | 0 | 22 |
-| `file_17.md` | agent-governance-toolkit\.github\copilot-instructions.md | 6046 | 6024 | **-22** | 5 | 51 |
+| `file_16.md` | agent-governance-toolkit\AGENTS.md | 1880 | 1880 | 0 | 0 | 20 |
+| `file_17.md` | agent-governance-toolkit\.github\copilot-instructions.md | 6046 | 6024 | **-22** | 5 | 50 |
 | `file_18.md` | Agent-Skills-for-Context-Engineering\CLAUDE.md | 1964 | 1944 | **-20** | 6 | 7 |
 | `file_19.md` | Agent-Skills-for-Context-Engineering\AGENTS.md | 1976 | 1976 | 0 | 0 | 31 |
 | `file_20.md` | agentic-inbox\CLAUDE.md | 1535 | 1514 | **-21** | 7 | 13 |
 | `file_21.md` | ai\CLAUDE.md | 1743 | 1665 | **-78** | 13 | 21 |
-| `file_22.md` | ai\AGENTS.md | 3154 | 3141 | **-13** | 1 | 44 |
+| `file_22.md` | ai\AGENTS.md | 3154 | 3141 | **-13** | 1 | 41 |
 | `file_23.md` | ai-hedge-fund\CLAUDE.md | 1940 | 1920 | **-20** | 6 | 7 |
 | `file_24.md` | ai-website-cloner-template\CLAUDE.md | 2241 | 2241 | 0 | 0 | 10 |
 | `file_25.md` | ai-website-cloner-template\AGENTS.md | 753 | 753 | 0 | 0 | 2 |
@@ -54,7 +54,7 @@ strictly reduce or preserve context window consumption.
 | `file_32.md` | andrej-karpathy-skills\CLAUDE.md | 1971 | 1951 | **-20** | 6 | 7 |
 | `file_33.md` | andrej-karpathy-skills\.cursor\rules\karpathy-guidelines.mdc | 656 | 642 | **-14** | 2 | 6 |
 | `file_34.md` | anime-universe-teaser\CLAUDE.md | 306 | 306 | 0 | 0 | 0 |
-| `file_35.md` | animejs-claude-skill\CLAUDE.md | 2267 | 2267 | 0 | 0 | 1 |
+| `file_35.md` | animejs-claude-skill\CLAUDE.md | 2265 | 2265 | 0 | 0 | 1 |
 | `file_36.md` | ansible\CLAUDE.md | 1688 | 1620 | **-68** | 14 | 15 |
 | `file_37.md` | ansible\AGENTS.md | 3951 | 3931 | **-20** | 1 | 44 |
 | `file_38.md` | Anthropic-Cybersecurity-Skills\CLAUDE.md | 1904 | 1876 | **-28** | 8 | 9 |
@@ -68,5 +68,5 @@ strictly reduce or preserve context window consumption.
 | `file_46.md` | appwrite\AGENTS.md | 1637 | 1637 | 0 | 0 | 11 |
 | `file_47.md` | arcjet-js\CLAUDE.md | 1631 | 1426 | **-205** | 35 | 39 |
 | `file_48.md` | astro\CLAUDE.md | 1484 | 1478 | **-6** | 2 | 2 |
-| `file_49.md` | astro\AGENTS.md | 1910 | 1894 | **-16** | 3 | 22 |
+| `file_49.md` | astro\AGENTS.md | 1910 | 1894 | **-16** | 3 | 21 |
 | `file_50.md` | autoresearch\CLAUDE.md | 1582 | 1557 | **-25** | 8 | 9 |
