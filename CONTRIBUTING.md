@@ -177,7 +177,7 @@ python docs/check_readme_links.py
    - Code must pass `ruff check .` and `black --check .`.
 5. **No AI Slop / Phrasing Guardrails:**
    - Do not use hype words or marketing superlatives.
-   - Strictly avoid forbidden terms (`billion`, `billionaire`, `billion dollars`). Use concrete metrics (e.g., `2B+ monthly downloads`, `930 public repositories`).
+   - Strictly avoid hype terms and absolute financial superlatives. Use concrete metrics (e.g., `930 public repositories`, `340 tests passed`).
 
 ---
 
