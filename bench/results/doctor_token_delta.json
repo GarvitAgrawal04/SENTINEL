@@ -947,7 +947,7 @@
       "token_delta": -20,
       "percent_change": -0.51,
       "fixes_applied": 1,
-      "findings_count": 44,
+      "findings_count": 43,
       "finding_ids": [
         "D006",
         "D002",
@@ -958,7 +958,6 @@
         "D002",
         "D002",
         "D004",
-        "D002",
         "D002",
         "D002",
         "D002",

@@ -12,7 +12,7 @@ authors = [{ name = "Mayan Kamboj" }, { name = "Garvit Agrawal" }]
 requires-python = ">=3.10"
 keywords = ["ai-agent", "security", "prompt-injection", "claude", "cursor", "gemini", "sarif", "mcp"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Topic :: Security",
     "Topic :: Software Development :: Quality Assurance",

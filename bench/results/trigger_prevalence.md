@@ -13,7 +13,7 @@ that healthy agent files do not trigger phantom sandbox detonations.
 
 - **Max Allowed Mean Threshold:** <= 1.35 scenarios/target
 - **Combined Mean Scenarios / Target:** **1.045** (PASS)
-- **Total Benchmark Runtime:** 18.9 s
+- **Total Benchmark Runtime:** 18.44 s
 
 ## Trigger Breakdown by Kind (Combined)
 

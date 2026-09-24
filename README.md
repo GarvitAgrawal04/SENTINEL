@@ -44,7 +44,7 @@ a VS Code extension. It runs offline, needs no account and no API key, and never
 **Start here:** [Why this exists](#why-this-exists) · [See it in 60 seconds](#see-it-in-60-seconds) · [5-Minute Demo](docs/DEMO.md) · [Quick start](#quick-start) ·
 [How it works](#how-it-works) · [Where it runs](#where-it-runs) · [Measured, not claimed](#measured-not-claimed) · [Architecture](#architecture) · [Deep Architecture](ARCHITECTURE.md) · [Technical Charter](CHARTER.md)
 
-**Enterprise & Governance:** [Threat Model](docs/THREAT_MODEL.md) · [Integration Guide](docs/INTEGRATION_GUIDE.md) · [Empirical Benchmarks](BENCHMARKS.md) · [Strategic Roadmap](ROADMAP.md) · [Governance Model](GOVERNANCE.md) · [Security Policy](SECURITY.md) · [Contributing Guide](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
+**Enterprise & Governance:** [Threat Model](docs/THREAT_MODEL.md) · [Integration Guide](docs/INTEGRATION_GUIDE.md) · [Empirical Benchmarks](BENCHMARKS.md) · [Comparison](docs/COMPARISON.md) · [OWASP Mapping](docs/compliance/OWASP_AGENTIC_TOP10.md) · [Strategic Roadmap](ROADMAP.md) · [Governance Model](GOVERNANCE.md) · [Maintainers](MAINTAINERS.md) · [Security Policy](SECURITY.md) · [Contributing Guide](CONTRIBUTING.md) · [Testing Guide](docs/TESTING_GUIDE.md) · [Release Process](docs/RELEASE.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
 **Reference:** [Install and run](#install-and-run) · [Using Sentinel](#using-sentinel) · [The Instruction Doctor](#the-instruction-doctor) · [Supported files](#supported-files) ·
 [How detection works](#how-detection-works) · [API](#api-reference) · [Configuration](#configuration) ·
@@ -1151,6 +1151,7 @@ Sentinel has completed its comprehensive 13-day hardening sprint and reached **v
 - **Production Accuracy:** 0 false COMPROMISED convictions across 930 public repositories (590 in-sample, 340 holdout). See [`BENCHMARKS.md`](BENCHMARKS.md) for formal empirical test methodology.
 - **Enterprise Threat Model:** Complete STRIDE / DREAD threat matrix for AI workspaces in [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
 - **Enterprise Integrations:** GitHub Actions, GitLab CI, pre-commit, and IDE configurations documented in [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md).
+- **OWASP Agentic Top 10:** Full compliance mapping (8/10 mitigated, 2/10 partial with roadmap coverage) and MITRE ATLAS cross-reference in [`docs/compliance/OWASP_AGENTIC_TOP10.md`](docs/compliance/OWASP_AGENTIC_TOP10.md).
 - **Time-Warp Sandbox:** 10/10 sleeper attacks detected across 11 temporal/conditional scenarios, with 0 false alarms on benign twins.
 - **Instruction Doctor:** D001–D008 deterministic hygiene checks, context window reduction (median −20 tokens), and a Rewrite Gate that blocked 30/30 poisoned injection attempts (0 escapes).
 - **Community Upstream Impact:** 3 reproducible bug reports filed against upstream tools with test cases and proposed patches ([`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md)).

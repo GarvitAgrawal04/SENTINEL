@@ -23,8 +23,8 @@ If you discover a vulnerability in Sentinel or an evasion technique that bypasse
 
 | Sentinel Version | Python Versions | OS Platforms | Maintenance Status |
 |:---:|:---:|:---:|:---:|
-| **`0.9.x`** (Latest) | 3.10, 3.11, 3.12, 3.13, 3.14 | Linux, macOS, Windows | Active Development |
-| `< 0.9.0` | 3.10+ | Linux, macOS, Windows | Deprecated |
+| **`1.0.x`** (Latest) | 3.10, 3.11, 3.12, 3.13, 3.14 | Linux, macOS, Windows | Active Development |
+| `< 1.0.0` | 3.10+ | Linux, macOS, Windows | Deprecated |
 
 ## IDE and Editor Support
 

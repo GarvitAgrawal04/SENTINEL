@@ -8,7 +8,7 @@
       "trigger_rate": 0.0457,
       "total_scenarios_planned": 390,
       "mean_scenarios_per_target": 1.048,
-      "elapsed_seconds": 18.75,
+      "elapsed_seconds": 18.28,
       "trigger_kinds": {
         "env_ci": 17,
         "session_ordinal": 3,
@@ -410,7 +410,7 @@
       "trigger_rate": 0.02,
       "total_scenarios_planned": 51,
       "mean_scenarios_per_target": 1.02,
-      "elapsed_seconds": 0.15,
+      "elapsed_seconds": 0.16,
       "trigger_kinds": {
         "env_ci": 1
       },
@@ -444,7 +444,7 @@
     "trigger_rate": 0.0427,
     "total_scenarios_planned": 441,
     "mean_scenarios_per_target": 1.045,
-    "elapsed_seconds": 18.9,
+    "elapsed_seconds": 18.44,
     "trigger_kinds": {
       "env_ci": 18,
       "session_ordinal": 3,

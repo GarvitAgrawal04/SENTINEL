@@ -56,7 +56,7 @@ strictly reduce or preserve context window consumption.
 | `file_34.md` | anime-universe-teaser\CLAUDE.md | 306 | 306 | 0 | 0 | 0 |
 | `file_35.md` | animejs-claude-skill\CLAUDE.md | 2265 | 2265 | 0 | 0 | 1 |
 | `file_36.md` | ansible\CLAUDE.md | 1688 | 1620 | **-68** | 14 | 15 |
-| `file_37.md` | ansible\AGENTS.md | 3951 | 3931 | **-20** | 1 | 44 |
+| `file_37.md` | ansible\AGENTS.md | 3951 | 3931 | **-20** | 1 | 43 |
 | `file_38.md` | Anthropic-Cybersecurity-Skills\CLAUDE.md | 1904 | 1876 | **-28** | 8 | 9 |
 | `file_39.md` | anthropics-skills\CLAUDE.md | 1838 | 1838 | 0 | 0 | 9 |
 | `file_40.md` | antigravity-awesome-skills\CLAUDE.md | 2225 | 2121 | **-104** | 17 | 18 |
