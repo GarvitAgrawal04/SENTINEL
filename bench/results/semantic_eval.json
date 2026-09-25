@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-09-25 06:09:58Z",
+  "timestamp": "2026-09-25 06:47:44Z",
   "holdout": {
     "total": 86,
     "detected": 73,
     "recall_pct": 84.88372093023256,
-    "duration_sec": 0.0024779999998827407,
+    "duration_sec": 0.0025670999998510524,
     "category_distribution": {
       "network_execution": 15,
       "credential_harvesting": 7,
@@ -20,7 +20,7 @@
     "false_warning_rate_pct": 0.0,
     "budget_threshold_pct": 1.0,
     "budget_met": true,
-    "duration_sec": 0.00619749999987107
+    "duration_sec": 0.006711400000313006
   },
   "scoring_invariants": {
     "max_penalty": 20,

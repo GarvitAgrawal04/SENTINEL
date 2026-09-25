@@ -137,11 +137,6 @@ def how(c, name):
 
 # ------------------------------------------------------------------------------------------------ architecture
 def architecture(c, name):
-    try:
-        from scripts.generate_architecture_diagram import generate_architecture_svg
-        return generate_architecture_svg(name)
-    except Exception:
-        pass
     W, H = 1280, 930
     b = [T(40, 44, "WHERE A SCAN STARTS", 12.5, 700, c["faint"], extra='letter-spacing="1.4"')]
     trig = [("Command line", "sentinel scan ."), ("Gate", "sentinel run -- claude"), ("Pull request", "GitHub Action"), ("Web app · REST API", "POST /scan/text"), ("VS Code", "on save")]
