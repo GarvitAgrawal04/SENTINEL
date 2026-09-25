@@ -118,32 +118,13 @@ sentinel timewarp  verdict: SUSPICIOUS  (1 conditional finding(s))
 
 You need **Python 3.10+** and **Git**. Nothing else: no account, no API key, no Node.
 
-**Windows (PowerShell or cmd)**
-
-```powershell
-git clone https://github.com/GarvitAgrawal04/SENTINEL.git
-cd SENTINEL
-git pull
-.\setup.bat
-```
-
-**macOS, Linux, Git Bash**
-
 ```bash
-git clone https://github.com/GarvitAgrawal04/SENTINEL.git
-cd SENTINEL
-git pull
-bash setup.sh
+pip install sentinel-md          # or: pipx run sentinel-md scan .
+sentinel scan .                  # what would the files in this project make an agent do?
+sentinel run -- claude           # start your agent only if the project is not compromised
 ```
 
-Paste all four lines at once. When it prints `Open http://127.0.0.1:8000`, open that address: the same web app as the live demo,
-now running on your machine, where nothing you scan leaves it. For the command-line tools, open a second terminal in the folder
-and switch them on (Windows: `.venv\Scripts\Activate.ps1` · others: `source .venv/bin/activate`), then:
-
-```bash
-sentinel scan .                # what would the files in this project make an agent do?
-sentinel run -- claude         # start your agent only if the project is not compromised
-```
+Or clone the repository for the full web UI and local API — see [Install and run](#install-and-run) for every option.
 
 ### Installation Matrix
 
@@ -396,11 +377,6 @@ python demo/preflight.py           # with the server running: checks the UI and 
 
 ### 1. The web UI
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-scanner-dark.png">
-  <img alt="The Sentinel Web App: interactive static scanning, hidden character revelation, and live score calculation" src="docs/img/shot-scanner-light.png">
-</picture>
-
 Open http://127.0.0.1:8000 after `bash setup.sh`. It is plain HTML, CSS and JavaScript served by the API: no framework, no
 npm packages, no build step, and no request to any third party (no fonts, no CDN, no analytics).
 
@@ -613,11 +589,6 @@ our own 50% bar, so the feature is opt-in and presented as an experiment. It can
 make one COMPROMISED by itself. Runs and caveats: [`bench/detonation/results`](bench/detonation/results/README.md).
 
 #### Time-Warp sandbox: catching dormant sleeper attacks
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-timewarp-dark.png">
-  <img alt="Sentinel Time-Warp sandbox: simulated virtual turns catching multi-session dormant sleeper attacks" src="docs/img/shot-timewarp-light.png">
-</picture>
 
 Static rules and single-moment sandboxes are blind to dormant instructions that only trigger under future conditions (e.g. session $\ge$ 3, release branches, or specific calendar dates). `sentinel timewarp run` executes an extracted matrix across simulated virtual sessions, branches, and clocks:
 
@@ -974,11 +945,6 @@ auto-run commands inside an agent, and 71 declare tool servers (122 servers, 44 
 | Would block the build at its own default, for any reason | 0 called COMPROMISED · 115 (12%) need a one-time approval of hooks or tool servers that really exist | 137 (15%) | 424 (46%) |
 | Time to scan all 930 | 3.6 s | | |
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-measured-dark.png">
-  <img alt="The website's measured section: every square is one of 930 healthy projects; green passes, amber is a false alarm" src="docs/img/shot-measured-light.png">
-</picture>
-
 **Where we got it wrong first.** Sentinel's first version called 22 of the 590 repositories COMPROMISED. Causes: the word
 "silently" (274 matches), inline shell fragments like `2>/dev/null` read as missing scripts, and an entropy threshold that
 ordinary shell scripts exceed. On the held-out 340, the first untuned reading still had 1 false COMPROMISED (a script full
@@ -1159,14 +1125,9 @@ anything sensitive, contact a maintainer privately before opening a public issue
 
 ## State of the project
 
-Sentinel has completed its comprehensive 13-day hardening sprint and reached **v1.0.0**.
+Sentinel reached **v1.0.0** after a 13-day hardening sprint. Key results are covered in detail above: [Measured, not claimed](#measured-not-claimed) (precision, Time-Warp, Rewrite Gate), [The Instruction Doctor](#the-instruction-doctor) (D001–D008, token delta), and [How it compares, with data](#how-it-compares-with-data) (head-to-head benchmark).
 
-- **Production Accuracy:** 0 false COMPROMISED convictions across 930 public repositories (590 in-sample, 340 holdout). See [`BENCHMARKS.md`](BENCHMARKS.md) for formal empirical test methodology.
-- **Enterprise Threat Model:** Complete STRIDE / DREAD threat matrix for AI workspaces in [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md).
-- **Enterprise Integrations:** GitHub Actions, GitLab CI, pre-commit, and IDE configurations documented in [`docs/INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md).
-- **OWASP Agentic Top 10:** Full compliance mapping (8/10 mitigated, 2/10 partial with roadmap coverage) and MITRE ATLAS cross-reference in [`docs/compliance/OWASP_AGENTIC_TOP10.md`](docs/compliance/OWASP_AGENTIC_TOP10.md).
-- **Time-Warp Sandbox:** 10/10 sleeper attacks detected across 11 temporal/conditional scenarios, with 0 false alarms on benign twins.
-- **Instruction Doctor:** D001–D008 deterministic hygiene checks, context window reduction (median −20 tokens), and a Rewrite Gate that blocked 30/30 poisoned injection attempts (0 escapes).
+- **Enterprise Governance:** [Threat Model](docs/THREAT_MODEL.md) · [Integration Guide](docs/INTEGRATION_GUIDE.md) · [OWASP Agentic Top 10 Mapping](docs/compliance/OWASP_AGENTIC_TOP10.md) (8/10 mitigated) · [Empirical Benchmarks](BENCHMARKS.md)
 - **Community Upstream Impact:** 3 reproducible bug reports filed against upstream tools with test cases and proposed patches ([`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md)).
 - **Supply-Chain Integrity:** Releases published with CycloneDX v1.5 JSON SBOMs, SHA-256 digests, and Sigstore keyless attestation.
 - **Full Transparency:** See [`LIMITATIONS.md`](LIMITATIONS.md) for what Sentinel cannot do and where our negative results sit.
