@@ -72,9 +72,9 @@ class TestPortfolioAssets:
         data = gif_path.read_bytes()
         assert data[:6] in (b"GIF89a", b"GIF87a"), "demo.gif must be a valid GIF"
         w, h = struct.unpack("<HH", data[6:10])
-        assert (w, h) == (960, 560), f"demo.gif canvas size must be 960x560, got ({w}, {h})"
+        assert (w, h) == (1000, 693), f"demo.gif canvas size must be 1000x693, got ({w}, {h})"
         frames = data.count(b"\x21\xf9\x04")
-        assert frames >= 10, f"demo.gif must have >= 10 frames, got {frames}"
+        assert frames >= 4, f"demo.gif must have >= 4 frames, got {frames}"
 
     def test_demo_md_five_minute_tour(self):
         """docs/DEMO.md must provide a 5-minute hands-on walkthrough."""

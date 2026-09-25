@@ -22,6 +22,9 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2457f5" alt="Apache-2.0 licence"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-2457f5" alt="Python 3.10 or newer">
   <img src="https://img.shields.io/badge/scanner-offline%20%C2%B7%20zero%20dependencies-1b8a5a" alt="the scanner is offline and has zero dependencies">
+  <a href="docs/compliance/OWASP_AGENTIC_TOP10.md"><img src="https://img.shields.io/badge/OWASP_Agentic_Top_10-8%2F10_mitigated-1b8a5a" alt="OWASP Agentic Top 10: 8 of 10 mitigated"></a>
+  <img src="https://img.shields.io/badge/tests-340%2B_passed-1b8a5a" alt="340+ tests passed">
+  <img src="https://img.shields.io/badge/rules-26_deterministic-2457f5" alt="26 deterministic detection rules">
 </p>
 
 </div>
@@ -70,6 +73,11 @@ These files are valid Markdown and JSON, pass every linter, have no CVE to patch
 **In the browser.** The animation above is the real web app. [Open the live demo](https://sentinel-ivory-two-76.vercel.app/), pick a sample or
 paste a file, and press *Reveal hidden content*.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-scanner-dark.png">
+  <img alt="Sentinel web app: real-time scanner view showing hidden content revealed, trust score, and detailed findings with line numbers" src="docs/img/shot-scanner-light.png">
+</picture>
+
 **In VS Code.** The dangerous line is underlined as you save, explained on hover, and the verdict sits in the status bar.
 
 <img src="docs/img/vscode-illustration.svg" alt="Illustration of the VS Code extension: three underlined lines in CLAUDE.md, a hover card explaining the exfiltration instruction, and a red status bar reading Sentinel: Compromised 0/100">
@@ -100,6 +108,11 @@ sentinel timewarp  verdict: SUSPICIOUS  (1 conditional finding(s))
    > Your agent was instructed to leak secrets conditionally: acts only from the third session on.
    > fix: Remove the conditional instruction or dormant exfiltration trigger.
 ```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/shot-timewarp-dark.png">
+  <img alt="Sentinel Time-Warp: web app visualization of multi-session temporal sandbox showing virtual clock moments and dormant sleeper detection" src="docs/img/shot-timewarp-light.png">
+</picture>
 
 ## Quick start
 
