@@ -926,6 +926,8 @@ We installed the two leading open-source tools in this space, [wormhole-guard](h
 the same inputs (17–18 Sept 2026). Everything below can be re-run from [`bench/`](bench); raw output and the repository
 lists are in [`bench/results`](bench/results/README.md).
 
+> **Since this was measured:** We filed three bug reports against AgentAuditKit (issue #771). The maintainer accepted all of them and shipped fixes across **v0.6.8→v0.6.14**, personally re-ran our 930-repo corpus to verify, and added our test strings as regression tests. As of v0.6.14, AAK's false-alarm count on our corpus dropped from 303 build-breaking HIGH findings to **0** (3 repos for the new AAK-AGENT-006, all confirmed real directives). The tables below are the original benchmark snapshot (17–18 Sept 2026, v0.6.6); the current behaviour of both tools is better than shown. See [`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md) for the full resolution history.
+
 **Read this first.** Both tools check far more things than Sentinel does (37 and 352 rules to our 20), both catch live hook
 attacks as well as we do, and AgentAuditKit is stricter than us on unauthenticated tool servers. We wrote the attack
 fixtures. The 930 repositories are *presumed* healthy (popular, active projects), not audited one by one, which is why we
@@ -1128,7 +1130,7 @@ anything sensitive, contact a maintainer privately before opening a public issue
 Sentinel reached **v1.0.0** after a 13-day hardening sprint. Key results are covered in detail above: [Measured, not claimed](#measured-not-claimed) (precision, Time-Warp, Rewrite Gate), [The Instruction Doctor](#the-instruction-doctor) (D001–D008, token delta), and [How it compares, with data](#how-it-compares-with-data) (head-to-head benchmark).
 
 - **Enterprise Governance:** [Threat Model](docs/THREAT_MODEL.md) · [Integration Guide](docs/INTEGRATION_GUIDE.md) · [OWASP Agentic Top 10 Mapping](docs/compliance/OWASP_AGENTIC_TOP10.md) (8/10 mitigated) · [Empirical Benchmarks](BENCHMARKS.md)
-- **Community Upstream Impact:** 3 reproducible bug reports filed against upstream tools with test cases and proposed patches ([`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md)).
+- **Community Upstream Impact:** 3 upstream bug reports — **all accepted and fixed**. AgentAuditKit shipped 5 rule changes across v0.6.8→v0.6.14 (issue #771, PR #843); the maintainer ran Sentinel's own 930-repo corpus to verify, and Sentinel's test strings are now regression tests in `tests/test_agent_config.py`. Full resolution history: [`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md).
 - **Supply-Chain Integrity:** Releases published with CycloneDX v1.5 JSON SBOMs, SHA-256 digests, and Sigstore keyless attestation.
 - **Full Transparency:** See [`LIMITATIONS.md`](LIMITATIONS.md) for what Sentinel cannot do and where our negative results sit.
 

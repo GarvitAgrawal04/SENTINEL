@@ -40,6 +40,10 @@ Every repository contained real-world developer instruction files (`CLAUDE.md`, 
 - **Why Competitors Fail:** Existing scanners penalize standard developer commands such as `curl -fsSL https://... | bash` or environment exports in setup documentation. Sentinel treats setup shell commands as **informational observations** (penalty = 0), penalizing only unapproved auto-execution configurations (`S17b`, `S18a`).
 - **Sentinel Rule Calibration:** Our earliest internal prototype registered 22 false alarms on the 590 in-sample corpus. By strictly separating active instructions from documentation examples and recognizing safety prohibitions ("never pipe curl to bash") as protective guardrails, false convictions were reduced to **0**. When validated against 340 completely unseen holdout repositories, Sentinel achieved **0 false convictions**.
 
+### Upstream Impact & Ecosystem Calibration
+Sentinel's 930-repository corpus and precision test cases were adopted by upstream tools to eliminate false convictions:
+- **AgentAuditKit (Issue #771 / PR #843):** Upstream maintainer [@sattyamjjain](https://github.com/sattyamjjain) accepted Sentinel's bug reports and shipped fixes across v0.6.8→v0.6.14. Running Sentinel's 930-repo corpus against v0.6.14 reduced build-breaking alerts on benign repositories from 303 down to 0 (3 true directives remained). Sentinel's exact attack/benign strings were permanently integrated as regression tests in upstream's test suite. Full resolution timeline: [`docs/UPSTREAM_ISSUES.md`](docs/UPSTREAM_ISSUES.md).
+
 ---
 
 ## 3. Adversarial Holdout Evaluation (Lexical vs Semantic)

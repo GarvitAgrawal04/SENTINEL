@@ -55,3 +55,13 @@ Sentinel is designed to work alongside other security tools, not replace them:
 - **Runtime governance:** Agent Governance Toolkit or custom middleware monitors agent actions during execution.
 - **Post-execution:** Promptfoo or Garak red-teams model responses and evaluates robustness.
 - **Output validation:** Guardrails AI or NeMo Guardrails enforces structured output constraints.
+
+---
+
+## Upstream Collaboration & Precision Impact
+
+Sentinel's empirical benchmarks and benign-twin testing methodologies directly contributed to precision improvements across the ecosystem:
+
+- **AgentAuditKit (Issue #771 / PR #843):** Following Sentinel's bug reports on over-sensitive URL detection (`AAK-AGENT-002`), credential guardrails (`AAK-AGENT-004`), and Unicode joiners (`AAK-AGENT-005`), upstream maintainer [@sattyamjjain](https://github.com/sattyamjjain) accepted all three issues and implemented fixes across v0.6.8→v0.6.14. The maintainer personally re-ran Sentinel's 930-repo corpus (1,430 instruction files across 909 repos) to calibrate the engine, reducing build-breaking alerts on legitimate code from 303 to 0. Sentinel's exact test strings were adopted as permanent regression tests in `tests/test_agent_config.py`.
+- **Wormhole-Guard (Issues #5 & #6):** Filed reproducible edge-case reports on legitimate Unicode (emoji ZWJ, BOM, Hindi/Persian joiners) and engineering prose ("silently") triggering false alarms.
+- **Cross-Ecosystem Impact:** Sentinel's corpus findings further prompted the opening of upstream issue #869 in AgentAuditKit to address guardrail-internal keyword false positives (`eval()`, `subprocess`) across 173 additional repositories. Details in [`UPSTREAM_ISSUES.md`](UPSTREAM_ISSUES.md).

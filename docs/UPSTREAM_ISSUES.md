@@ -1,4 +1,4 @@
-# Upstream bug reports - final text, every reproduction verified on 18 Sept 2026
+# Upstream bug reports — reproduction, resolution, and follow-through
 
 Rules we set for ourselves: lead with what the tool does well; one problem per issue; every reproduction was run against the
 released package before filing; say "fires on", not "false positive", where we did not audit; offer the patch.
@@ -54,6 +54,8 @@ saved by an editor that writes a BOM, or is written in Hindi, Persian, Arabic or
 
 Happy to send a PR.
 
+**Status:** Open as of October 2026.
+
 ---
 
 ## 2 · runningoffcode/agent-wormhole — WORM-007
@@ -79,9 +81,11 @@ github.com/GarvitAgrawal04/SENTINEL/tree/main/bench/results
 "hide this from the user". An adverb next to an action verb is not concealment. Our own rule had the same bug (274 matches on
 the same repositories) and this is how we fixed it.
 
+**Status:** Open as of October 2026.
+
 ---
 
-## 3 · sattyamjjain/agent-audit-kit — AAK-AGENT-002
+## 3 · sattyamjjain/agent-audit-kit — AAK-AGENT-002 ✅ RESOLVED
 
 **Filed:** https://github.com/sattyamjjain/agent-audit-kit/issues/771
 
@@ -90,7 +94,7 @@ the same repositories) and this is how we fixed it.
 Thanks for AgentAuditKit. It flagged our Miasma- and ChainDrop-shaped fixtures CRITICAL, and it is stricter than our own tool on
 unauthenticated remote MCP servers.
 
-**Version:** agent-audit-kit 0.6.6 (PyPI), defaults. **Reproduction** — `CLAUDE.md`:
+**Version filed against:** agent-audit-kit 0.6.6 (PyPI), defaults. **Reproduction** — `CLAUDE.md`:
 
 ```markdown
 # Project Documentation & Architecture
@@ -110,3 +114,34 @@ can host on github.com too.
 
 *Smaller, separate if you want them:* `AAK-AGENT-005` reports emoji ZWJ sequences, a BOM, and Hindi/Persian joiners as hidden
 content (MEDIUM); `AAK-AGENT-004` reports a guardrail that *names* a credential in order to forbid sending it.
+
+---
+
+### Resolution — issue #771 fully closed Oct 4, 2026
+
+The maintainer [@sattyamjjain](https://github.com/sattyamjjain) implemented all suggested fixes across four patch releases and
+personally re-ran Sentinel's 930-repo benchmark corpus (1,430 instruction files from 909 repositories) to verify the outcome.
+
+#### What shipped
+
+| Release | PR | What changed |
+|:---|:---|:---|
+| **v0.6.8** | [#778](https://github.com/sattyamjjain/agent-audit-kit/pull/778), [#779](https://github.com/sattyamjjain/agent-audit-kit/pull/779) | `AAK-AGENT-002` demoted to **LOW** (plain links are inventory); new rule `AAK-AGENT-006` fires only when the instruction tells the agent to *fetch and act on* a URL or *send data to* it |
+| **v0.6.8** | same | `AAK-AGENT-005` no longer flags emoji ZWJ, leading BOM, or Persian ZWNJ |
+| **v0.6.11** | [#843](https://github.com/sattyamjjain/agent-audit-kit/pull/843) | `AAK-AGENT-006` narrowed: contributor links ("Report bugs at…"), dev-server comments, and guardrails ("Never upload to…") no longer fire; `AAK-AGENT-005` Hindi virama+joiner fix completed; `AAK-AGENT-004` guardrail case fixed; all three credited to `@GarvitAgrawal04` and linked to #771; Sentinel's exact test strings added as regression tests in `tests/test_agent_config.py` |
+| **v0.6.14** | (patch) | Maintainer self-ran Sentinel corpus: AAK-AGENT-006 fires on **3 repos** (all confirmed real directives: a Cygwin download instruction, a "fetch authoritative doc" directive, a curl POST upload) |
+
+#### Final numbers on the Sentinel corpus (run by @sattyamjjain, 2026-10-04, v0.6.14)
+
+| Rule | Severity | Repos firing |
+|:---|:---|:---|
+| AAK-AGENT-002 | LOW (does not fail `--ci`) | 307 |
+| AAK-AGENT-006 | HIGH | **3** (all confirmed real directives) |
+
+**From 303 build-breaking false alarms → 0 build-breaking false alarms** on the same 930-repo corpus.
+
+#### Additional follow-through
+
+The maintainer opened [#869](https://github.com/sattyamjjain/agent-audit-kit/issues/869) based on further findings from running the Sentinel corpus: `AAK-AGENT-001` and `AAK-AGENT-003` still fire inside guardrails ("Never use eval()") affecting 173 repos. That issue is tracked upstream.
+
+**Issue #771 closed as completed: Oct 4, 2026.**
